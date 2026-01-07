@@ -35,6 +35,8 @@ export const en = {
   "editor.save": "Save",
   "editor.saving": "Saving...",
   "editor.saved": "Saved",
+  "editor.autoSaving": "Saving…",
+  "editor.autoSaved": "Saved",
   "editor.undo": "Undo",
   "editor.copy": "Copy",
   "editor.clear": "Clear",
@@ -59,9 +61,10 @@ export const en = {
 
   // Insert sheet
   "insertSheet.title": "Insert",
-  "insertSheet.sections": "Song Sections",
-  "insertSheet.vocalEffects": "Vocal Effects",
-  "insertSheet.instruments": "Quick Instruments",
+  "insertSheet.sections": "Section",
+  "insertSheet.vocalEffects": "Vocal Effect",
+  "insertSheet.instruments": "Instruments",
+  "insertSheet.insert": "Insert",
 
   // Style picker
   "stylePicker.title": "Style",
@@ -76,10 +79,7 @@ export const en = {
   "settings.theme": "Theme",
   "settings.themeA": "Warm Cream",
   "settings.themeB": "Cool Slate",
-  "settings.themeC": "Soft Sage",
   "settings.themeD": "Soft Dark",
-  "settings.themeE": "Dim Dark",
-  "settings.defaultSort": "Default Sort",
   "settings.about": "About",
   "settings.version": "Version 1.0.0",
 

@@ -1,4 +1,4 @@
-import { Settings, ThemeOption, SortOption } from "@/domain/types";
+import { Settings, ThemeOption } from "@/domain/types";
 import { t } from "@/i18n";
 import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -6,18 +6,10 @@ import { Button } from "@/components/ui/button";
 import { getSettings, updateSettings } from "@/storage/settingsRepo";
 import { useState, useEffect } from "react";
 
-const themes: { value: ThemeOption; labelKey: "settings.themeA" | "settings.themeB" | "settings.themeC" | "settings.themeD" | "settings.themeE" }[] = [
+const themes: { value: ThemeOption; labelKey: "settings.themeA" | "settings.themeB" | "settings.themeD" }[] = [
   { value: "theme-a", labelKey: "settings.themeA" },
   { value: "theme-b", labelKey: "settings.themeB" },
-  { value: "theme-c", labelKey: "settings.themeC" },
   { value: "theme-d", labelKey: "settings.themeD" },
-  { value: "theme-e", labelKey: "settings.themeE" },
-];
-
-const sortOptions: { value: SortOption; labelKey: "sort.updatedDesc" | "sort.createdDesc" | "sort.titleAsc" }[] = [
-  { value: "updatedDesc", labelKey: "sort.updatedDesc" },
-  { value: "createdDesc", labelKey: "sort.createdDesc" },
-  { value: "titleAsc", labelKey: "sort.titleAsc" },
 ];
 
 export default function SettingsPage() {
@@ -35,11 +27,6 @@ export default function SettingsPage() {
 
   const handleThemeChange = (theme: ThemeOption) => {
     const updated = updateSettings({ theme });
-    setSettings(updated);
-  };
-
-  const handleSortChange = (defaultSort: SortOption) => {
-    const updated = updateSettings({ defaultSort });
     setSettings(updated);
   };
 
@@ -75,31 +62,6 @@ export default function SettingsPage() {
               >
                 <span className="font-medium">{t(theme.labelKey)}</span>
                 {settings.theme === theme.value && (
-                  <Check className="h-5 w-5 text-primary" />
-                )}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Default Sort */}
-        <section className="space-y-4">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("settings.defaultSort")}
-          </h2>
-          <div className="space-y-2">
-            {sortOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => handleSortChange(option.value)}
-                className={`w-full flex items-center justify-between p-4 rounded-lg border transition-colors ${
-                  settings.defaultSort === option.value
-                    ? "border-primary bg-accent"
-                    : "border-border bg-card hover:bg-accent/50"
-                }`}
-              >
-                <span className="font-medium">{t(option.labelKey)}</span>
-                {settings.defaultSort === option.value && (
                   <Check className="h-5 w-5 text-primary" />
                 )}
               </button>

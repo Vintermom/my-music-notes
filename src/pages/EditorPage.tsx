@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Note, NoteColor } from "@/domain/types";
+import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t } from "@/i18n";
 import { getNoteById, updateNote, deleteNote, duplicateNote, downloadNoteJson } from "@/storage/notesRepo";
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
@@ -40,6 +40,7 @@ export default function EditorPage() {
 
   const [note, setNote] = useState<Note | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
   const [timelineOpen, setTimelineOpen] = useState(false);
@@ -67,10 +68,18 @@ export default function EditorPage() {
     }
   }, [id, navigate, resetLyricsHistory, resetStyleHistory]);
 
+  // Auto-save status reset after 2 seconds
+  useEffect(() => {
+    if (autoSaveStatus === "saved") {
+      const timer = setTimeout(() => setAutoSaveStatus("idle"), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [autoSaveStatus]);
+
   const debouncedSave = useDebounce((noteToSave: Note) => {
-    setIsSaving(true);
+    setAutoSaveStatus("saving");
     updateNote(noteToSave.id, noteToSave);
-    setIsSaving(false);
+    setAutoSaveStatus("saved");
   }, 1000);
 
   const updateField = useCallback(
@@ -140,20 +149,96 @@ export default function EditorPage() {
 
   const handlePrint = (textOnly: boolean) => {
     if (!note) return;
+    const formatDate = (ts: number) => new Date(ts).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    
     if (textOnly) {
-      const formatDate = (ts: number) => new Date(ts).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-      const content = [
-        note.title || "", note.composer || "", "",
-        note.lyrics || "", "", note.style ? `Style: ${note.style}` : "", note.extraInfo ? `Extra: ${note.extraInfo}` : "",
-        note.tags.length > 0 ? `Tags: ${note.tags.join(", ")}` : "", "", "---",
-        `${t("print.created")}: ${formatDate(note.createdAt)}`,
-        `${t("print.updated")}: ${formatDate(note.updatedAt)}`,
-        `${t("print.printed")}: ${formatDate(Date.now())}`,
-      ].filter(Boolean).join("\n");
+      // Text-only mode with clear vertical spacing and dividers
+      const lines: string[] = [];
+      
+      if (note.title) lines.push(`<h1 style="font-size:1.5rem;font-weight:600;margin:0;">${note.title}</h1>`);
+      if (note.composer) lines.push(`<p style="color:#666;margin:0.25rem 0 0 0;">${note.composer}</p>`);
+      
+      if (note.title || note.composer) lines.push(`<hr style="border:none;border-top:1px solid #ddd;margin:1rem 0;" />`);
+      
+      if (note.lyrics) lines.push(`<pre style="font-family:monospace;white-space:pre-wrap;margin:0;line-height:1.6;">${note.lyrics}</pre>`);
+      
+      if (note.style) {
+        if (note.lyrics) lines.push(`<div style="margin-top:1rem;"></div>`);
+        lines.push(`<p style="margin:0;"><strong>Style:</strong> ${note.style}</p>`);
+      }
+      
+      if (note.extraInfo) lines.push(`<p style="margin:0.5rem 0 0 0;"><strong>Extra:</strong> ${note.extraInfo}</p>`);
+      
+      if (note.tags.length > 0) lines.push(`<p style="margin:0.5rem 0 0 0;"><strong>Tags:</strong> ${note.tags.join(", ")}</p>`);
+      
+      lines.push(`<hr style="border:none;border-top:1px solid #ddd;margin:1.5rem 0 1rem 0;" />`);
+      lines.push(`<div style="font-size:0.75rem;color:#888;line-height:1.4;">`);
+      lines.push(`<p style="margin:0;">${t("print.created")}: ${formatDate(note.createdAt)}</p>`);
+      lines.push(`<p style="margin:0;">${t("print.updated")}: ${formatDate(note.updatedAt)}</p>`);
+      lines.push(`<p style="margin:0;">${t("print.printed")}: ${formatDate(Date.now())}</p>`);
+      lines.push(`</div>`);
+      
       const w = window.open("", "_blank");
-      if (w) { w.document.write(`<pre style="font-family:system-ui;white-space:pre-wrap;padding:2rem;">${content}</pre>`); w.document.close(); w.print(); }
+      if (w) {
+        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;max-width:800px;margin:0 auto;">${lines.join("")}</body></html>`);
+        w.document.close();
+        w.print();
+      }
     } else {
-      window.print();
+      // App layout mode - render read-only editor style
+      const noteColorMap: Record<NoteColor, string> = {
+        default: "#fafaf9", cream: "#fef9e7", pink: "#fdf2f4", blue: "#eff6ff",
+        green: "#f0fdf4", yellow: "#fefce8", purple: "#faf5ff", orange: "#fff7ed",
+      };
+      
+      const lines: string[] = [];
+      lines.push(`<div style="background:${noteColorMap[note.color]};border-radius:1rem;padding:1.5rem;max-width:600px;margin:0 auto;">`);
+      
+      if (note.title) lines.push(`<h1 style="font-size:1.25rem;font-weight:600;margin:0 0 0.5rem 0;">${note.title}</h1>`);
+      if (note.composer) lines.push(`<p style="color:#666;margin:0 0 1rem 0;">${note.composer}</p>`);
+      
+      if (note.lyrics) {
+        lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:1rem;">`);
+        lines.push(`<p style="font-size:0.75rem;color:#888;margin:0 0 0.25rem 0;">${t("editor.lyrics")}</p>`);
+        lines.push(`<pre style="font-family:inherit;white-space:pre-wrap;margin:0;font-size:0.875rem;">${note.lyrics}</pre>`);
+        lines.push(`</div>`);
+      }
+      
+      if (note.style) {
+        lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:1rem;">`);
+        lines.push(`<p style="font-size:0.75rem;color:#888;margin:0 0 0.25rem 0;">${t("editor.style")}</p>`);
+        lines.push(`<p style="margin:0;font-size:0.875rem;">${note.style}</p>`);
+        lines.push(`</div>`);
+      }
+      
+      if (note.extraInfo) {
+        lines.push(`<div style="background:rgba(255,255,255,0.3);border-radius:0.5rem;padding:0.5rem;margin-bottom:1rem;">`);
+        lines.push(`<p style="font-size:0.7rem;color:#888;margin:0 0 0.25rem 0;">${t("editor.extraInfo")}</p>`);
+        lines.push(`<p style="margin:0;font-size:0.75rem;">${note.extraInfo}</p>`);
+        lines.push(`</div>`);
+      }
+      
+      if (note.tags.length > 0) {
+        lines.push(`<div style="display:flex;flex-wrap:wrap;gap:0.25rem;margin-bottom:1rem;">`);
+        note.tags.forEach(tag => {
+          lines.push(`<span style="background:#e5e5e5;padding:0.25rem 0.5rem;border-radius:9999px;font-size:0.75rem;">${tag}</span>`);
+        });
+        lines.push(`</div>`);
+      }
+      
+      lines.push(`<div style="border-top:1px solid #ddd;padding-top:0.75rem;font-size:0.7rem;color:#888;line-height:1.4;">`);
+      lines.push(`<p style="margin:0;">${t("print.created")}: ${formatDate(note.createdAt)}</p>`);
+      lines.push(`<p style="margin:0;">${t("print.updated")}: ${formatDate(note.updatedAt)}</p>`);
+      lines.push(`<p style="margin:0;">${t("print.printed")}: ${formatDate(Date.now())}</p>`);
+      lines.push(`</div>`);
+      lines.push(`</div>`);
+      
+      const w = window.open("", "_blank");
+      if (w) {
+        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;background:#f5f5f5;">${lines.join("")}</body></html>`);
+        w.document.close();
+        w.print();
+      }
     }
   };
 
@@ -168,13 +253,24 @@ export default function EditorPage() {
   const confirmDelete = () => { if (note) { deleteNote(note.id); toast.success(t("toast.noteDeleted")); navigate("/"); } };
   const handleTogglePin = () => { if (!note) return; updateField("isPinned", !note.isPinned); toast.success(note.isPinned ? t("toast.noteUnpinned") : t("toast.notePinned")); };
 
+  const styleCharCount = note?.style?.length || 0;
+  const styleCharLimit = STYLE_CHAR_LIMIT_FREE;
+
   if (!note) return null;
 
   return (
     <div className={`min-h-screen ${colorClasses[note.color]}`}>
       <header className="sticky top-0 z-10 bg-inherit border-b border-border/50 no-print">
         <div className="container max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}><ArrowLeft className="h-5 w-5" /></Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")}><ArrowLeft className="h-5 w-5" /></Button>
+            {/* Auto-save indicator */}
+            {autoSaveStatus !== "idle" && (
+              <span className="text-xs text-muted-foreground">
+                {autoSaveStatus === "saving" ? t("editor.autoSaving") : t("editor.autoSaved")}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" onClick={handleTogglePin} className={note.isPinned ? "text-primary" : ""}>
               <Pin className={`h-5 w-5 ${note.isPinned ? "fill-current" : ""}`} />
@@ -231,16 +327,21 @@ export default function EditorPage() {
               <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-7 px-2 text-xs no-print"><Plus className="h-3 w-3 mr-1" />{t("stylePicker.title")}</Button>
             </div>
             <div className="flex items-center gap-1 no-print">
+              <span className="text-xs text-muted-foreground mr-2">{styleCharCount} / {styleCharLimit}</span>
               <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-7 px-2"><Undo2 className="h-3 w-3 mr-1" />{t("editor.undo")}</Button>
               <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} className="h-7 w-7">{styleExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</Button>
             </div>
           </div>
-          {getSelectedStyleChips().length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-2">
-              {getSelectedStyleChips().map((chip, i) => (<span key={i} className="chip chip-selected cursor-pointer" onClick={() => handleToggleStyleChip(chip)}>{chip}</span>))}
-            </div>
-          )}
-          <Textarea placeholder={t("editor.style")} value={note.style} onChange={(e) => updateField("style", e.target.value)} className={`bg-background/50 border-border resize-none transition-all ${styleExpanded ? "min-h-[80px]" : "min-h-[40px] max-h-[40px]"}`} />
+          <Textarea 
+            placeholder={t("editor.style")} 
+            value={note.style} 
+            onChange={(e) => {
+              if (e.target.value.length <= styleCharLimit) {
+                updateField("style", e.target.value);
+              }
+            }} 
+            className={`bg-background/50 border-border resize-none transition-all ${styleExpanded ? "min-h-[80px]" : "min-h-[40px] max-h-[40px]"}`} 
+          />
         </div>
 
         {/* Extra Info - reduced height, secondary */}

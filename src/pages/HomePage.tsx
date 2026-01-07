@@ -26,10 +26,10 @@ export default function HomePage() {
 
   const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
 
-  // Apply theme class
+  // Apply theme class - only support 3 themes now
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove("theme-a", "theme-b", "theme-c", "theme-d", "theme-e");
+    root.classList.remove("theme-a", "theme-b", "theme-d");
     if (settings.theme !== "theme-a") {
       root.classList.add(settings.theme);
     }
