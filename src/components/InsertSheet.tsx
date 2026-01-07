@@ -40,28 +40,47 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
     );
   };
 
-  const handleInsert = () => {
-    if (!selectedSection) return;
+  // Build the formatted preview string based on grammar rules
+  const buildPreview = (): string => {
+    // Grammar 1: Vocal-only (no section, no instruments)
+    if (!selectedSection && selectedVocalEffect && selectedInstruments.length === 0) {
+      return `(${selectedVocalEffect})`;
+    }
+    
+    // Grammar 2, 3, 4: Section-based
+    if (selectedSection) {
+      let result = `[${selectedSection}`;
+      
+      // Add instruments if any
+      if (selectedInstruments.length > 0) {
+        result += ` ${selectedInstruments.join(", ")}`;
+      }
+      
+      // Add vocal effect if any
+      if (selectedVocalEffect) {
+        result += ` (${selectedVocalEffect})`;
+      }
+      
+      result += "]";
+      return result;
+    }
+    
+    return "";
+  };
 
-    // Build structured format: [Section Instrument, Instrument (VocalEffect)]
-    let result = `[${selectedSection}`;
+  const previewText = buildPreview();
+  
+  // Can insert if: section selected OR vocal-only (no instruments)
+  const canInsert = selectedSection !== null || 
+    (selectedVocalEffect !== null && selectedInstruments.length === 0);
+
+  const handleInsert = () => {
+    if (!canInsert || !previewText) return;
     
-    if (selectedInstruments.length > 0) {
-      result += " " + selectedInstruments.join(", ");
-    }
-    
-    if (selectedVocalEffect) {
-      result += ` (${selectedVocalEffect})`;
-    }
-    
-    result += "]";
-    
-    onInsert(result);
+    onInsert(previewText);
     resetSelections();
     onOpenChange(false);
   };
-
-  const canInsert = selectedSection !== null;
 
   return (
     <Sheet open={open} onOpenChange={(o) => { if (!o) handleClose(); else onOpenChange(o); }}>
@@ -85,20 +104,18 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
             </div>
           </div>
           {/* Preview of structured insert */}
-          {canInsert && (
+          {canInsert && previewText && (
             <div className="mt-2 p-2 bg-muted rounded-lg text-sm font-mono">
-              [{selectedSection}
-              {selectedInstruments.length > 0 && ` ${selectedInstruments.join(", ")}`}
-              {selectedVocalEffect && ` (${selectedVocalEffect})`}]
+              {previewText}
             </div>
           )}
         </SheetHeader>
 
         <div className="overflow-y-auto h-[calc(100%-80px)] space-y-6 pb-6">
-          {/* Song Sections - Required first pick */}
+          {/* Song Sections */}
           <section>
             <h3 className="text-sm font-semibold text-muted-foreground mb-3">
-              {t("insertSheet.sections")} <span className="text-destructive">*</span>
+              {t("insertSheet.sections")}
             </h3>
             <div className="flex flex-wrap gap-2">
               {songSections.map((item) => (
