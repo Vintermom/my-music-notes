@@ -37,6 +37,8 @@ export const th: Record<TranslationKey, string> = {
   "editor.save": "บันทึก",
   "editor.saving": "กำลังบันทึก...",
   "editor.saved": "บันทึกแล้ว",
+  "editor.autoSaving": "กำลังบันทึก…",
+  "editor.autoSaved": "บันทึกแล้ว",
   "editor.undo": "เลิกทำ",
   "editor.copy": "คัดลอก",
   "editor.clear": "ล้าง",
@@ -61,9 +63,10 @@ export const th: Record<TranslationKey, string> = {
 
   // Insert sheet
   "insertSheet.title": "แทรก",
-  "insertSheet.sections": "ส่วนของเพลง",
+  "insertSheet.sections": "ส่วน",
   "insertSheet.vocalEffects": "เอฟเฟกต์เสียง",
   "insertSheet.instruments": "เครื่องดนตรี",
+  "insertSheet.insert": "แทรก",
 
   // Style picker
   "stylePicker.title": "สไตล์",
@@ -78,10 +81,7 @@ export const th: Record<TranslationKey, string> = {
   "settings.theme": "ธีม",
   "settings.themeA": "ครีมอุ่น",
   "settings.themeB": "สเลทเย็น",
-  "settings.themeC": "เขียวอ่อน",
   "settings.themeD": "มืดนุ่ม",
-  "settings.themeE": "มืดสลัว",
-  "settings.defaultSort": "การเรียงลำดับ",
   "settings.about": "เกี่ยวกับ",
   "settings.version": "เวอร์ชัน 1.0.0",
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { t } from "@/i18n";
-import { Note } from "@/domain/types";
+import { Note, NoteColor } from "@/domain/types";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,12 @@ interface PrintDialogProps {
   note: Note;
   onPrint: (textOnly: boolean) => void;
 }
+
+const colorClasses: Record<NoteColor, string> = {
+  default: "bg-card", cream: "bg-amber-50", pink: "bg-pink-50",
+  blue: "bg-blue-50", green: "bg-green-50", yellow: "bg-yellow-50",
+  purple: "bg-purple-50", orange: "bg-orange-50",
+};
 
 export function PrintDialog({ open, onOpenChange, note, onPrint }: PrintDialogProps) {
   const [printMode, setPrintMode] = useState<"text" | "layout">("text");
@@ -38,7 +44,7 @@ export function PrintDialog({ open, onOpenChange, note, onPrint }: PrintDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("print.title")}</DialogTitle>
         </DialogHeader>
@@ -63,12 +69,92 @@ export function PrintDialog({ open, onOpenChange, note, onPrint }: PrintDialogPr
             </div>
           </RadioGroup>
 
-          {/* Preview of date footer */}
-          <div className="text-xs text-muted-foreground border-t pt-3 space-y-1">
-            <p>{t("print.created")}: {formatDate(note.createdAt)}</p>
-            <p>{t("print.updated")}: {formatDate(note.updatedAt)}</p>
-            <p>{t("print.printed")}: {formatDate(Date.now())}</p>
-          </div>
+          {/* Preview based on mode */}
+          {printMode === "text" ? (
+            <div className="border rounded-lg p-4 bg-muted/30 space-y-4 text-sm max-h-[300px] overflow-y-auto">
+              <div className="space-y-1">
+                {note.title && <p className="text-lg font-semibold">{note.title}</p>}
+                {note.composer && <p className="text-muted-foreground">{note.composer}</p>}
+              </div>
+              
+              {(note.title || note.composer) && <hr className="border-border" />}
+              
+              {note.lyrics && (
+                <div className="whitespace-pre-wrap font-mono text-xs">{note.lyrics}</div>
+              )}
+              
+              {note.style && (
+                <div>
+                  <span className="font-medium">Style: </span>
+                  <span className="text-muted-foreground">{note.style}</span>
+                </div>
+              )}
+              
+              {note.extraInfo && (
+                <div>
+                  <span className="font-medium">Extra: </span>
+                  <span className="text-muted-foreground">{note.extraInfo}</span>
+                </div>
+              )}
+              
+              {note.tags.length > 0 && (
+                <div>
+                  <span className="font-medium">Tags: </span>
+                  <span className="text-muted-foreground">{note.tags.join(", ")}</span>
+                </div>
+              )}
+              
+              <hr className="border-border" />
+              
+              <div className="text-xs text-muted-foreground space-y-0.5">
+                <p>{t("print.created")}: {formatDate(note.createdAt)}</p>
+                <p>{t("print.updated")}: {formatDate(note.updatedAt)}</p>
+                <p>{t("print.printed")}: {formatDate(Date.now())}</p>
+              </div>
+            </div>
+          ) : (
+            <div className={`border rounded-xl p-4 space-y-4 max-h-[300px] overflow-y-auto ${colorClasses[note.color]}`}>
+              <div className="space-y-2">
+                {note.title && <h2 className="text-xl font-semibold">{note.title}</h2>}
+                {note.composer && <p className="text-muted-foreground">{note.composer}</p>}
+              </div>
+              
+              {note.lyrics && (
+                <div className="p-3 bg-background/50 rounded-lg">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("editor.lyrics")}</p>
+                  <div className="whitespace-pre-wrap text-sm">{note.lyrics}</div>
+                </div>
+              )}
+              
+              {note.style && (
+                <div className="p-3 bg-background/50 rounded-lg">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("editor.style")}</p>
+                  <p className="text-sm">{note.style}</p>
+                </div>
+              )}
+              
+              {note.extraInfo && (
+                <div className="p-2 bg-background/30 rounded-lg">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("editor.extraInfo")}</p>
+                  <p className="text-xs">{note.extraInfo}</p>
+                </div>
+              )}
+              
+              {note.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {note.tags.map((tag, i) => (
+                    <span key={i} className="px-2 py-0.5 bg-secondary rounded-full text-xs">{tag}</span>
+                  ))}
+                </div>
+              )}
+              
+              <div className="pt-2 border-t text-xs text-muted-foreground space-y-0.5">
+                <p>{t("print.created")}: {formatDate(note.createdAt)}</p>
+                <p>{t("print.updated")}: {formatDate(note.updatedAt)}</p>
+                <p>{t("print.printed")}: {formatDate(Date.now())}</p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-2">

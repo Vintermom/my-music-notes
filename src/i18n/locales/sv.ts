@@ -37,6 +37,8 @@ export const sv: Record<TranslationKey, string> = {
   "editor.save": "Spara",
   "editor.saving": "Sparar...",
   "editor.saved": "Sparad",
+  "editor.autoSaving": "Sparar…",
+  "editor.autoSaved": "Sparad",
   "editor.undo": "Ångra",
   "editor.copy": "Kopiera",
   "editor.clear": "Rensa",
@@ -61,9 +63,10 @@ export const sv: Record<TranslationKey, string> = {
 
   // Insert sheet
   "insertSheet.title": "Infoga",
-  "insertSheet.sections": "Låtsektioner",
-  "insertSheet.vocalEffects": "Vokaleffekter",
-  "insertSheet.instruments": "Snabbinstrument",
+  "insertSheet.sections": "Sektion",
+  "insertSheet.vocalEffects": "Vokaleffekt",
+  "insertSheet.instruments": "Instrument",
+  "insertSheet.insert": "Infoga",
 
   // Style picker
   "stylePicker.title": "Stil",
@@ -78,10 +81,7 @@ export const sv: Record<TranslationKey, string> = {
   "settings.theme": "Tema",
   "settings.themeA": "Varm kräm",
   "settings.themeB": "Sval skiffer",
-  "settings.themeC": "Mjuk salvia",
   "settings.themeD": "Mjuk mörk",
-  "settings.themeE": "Dimmig mörk",
-  "settings.defaultSort": "Standardsortering",
   "settings.about": "Om",
   "settings.version": "Version 1.0.0",
 

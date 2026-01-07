@@ -10,7 +10,11 @@ export type NoteColor =
 
 export type SortOption = "updatedDesc" | "createdDesc" | "titleAsc";
 
-export type ThemeOption = "theme-a" | "theme-b" | "theme-c" | "theme-d" | "theme-e";
+export type ThemeOption = "theme-a" | "theme-b" | "theme-d";
+
+// Style character limits
+export const STYLE_CHAR_LIMIT_FREE = 500;
+export const STYLE_CHAR_LIMIT_PRO = 1000;
 
 // Chord complexity levels (for Pro feature - not exposed in UI yet)
 export type ChordComplexity = "simple" | "standard" | "complex" | "jazz";
