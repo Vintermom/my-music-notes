@@ -1,0 +1,54 @@
+export type NoteColor = 
+  | "default" 
+  | "cream" 
+  | "pink" 
+  | "blue" 
+  | "green" 
+  | "yellow" 
+  | "purple" 
+  | "orange";
+
+export type SortOption = "updatedDesc" | "createdDesc" | "titleAsc";
+
+export type ThemeOption = "theme-a" | "theme-b" | "theme-c";
+
+export interface TimelineEntry {
+  timestamp: number;
+  action: "created" | "updated";
+}
+
+export interface Note {
+  id: string;
+  title: string;
+  composer: string;
+  lyrics: string;
+  style: string;
+  extraInfo: string;
+  tags: string[];
+  color: NoteColor;
+  isPinned: boolean;
+  createdAt: number;
+  updatedAt: number;
+  timeline: TimelineEntry[];
+}
+
+export interface Settings {
+  theme: ThemeOption;
+  defaultSort: SortOption;
+}
+
+export const DEFAULT_NOTE: Omit<Note, "id" | "createdAt" | "updatedAt" | "timeline"> = {
+  title: "",
+  composer: "",
+  lyrics: "",
+  style: "",
+  extraInfo: "",
+  tags: [],
+  color: "default",
+  isPinned: false,
+};
+
+export const DEFAULT_SETTINGS: Settings = {
+  theme: "theme-a",
+  defaultSort: "updatedDesc",
+};
