@@ -143,13 +143,13 @@ export default function EditorPage() {
     if (textOnly) {
       const formatDate = (ts: number) => new Date(ts).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
       const content = [
-        note.title && `${note.title}`, note.composer && `${note.composer}`, "",
-        note.lyrics, "", note.style && `Style: ${note.style}`, note.extraInfo && `Extra: ${note.extraInfo}`,
-        note.tags.length > 0 && `Tags: ${note.tags.join(", ")}`, "", "---",
+        note.title || "", note.composer || "", "",
+        note.lyrics || "", "", note.style ? `Style: ${note.style}` : "", note.extraInfo ? `Extra: ${note.extraInfo}` : "",
+        note.tags.length > 0 ? `Tags: ${note.tags.join(", ")}` : "", "", "---",
         `${t("print.created")}: ${formatDate(note.createdAt)}`,
         `${t("print.updated")}: ${formatDate(note.updatedAt)}`,
         `${t("print.printed")}: ${formatDate(Date.now())}`,
-      ].filter((l) => l !== false).join("\n");
+      ].filter(Boolean).join("\n");
       const w = window.open("", "_blank");
       if (w) { w.document.write(`<pre style="font-family:system-ui;white-space:pre-wrap;padding:2rem;">${content}</pre>`); w.document.close(); w.print(); }
     } else {
