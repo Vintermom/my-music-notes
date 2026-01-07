@@ -16,7 +16,7 @@ export const sv: Record<TranslationKey, string> = {
   // Sort options
   "sort.updatedDesc": "Senast uppdaterad",
   "sort.createdDesc": "Senast skapad",
-  "sort.titleAsc": "Titel A-Ö",
+  "sort.titleAsc": "Alfabetisk",
 
   // Note card
   "card.pin": "Fäst",
@@ -42,11 +42,18 @@ export const sv: Record<TranslationKey, string> = {
   "editor.clear": "Rensa",
   "editor.insertSheet": "Infoga",
   "editor.backgroundColor": "Bakgrundsfärg",
+  "editor.expand": "Expandera",
+  "editor.collapse": "Minimera",
+  "editor.copyLyrics": "Kopiera text",
+  "editor.clearLyrics": "Rensa text",
+  "editor.copyStyle": "Kopiera stil",
+  "editor.clearStyle": "Rensa stil",
 
   // More menu
   "menu.print": "Skriv ut",
   "menu.exportPdf": "Exportera PDF",
   "menu.exportJson": "Exportera JSON",
+  "menu.importJson": "Importera JSON",
   "menu.copyAll": "Kopiera allt",
   "menu.duplicate": "Duplicera",
   "menu.timeline": "Tidslinje",
@@ -72,6 +79,8 @@ export const sv: Record<TranslationKey, string> = {
   "settings.themeA": "Varm kräm",
   "settings.themeB": "Sval skiffer",
   "settings.themeC": "Mjuk salvia",
+  "settings.themeD": "Mjuk mörk",
+  "settings.themeE": "Dimmig mörk",
   "settings.defaultSort": "Standardsortering",
   "settings.about": "Om",
   "settings.version": "Version 1.0.0",
@@ -90,6 +99,27 @@ export const sv: Record<TranslationKey, string> = {
   "dialog.clearTitle": "Rensa text",
   "dialog.clearMessage": "Är du säker på att du vill rensa all text?",
   "dialog.clearConfirm": "Rensa",
+  "dialog.clearStyleTitle": "Rensa stil",
+  "dialog.clearStyleMessage": "Är du säker på att du vill rensa alla stiltaggar?",
+
+  // Print dialog
+  "print.title": "Utskriftsalternativ",
+  "print.textOnly": "Endast text",
+  "print.appLayout": "Applayout",
+  "print.printButton": "Skriv ut",
+  "print.created": "Skapad",
+  "print.updated": "Senast uppdaterad",
+  "print.printed": "Utskriven",
+
+  // Import dialog
+  "import.title": "Importera anteckning",
+  "import.selectFile": "Välj JSON-fil",
+  "import.importing": "Importerar...",
+  "import.success": "Anteckning importerad",
+  "import.error": "Kunde inte importera anteckning",
+  "import.limitReached": "Daglig importgräns nådd",
+  "import.limitMessage": "Gratisanvändare kan importera upp till 2 anteckningar per dag. Uppgradera till Pro för obegränsade importer.",
+  "import.remainingToday": "importer kvar idag",
 
   // Toast messages
   "toast.noteSaved": "Anteckning sparad",
@@ -99,8 +129,10 @@ export const sv: Record<TranslationKey, string> = {
   "toast.noteUnpinned": "Anteckning lossad",
   "toast.pinLimit": "Du kan bara fästa upp till 6 anteckningar",
   "toast.lyricsCopied": "Text kopierad",
+  "toast.styleCopied": "Stil kopierad",
   "toast.allCopied": "Allt innehåll kopierat",
   "toast.lyricsCleared": "Text rensad",
+  "toast.styleCleared": "Stil rensad",
   "toast.undoApplied": "Ångrat",
   "toast.noUndoHistory": "Inget att ångra",
   "toast.jsonExported": "JSON exporterad",

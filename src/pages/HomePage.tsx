@@ -29,7 +29,7 @@ export default function HomePage() {
   // Apply theme class
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove("theme-a", "theme-b", "theme-c");
+    root.classList.remove("theme-a", "theme-b", "theme-c", "theme-d", "theme-e");
     if (settings.theme !== "theme-a") {
       root.classList.add(settings.theme);
     }

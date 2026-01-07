@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { getSettings, updateSettings } from "@/storage/settingsRepo";
 import { useState, useEffect } from "react";
 
-const themes: { value: ThemeOption; labelKey: "settings.themeA" | "settings.themeB" | "settings.themeC" }[] = [
+const themes: { value: ThemeOption; labelKey: "settings.themeA" | "settings.themeB" | "settings.themeC" | "settings.themeD" | "settings.themeE" }[] = [
   { value: "theme-a", labelKey: "settings.themeA" },
   { value: "theme-b", labelKey: "settings.themeB" },
   { value: "theme-c", labelKey: "settings.themeC" },
+  { value: "theme-d", labelKey: "settings.themeD" },
+  { value: "theme-e", labelKey: "settings.themeE" },
 ];
 
 const sortOptions: { value: SortOption; labelKey: "sort.updatedDesc" | "sort.createdDesc" | "sort.titleAsc" }[] = [
@@ -25,7 +27,7 @@ export default function SettingsPage() {
   // Apply theme class
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove("theme-a", "theme-b", "theme-c");
+    root.classList.remove("theme-a", "theme-b", "theme-c", "theme-d", "theme-e");
     if (settings.theme !== "theme-a") {
       root.classList.add(settings.theme);
     }
