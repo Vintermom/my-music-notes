@@ -14,7 +14,7 @@ export const en = {
   // Sort options
   "sort.updatedDesc": "Recently updated",
   "sort.createdDesc": "Recently created",
-  "sort.titleAsc": "Title A-Z",
+  "sort.titleAsc": "Alphabetical",
 
   // Note card
   "card.pin": "Pin",
@@ -40,11 +40,18 @@ export const en = {
   "editor.clear": "Clear",
   "editor.insertSheet": "Insert",
   "editor.backgroundColor": "Background Color",
+  "editor.expand": "Expand",
+  "editor.collapse": "Collapse",
+  "editor.copyLyrics": "Copy Lyrics",
+  "editor.clearLyrics": "Clear Lyrics",
+  "editor.copyStyle": "Copy Style",
+  "editor.clearStyle": "Clear Style",
 
   // More menu
   "menu.print": "Print",
   "menu.exportPdf": "Export PDF",
   "menu.exportJson": "Export JSON",
+  "menu.importJson": "Import JSON",
   "menu.copyAll": "Copy All",
   "menu.duplicate": "Duplicate",
   "menu.timeline": "Timeline",
@@ -70,6 +77,8 @@ export const en = {
   "settings.themeA": "Warm Cream",
   "settings.themeB": "Cool Slate",
   "settings.themeC": "Soft Sage",
+  "settings.themeD": "Soft Dark",
+  "settings.themeE": "Dim Dark",
   "settings.defaultSort": "Default Sort",
   "settings.about": "About",
   "settings.version": "Version 1.0.0",
@@ -88,6 +97,27 @@ export const en = {
   "dialog.clearTitle": "Clear Lyrics",
   "dialog.clearMessage": "Are you sure you want to clear all lyrics?",
   "dialog.clearConfirm": "Clear",
+  "dialog.clearStyleTitle": "Clear Style",
+  "dialog.clearStyleMessage": "Are you sure you want to clear all style tags?",
+
+  // Print dialog
+  "print.title": "Print Options",
+  "print.textOnly": "Text only",
+  "print.appLayout": "App layout",
+  "print.printButton": "Print",
+  "print.created": "Created",
+  "print.updated": "Last updated",
+  "print.printed": "Printed",
+
+  // Import dialog
+  "import.title": "Import Note",
+  "import.selectFile": "Select JSON file",
+  "import.importing": "Importing...",
+  "import.success": "Note imported successfully",
+  "import.error": "Failed to import note",
+  "import.limitReached": "Daily import limit reached",
+  "import.limitMessage": "Free users can import up to 2 notes per day. Upgrade to Pro for unlimited imports.",
+  "import.remainingToday": "imports remaining today",
 
   // Toast messages
   "toast.noteSaved": "Note saved",
@@ -97,8 +127,10 @@ export const en = {
   "toast.noteUnpinned": "Note unpinned",
   "toast.pinLimit": "You can only pin up to 6 notes",
   "toast.lyricsCopied": "Lyrics copied",
+  "toast.styleCopied": "Style copied",
   "toast.allCopied": "All content copied",
   "toast.lyricsCleared": "Lyrics cleared",
+  "toast.styleCleared": "Style cleared",
   "toast.undoApplied": "Undo applied",
   "toast.noUndoHistory": "Nothing to undo",
   "toast.jsonExported": "JSON exported",

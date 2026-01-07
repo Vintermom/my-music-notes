@@ -10,7 +10,15 @@ export type NoteColor =
 
 export type SortOption = "updatedDesc" | "createdDesc" | "titleAsc";
 
-export type ThemeOption = "theme-a" | "theme-b" | "theme-c";
+export type ThemeOption = "theme-a" | "theme-b" | "theme-c" | "theme-d" | "theme-e";
+
+// Chord complexity levels (for Pro feature - not exposed in UI yet)
+export type ChordComplexity = "simple" | "standard" | "complex" | "jazz";
+
+export interface ChordSettings {
+  complexity: ChordComplexity;
+  showChordDiagrams: boolean;
+}
 
 export interface TimelineEntry {
   timestamp: number;

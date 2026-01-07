@@ -16,7 +16,7 @@ export const th: Record<TranslationKey, string> = {
   // Sort options
   "sort.updatedDesc": "อัปเดตล่าสุด",
   "sort.createdDesc": "สร้างล่าสุด",
-  "sort.titleAsc": "ชื่อ ก-ฮ",
+  "sort.titleAsc": "ตัวอักษร",
 
   // Note card
   "card.pin": "ปักหมุด",
@@ -42,11 +42,18 @@ export const th: Record<TranslationKey, string> = {
   "editor.clear": "ล้าง",
   "editor.insertSheet": "แทรก",
   "editor.backgroundColor": "สีพื้นหลัง",
+  "editor.expand": "ขยาย",
+  "editor.collapse": "ย่อ",
+  "editor.copyLyrics": "คัดลอกเนื้อเพลง",
+  "editor.clearLyrics": "ล้างเนื้อเพลง",
+  "editor.copyStyle": "คัดลอกสไตล์",
+  "editor.clearStyle": "ล้างสไตล์",
 
   // More menu
   "menu.print": "พิมพ์",
   "menu.exportPdf": "ส่งออก PDF",
   "menu.exportJson": "ส่งออก JSON",
+  "menu.importJson": "นำเข้า JSON",
   "menu.copyAll": "คัดลอกทั้งหมด",
   "menu.duplicate": "ทำสำเนา",
   "menu.timeline": "ไทม์ไลน์",
@@ -72,6 +79,8 @@ export const th: Record<TranslationKey, string> = {
   "settings.themeA": "ครีมอุ่น",
   "settings.themeB": "สเลทเย็น",
   "settings.themeC": "เขียวอ่อน",
+  "settings.themeD": "มืดนุ่ม",
+  "settings.themeE": "มืดสลัว",
   "settings.defaultSort": "การเรียงลำดับ",
   "settings.about": "เกี่ยวกับ",
   "settings.version": "เวอร์ชัน 1.0.0",
@@ -90,6 +99,27 @@ export const th: Record<TranslationKey, string> = {
   "dialog.clearTitle": "ล้างเนื้อเพลง",
   "dialog.clearMessage": "คุณแน่ใจหรือไม่ว่าต้องการล้างเนื้อเพลงทั้งหมด?",
   "dialog.clearConfirm": "ล้าง",
+  "dialog.clearStyleTitle": "ล้างสไตล์",
+  "dialog.clearStyleMessage": "คุณแน่ใจหรือไม่ว่าต้องการล้างแท็กสไตล์ทั้งหมด?",
+
+  // Print dialog
+  "print.title": "ตัวเลือกการพิมพ์",
+  "print.textOnly": "ข้อความเท่านั้น",
+  "print.appLayout": "เลย์เอาต์แอป",
+  "print.printButton": "พิมพ์",
+  "print.created": "สร้างเมื่อ",
+  "print.updated": "อัปเดตล่าสุด",
+  "print.printed": "พิมพ์เมื่อ",
+
+  // Import dialog
+  "import.title": "นำเข้าโน้ต",
+  "import.selectFile": "เลือกไฟล์ JSON",
+  "import.importing": "กำลังนำเข้า...",
+  "import.success": "นำเข้าโน้ตสำเร็จ",
+  "import.error": "นำเข้าโน้ตไม่สำเร็จ",
+  "import.limitReached": "ถึงขีดจำกัดการนำเข้าต่อวัน",
+  "import.limitMessage": "ผู้ใช้ฟรีสามารถนำเข้าได้สูงสุด 2 โน้ตต่อวัน อัปเกรดเป็น Pro เพื่อนำเข้าไม่จำกัด",
+  "import.remainingToday": "โน้ตที่เหลือสำหรับวันนี้",
 
   // Toast messages
   "toast.noteSaved": "บันทึกโน้ตแล้ว",
@@ -99,8 +129,10 @@ export const th: Record<TranslationKey, string> = {
   "toast.noteUnpinned": "เลิกปักหมุดโน้ตแล้ว",
   "toast.pinLimit": "คุณสามารถปักหมุดได้สูงสุด 6 โน้ตเท่านั้น",
   "toast.lyricsCopied": "คัดลอกเนื้อเพลงแล้ว",
+  "toast.styleCopied": "คัดลอกสไตล์แล้ว",
   "toast.allCopied": "คัดลอกเนื้อหาทั้งหมดแล้ว",
   "toast.lyricsCleared": "ล้างเนื้อเพลงแล้ว",
+  "toast.styleCleared": "ล้างสไตล์แล้ว",
   "toast.undoApplied": "เลิกทำแล้ว",
   "toast.noUndoHistory": "ไม่มีอะไรให้เลิกทำ",
   "toast.jsonExported": "ส่งออก JSON แล้ว",
