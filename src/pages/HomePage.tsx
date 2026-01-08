@@ -3,13 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { t } from "@/i18n";
 import { useNotes } from "@/hooks/useNotes";
 import { toast } from "sonner";
-import { Plus, Settings } from "lucide-react";
+import { Plus, Settings, LayoutGrid, List } from "lucide-react";
 import { NoteGrid } from "@/components/NoteGrid";
 import { SearchBar } from "@/components/SearchBar";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { safeGet, safeSet } from "@/storage/localStorage";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const {
     pinnedNotes,
     otherNotes,
@@ -25,6 +28,16 @@ export default function HomePage() {
   } = useNotes();
 
   const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
+  const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(() => 
+    safeGet<1 | 2>("mobileGridCols", 1)
+  );
+
+  // Toggle mobile grid columns
+  const toggleMobileGrid = () => {
+    const newValue = mobileGridCols === 1 ? 2 : 1;
+    setMobileGridCols(newValue);
+    safeSet("mobileGridCols", newValue);
+  };
 
   // Apply theme class - only support 3 themes now
   useEffect(() => {
@@ -104,12 +117,28 @@ export default function HomePage() {
         <div className="container max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-xl font-bold text-foreground">{t("app.name")}</h1>
-            <button
-              onClick={() => navigate("/settings")}
-              className="p-2 hover:bg-muted rounded-full transition-colors"
-            >
-              <Settings className="h-5 w-5 text-muted-foreground" />
-            </button>
+            <div className="flex items-center gap-1">
+              {/* Mobile grid toggle - only on mobile */}
+              {isMobile && (
+                <button
+                  onClick={toggleMobileGrid}
+                  className="p-2 hover:bg-muted rounded-full transition-colors"
+                  aria-label="Toggle grid layout"
+                >
+                  {mobileGridCols === 1 ? (
+                    <LayoutGrid className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <List className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </button>
+              )}
+              <button
+                onClick={() => navigate("/settings")}
+                className="p-2 hover:bg-muted rounded-full transition-colors"
+              >
+                <Settings className="h-5 w-5 text-muted-foreground" />
+              </button>
+            </div>
           </div>
           <SearchBar
             value={searchQuery}
@@ -134,6 +163,7 @@ export default function HomePage() {
             onPin={handlePin}
             onDuplicate={handleDuplicate}
             onDelete={handleDeleteClick}
+            mobileGridCols={isMobile ? mobileGridCols : undefined}
           />
         )}
       </main>
