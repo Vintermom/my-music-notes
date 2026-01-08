@@ -237,15 +237,42 @@ export function exportNoteAsJson(note: Note): string {
   }, null, 2);
 }
 
+/**
+ * Generate safe filename from title (Unicode-friendly)
+ */
+function generateExportFilename(note: Note): string {
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 10); // YYYY-MM-DD
+  
+  // Invalid filename characters: / \ ? % * : | " < >
+  const invalidChars = /[\/\\?%*:|"<>]/g;
+  
+  const title = note.title?.trim();
+  
+  if (title && title.length > 0) {
+    // Preserve Unicode, trim, replace spaces with underscores, remove invalid chars
+    const safeName = title
+      .replace(/\s+/g, "_")
+      .replace(invalidChars, "")
+      .slice(0, 100); // Reasonable length limit
+    
+    if (safeName.length > 0) {
+      return `${safeName}_${dateStr}.json`;
+    }
+  }
+  
+  // Fallback: note_YYYY-MM-DD_shortId.json
+  const shortId = note.id.slice(0, 8);
+  return `note_${dateStr}_${shortId}.json`;
+}
+
 export function downloadNoteJson(note: Note): void {
   const json = exportNoteAsJson(note);
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  // Sanitize filename
-  const safeName = (note.title || "note").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 50);
-  a.download = `${safeName}_${note.id.slice(0, 10)}.json`;
+  a.download = generateExportFilename(note);
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
