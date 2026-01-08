@@ -74,9 +74,10 @@ export default function SettingsPage() {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
             {t("settings.about")}
           </h2>
-          <div className="p-4 rounded-lg border border-border bg-card">
+          <div className="p-4 rounded-lg border border-border bg-card space-y-2">
             <p className="text-foreground font-medium">{t("app.name")}</p>
             <p className="text-sm text-muted-foreground">{t("settings.version")}</p>
+            <p className="text-xs text-muted-foreground mt-3">{t("settings.privacyNote")}</p>
           </div>
         </section>
       </main>

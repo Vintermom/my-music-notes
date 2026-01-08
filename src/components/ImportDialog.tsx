@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { t } from "@/i18n";
-import { Note } from "@/domain/types";
+import { Note, IMPORT_MAX_SIZE_BYTES } from "@/domain/types";
 import { safeGet, safeSet } from "@/storage/localStorage";
-import { createNote } from "@/storage/notesRepo";
+import { createNote, createNotesBackup } from "@/storage/notesRepo";
+import { validateImportedNote } from "@/storage/validation";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -57,6 +58,7 @@ function canImport(): boolean {
 
 export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDialogProps) {
   const [isImporting, setIsImporting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const remaining = getRemainingImports();
   const limitReached = !canImport();
@@ -64,6 +66,22 @@ export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDial
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    setImportError(null);
+
+    // Check file extension
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      setImportError(t("import.invalidFormat"));
+      toast.error(t("import.invalidFormat"));
+      return;
+    }
+
+    // Check file size (3MB limit)
+    if (file.size > IMPORT_MAX_SIZE_BYTES) {
+      setImportError(t("import.fileTooLarge"));
+      toast.error(t("import.fileTooLarge"));
+      return;
+    }
 
     if (!canImport()) {
       toast.error(t("import.limitReached"));
@@ -73,31 +91,44 @@ export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDial
     setIsImporting(true);
 
     try {
-      const text = await file.text();
-      const data = JSON.parse(text);
+      // Create backup before import
+      createNotesBackup();
 
-      // Validate required fields
-      if (typeof data !== "object" || !data) {
-        throw new Error("Invalid JSON structure");
+      const text = await file.text();
+      
+      // Parse JSON safely
+      let data: unknown;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error("Invalid JSON format");
       }
 
-      // Create new note from imported data (always creates new)
-      const newNote = createNote({
-        title: data.title || "",
-        composer: data.composer || "",
-        lyrics: data.lyrics || "",
-        style: data.style || "",
-        extraInfo: data.extraInfo || "",
-        tags: Array.isArray(data.tags) ? data.tags : [],
-        color: data.color || "default",
-        isPinned: false, // Always unpinned on import
-      });
+      // Handle both formats: direct note or wrapped with version
+      let noteData: unknown;
+      if (data && typeof data === "object" && "note" in data) {
+        noteData = (data as { note: unknown }).note;
+      } else {
+        noteData = data;
+      }
+
+      // Validate imported data strictly
+      const validatedNote = validateImportedNote(noteData);
+      if (!validatedNote) {
+        throw new Error("Invalid note structure");
+      }
+
+      // Create new note from validated data (generates new id, timestamps)
+      const newNote = createNote(validatedNote);
 
       incrementImportCount();
       toast.success(t("import.success"));
       onImportSuccess(newNote);
       onOpenChange(false);
     } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      console.error("[Import] Failed:", message);
+      setImportError(t("import.error"));
       toast.error(t("import.error"));
     } finally {
       setIsImporting(false);
@@ -147,7 +178,14 @@ export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDial
                 <span className="text-sm text-muted-foreground">
                   {isImporting ? t("import.importing") : t("import.selectFile")}
                 </span>
+                <span className="text-xs text-muted-foreground mt-1">
+                  JSON only, max 3MB
+                </span>
               </label>
+              
+              {importError && (
+                <p className="text-sm text-destructive text-center">{importError}</p>
+              )}
             </div>
           )}
         </div>

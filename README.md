@@ -1,73 +1,73 @@
-# Welcome to your Lovable project
+# My Music Notes
 
-## Project info
+A beautiful songwriting note app for capturing your musical ideas, lyrics, and compositions.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- 📝 Create and manage song notes with lyrics, style, and metadata
+- 🎨 Multiple color themes and note backgrounds
+- 📌 Pin important notes (up to 6)
+- 🔍 Search and sort notes
+- 📤 Export/Import notes as JSON
+- 🖨️ Print notes in text or app layout
+- 🌐 Multi-language support (EN, SV, TH)
+- 📱 PWA installable on mobile
 
-There are several ways of editing your application.
+## Technology Stack
 
-**Use Lovable**
+- Vite + React + TypeScript
+- Tailwind CSS + shadcn/ui
+- localStorage (no backend required)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Release Checklist
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Security Checks Performed
 
-**Use GitHub Codespaces**
+- ✅ **XSS Prevention**: All user content rendered as plain text (no dangerouslySetInnerHTML)
+- ✅ **Input Limits**: Field limits enforced (title/composer: 200, lyrics: 50K, style: 500, tags: 20×50)
+- ✅ **Storage Validation**: Schema versioning (v1), corruption handling, safe defaults
+- ✅ **Import Safety**: JSON-only, 3MB limit, strict schema validation, backup before import
+- ✅ **Export Safety**: Includes schema version, sanitized filenames
+- ✅ **Privacy**: Local-only storage note in Settings/About
+- ✅ **No Secrets**: No API keys or tokens in codebase
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Web/PWA Release Steps
 
-## What technologies are used for this project?
+1. Run `npm run build` to create production build
+2. Test PWA installation on mobile browsers
+3. Verify offline functionality
+4. Deploy static files to hosting (Lovable, Vercel, Netlify, etc.)
 
-This project is built with:
+### Android/Play Store Release Steps
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Install Capacitor: `npm install @capacitor/core @capacitor/cli @capacitor/android`
+2. Initialize: `npx cap init "My Music Notes" "app.lovable.mymusicnotes"`
+3. Add Android: `npx cap add android`
+4. Update `capacitor.config.ts`:
+   - Set `appId: "app.lovable.mymusicnotes"`
+   - Set `appName: "My Music Notes"`
+   - Set `webDir: "dist"`
+5. Build: `npm run build && npx cap sync`
+6. Open in Android Studio: `npx cap open android`
+7. In Android Studio:
+   - Update `versionCode` (integer, increment each release)
+   - Update `versionName` (e.g., "1.0.0")
+   - Generate signed APK/AAB for Play Store
+8. Ensure no unnecessary permissions in AndroidManifest.xml
 
-## How can I deploy this project?
+### Version Management
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- Storage schema: `STORAGE_SCHEMA_VERSION = 1` (in `src/domain/types.ts`)
+- App version: Update in `src/i18n/locales/*.ts` (`settings.version`)
+- Android: Update in `android/app/build.gradle`
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+MIT

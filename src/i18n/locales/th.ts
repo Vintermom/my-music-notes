@@ -84,6 +84,7 @@ export const th: Record<TranslationKey, string> = {
   "settings.themeD": "มืดนุ่ม",
   "settings.about": "เกี่ยวกับ",
   "settings.version": "เวอร์ชัน 1.0.0",
+  "settings.privacyNote": "โน้ตทั้งหมดจัดเก็บไว้ในเครื่องของคุณ ไม่มีข้อมูลถูกอัปโหลด",
 
   // Timeline
   "timeline.title": "ไทม์ไลน์",
@@ -117,6 +118,8 @@ export const th: Record<TranslationKey, string> = {
   "import.importing": "กำลังนำเข้า...",
   "import.success": "นำเข้าโน้ตสำเร็จ",
   "import.error": "นำเข้าโน้ตไม่สำเร็จ",
+  "import.invalidFormat": "อนุญาตเฉพาะไฟล์ JSON เท่านั้น",
+  "import.fileTooLarge": "ไฟล์ใหญ่เกินไป (สูงสุด 3MB)",
   "import.limitReached": "ถึงขีดจำกัดการนำเข้าต่อวัน",
   "import.limitMessage": "ผู้ใช้ฟรีสามารถนำเข้าได้สูงสุด 2 โน้ตต่อวัน อัปเกรดเป็น Pro เพื่อนำเข้าไม่จำกัด",
   "import.remainingToday": "โน้ตที่เหลือสำหรับวันนี้",

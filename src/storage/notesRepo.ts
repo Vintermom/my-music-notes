@@ -1,5 +1,17 @@
-import { Note, DEFAULT_NOTE, SortOption } from "@/domain/types";
-import { safeGet, safeSet } from "./localStorage";
+import { 
+  Note, 
+  DEFAULT_NOTE, 
+  SortOption, 
+  STORAGE_SCHEMA_VERSION,
+  FIELD_LIMITS 
+} from "@/domain/types";
+import { safeGet, safeSet, createBackup, getRawStorage } from "./localStorage";
+import { 
+  validateNotesArray, 
+  validateNote, 
+  isStorageCorrupted,
+  truncateString 
+} from "./validation";
 
 const NOTES_KEY = "notes";
 
@@ -7,8 +19,40 @@ function generateId(): string {
   return `note_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
+/**
+ * Get all notes with validation and corruption handling
+ */
 export function getAllNotes(): Note[] {
-  return safeGet<Note[]>(NOTES_KEY, []);
+  // Check for corruption first
+  const rawData = getRawStorage(NOTES_KEY);
+  if (isStorageCorrupted(rawData)) {
+    console.warn("[NotesRepo] Storage corrupted, returning empty array");
+    return [];
+  }
+
+  const data = safeGet<{ version?: number; notes?: unknown[] } | unknown[]>(NOTES_KEY, []);
+  
+  // Handle both old format (array) and new format (object with version)
+  let notesData: unknown[];
+  if (Array.isArray(data)) {
+    notesData = data;
+  } else if (data && typeof data === "object" && "notes" in data) {
+    notesData = Array.isArray(data.notes) ? data.notes : [];
+  } else {
+    notesData = [];
+  }
+
+  return validateNotesArray(notesData);
+}
+
+/**
+ * Save all notes with version
+ */
+function saveAllNotes(notes: Note[]): boolean {
+  return safeSet(NOTES_KEY, {
+    version: STORAGE_SCHEMA_VERSION,
+    notes,
+  });
 }
 
 export function getNoteById(id: string): Note | undefined {
@@ -18,9 +62,25 @@ export function getNoteById(id: string): Note | undefined {
 
 export function createNote(data?: Partial<Note>): Note {
   const now = Date.now();
+  
+  // Apply field limits to input data
+  const sanitizedData: Partial<Note> = {};
+  if (data?.title) sanitizedData.title = truncateString(data.title, FIELD_LIMITS.title);
+  if (data?.composer) sanitizedData.composer = truncateString(data.composer, FIELD_LIMITS.composer);
+  if (data?.lyrics) sanitizedData.lyrics = truncateString(data.lyrics, FIELD_LIMITS.lyrics);
+  if (data?.style) sanitizedData.style = truncateString(data.style, FIELD_LIMITS.style);
+  if (data?.extraInfo) sanitizedData.extraInfo = truncateString(data.extraInfo, FIELD_LIMITS.extraInfo);
+  if (data?.tags) {
+    sanitizedData.tags = data.tags
+      .slice(0, FIELD_LIMITS.tagsMax)
+      .map((t) => truncateString(t, FIELD_LIMITS.tagSingle));
+  }
+  if (data?.color) sanitizedData.color = data.color;
+  if (typeof data?.isPinned === "boolean") sanitizedData.isPinned = data.isPinned;
+
   const note: Note = {
     ...DEFAULT_NOTE,
-    ...data,
+    ...sanitizedData,
     id: generateId(),
     createdAt: now,
     updatedAt: now,
@@ -29,7 +89,7 @@ export function createNote(data?: Partial<Note>): Note {
 
   const notes = getAllNotes();
   notes.push(note);
-  safeSet(NOTES_KEY, notes);
+  saveAllNotes(notes);
 
   return note;
 }
@@ -49,17 +109,36 @@ export function updateNote(id: string, updates: Partial<Omit<Note, "id" | "creat
     timeline.splice(0, timeline.length - 50);
   }
 
+  // Apply field limits to updates
+  const sanitizedUpdates: Partial<Note> = {};
+  if (updates.title !== undefined) sanitizedUpdates.title = truncateString(updates.title, FIELD_LIMITS.title);
+  if (updates.composer !== undefined) sanitizedUpdates.composer = truncateString(updates.composer, FIELD_LIMITS.composer);
+  if (updates.lyrics !== undefined) sanitizedUpdates.lyrics = truncateString(updates.lyrics, FIELD_LIMITS.lyrics);
+  if (updates.style !== undefined) sanitizedUpdates.style = truncateString(updates.style, FIELD_LIMITS.style);
+  if (updates.extraInfo !== undefined) sanitizedUpdates.extraInfo = truncateString(updates.extraInfo, FIELD_LIMITS.extraInfo);
+  if (updates.tags !== undefined) {
+    sanitizedUpdates.tags = updates.tags
+      .slice(0, FIELD_LIMITS.tagsMax)
+      .map((t) => truncateString(t, FIELD_LIMITS.tagSingle));
+  }
+  if (updates.color !== undefined) sanitizedUpdates.color = updates.color;
+  if (typeof updates.isPinned === "boolean") sanitizedUpdates.isPinned = updates.isPinned;
+
   const updatedNote: Note = {
     ...currentNote,
-    ...updates,
+    ...sanitizedUpdates,
     updatedAt: now,
     timeline,
   };
 
-  notes[index] = updatedNote;
-  safeSet(NOTES_KEY, notes);
+  // Validate the updated note
+  const validated = validateNote(updatedNote);
+  if (!validated) return null;
 
-  return updatedNote;
+  notes[index] = validated;
+  saveAllNotes(notes);
+
+  return validated;
 }
 
 export function deleteNote(id: string): boolean {
@@ -68,7 +147,7 @@ export function deleteNote(id: string): boolean {
 
   if (filtered.length === notes.length) return false;
 
-  safeSet(NOTES_KEY, filtered);
+  saveAllNotes(filtered);
   return true;
 }
 
@@ -89,7 +168,7 @@ export function duplicateNote(id: string): Note | null {
 
   const notes = getAllNotes();
   notes.push(duplicate);
-  safeSet(NOTES_KEY, notes);
+  saveAllNotes(notes);
 
   return duplicate;
 }
@@ -147,8 +226,15 @@ export function searchNotes(notes: Note[], query: string): Note[] {
   });
 }
 
+/**
+ * Export note as JSON with schema version
+ */
 export function exportNoteAsJson(note: Note): string {
-  return JSON.stringify(note, null, 2);
+  return JSON.stringify({
+    version: STORAGE_SCHEMA_VERSION,
+    exportedAt: new Date().toISOString(),
+    note,
+  }, null, 2);
 }
 
 export function downloadNoteJson(note: Note): void {
@@ -157,7 +243,9 @@ export function downloadNoteJson(note: Note): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${note.title || "note"}_${note.id}.json`;
+  // Sanitize filename
+  const safeName = (note.title || "note").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 50);
+  a.download = `${safeName}_${note.id.slice(0, 10)}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -166,4 +254,18 @@ export function downloadNoteJson(note: Note): void {
 
 export function getPinnedCount(): number {
   return getAllNotes().filter((n) => n.isPinned).length;
+}
+
+/**
+ * Create a backup before potentially destructive operations
+ */
+export function createNotesBackup(): boolean {
+  return createBackup(NOTES_KEY);
+}
+
+/**
+ * Get all note IDs for duplicate detection
+ */
+export function getAllNoteIds(): Set<string> {
+  return new Set(getAllNotes().map((n) => n.id));
 }

@@ -82,6 +82,7 @@ export const en = {
   "settings.themeD": "Soft Dark",
   "settings.about": "About",
   "settings.version": "Version 1.0.0",
+  "settings.privacyNote": "All notes are stored locally on your device. No data is uploaded.",
 
   // Timeline
   "timeline.title": "Timeline",
@@ -115,6 +116,8 @@ export const en = {
   "import.importing": "Importing...",
   "import.success": "Note imported successfully",
   "import.error": "Failed to import note",
+  "import.invalidFormat": "Only JSON files are allowed",
+  "import.fileTooLarge": "File too large (max 3MB)",
   "import.limitReached": "Daily import limit reached",
   "import.limitMessage": "Free users can import up to 2 notes per day. Upgrade to Pro for unlimited imports.",
   "import.remainingToday": "imports remaining today",
