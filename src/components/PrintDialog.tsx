@@ -33,13 +33,14 @@ export function PrintDialog({ open, onOpenChange, note, onPrint }: PrintDialogPr
   };
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    // ISO 8601 format: YYYY-MM-DD HH:mm (no timezone in UI)
+    const d = new Date(timestamp);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hours = String(d.getHours()).padStart(2, "0");
+    const mins = String(d.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${mins}`;
   };
 
   return (

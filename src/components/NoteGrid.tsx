@@ -10,6 +10,7 @@ interface NoteGridProps {
   onPin: (id: string) => void;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
+  mobileGridCols?: 1 | 2;
 }
 
 export function NoteGrid({
@@ -19,8 +20,14 @@ export function NoteGrid({
   onPin,
   onDuplicate,
   onDelete,
+  mobileGridCols,
 }: NoteGridProps) {
   const hasNotes = pinnedNotes.length > 0 || otherNotes.length > 0;
+
+  // Dynamic grid class for mobile
+  const gridClass = mobileGridCols === 2 
+    ? "masonry-grid masonry-grid-mobile-2" 
+    : "masonry-grid";
 
   if (!hasNotes) {
     return (
@@ -46,7 +53,7 @@ export function NoteGrid({
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-1">
             {t("home.pinnedNotes")}
           </h2>
-          <div className="masonry-grid">
+          <div className={gridClass}>
             {pinnedNotes.map((note) => (
               <NoteCard
                 key={note.id}
@@ -69,7 +76,7 @@ export function NoteGrid({
               {t("home.otherNotes")}
             </h2>
           )}
-          <div className="masonry-grid">
+          <div className={gridClass}>
             {otherNotes.map((note) => (
               <NoteCard
                 key={note.id}
