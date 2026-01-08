@@ -1,10 +1,11 @@
 import { Settings, ThemeOption } from "@/domain/types";
 import { t } from "@/i18n";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getSettings, updateSettings } from "@/storage/settingsRepo";
 import { useState, useEffect } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const themes: { value: ThemeOption; labelKey: "settings.themeA" | "settings.themeB" | "settings.themeD" }[] = [
   { value: "theme-a", labelKey: "settings.themeA" },
@@ -67,6 +68,29 @@ export default function SettingsPage() {
               </button>
             ))}
           </div>
+        </section>
+
+        {/* Help */}
+        <section className="space-y-4">
+          <Collapsible>
+            <CollapsibleTrigger className="w-full flex items-center justify-between text-sm font-semibold text-muted-foreground uppercase tracking-wider group">
+              <span>{t("settings.help")}</span>
+              <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              <div className="p-4 rounded-lg border border-border bg-card space-y-3 text-sm text-foreground">
+                <p className="font-medium">{t("settings.quickGuide")}</p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside">
+                  <li>{t("settings.helpLocal")}</li>
+                  <li>{t("settings.helpSection")}</li>
+                  <li>{t("settings.helpVocal")}</li>
+                  <li>{t("settings.helpStyle")}</li>
+                  <li>{t("settings.helpExport")}</li>
+                  <li>{t("settings.helpBackup")}</li>
+                </ul>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </section>
 
         {/* About */}

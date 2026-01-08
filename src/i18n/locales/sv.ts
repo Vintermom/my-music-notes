@@ -1,6 +1,16 @@
 import type { TranslationKey } from "./en";
 
 export const sv: Record<TranslationKey, string> = {
+  // Settings Help
+  "settings.help": "Hjälp",
+  "settings.quickGuide": "Snabbguide",
+  "settings.helpLocal": "Anteckningar sparas lokalt på denna enhet.",
+  "settings.helpSection": "Använd [Sektion Instrument] för att strukturera din text.",
+  "settings.helpVocal": "Använd (VocalEffect) för att beskriva röstdetaljer.",
+  "settings.helpStyle": "Stil definierar det övergripande ljudet för låten.",
+  "settings.helpExport": "Exportera eller importera anteckningar som JSON-filer för att flytta data mellan enheter.",
+  "settings.helpBackup": "För att undvika dataförlust, exportera dina anteckningar regelbundet, särskilt innan du rensar webbläsardata.",
+
   // App
   "app.name": "My Music Notes",
 
