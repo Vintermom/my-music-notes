@@ -115,12 +115,22 @@ export const th: Record<TranslationKey, string> = {
 
   // Print dialog
   "print.title": "ตัวเลือกการพิมพ์",
+  "print.pdfTitle": "ส่งออก PDF",
   "print.textOnly": "ข้อความเท่านั้น",
   "print.appLayout": "เลย์เอาต์แอป",
   "print.printButton": "พิมพ์",
+  "print.saveButton": "บันทึก",
   "print.created": "สร้างเมื่อ",
   "print.updated": "อัปเดตล่าสุด",
   "print.printed": "พิมพ์เมื่อ",
+  "print.saved": "บันทึกเมื่อ",
+  // Print labels (localized section headers)
+  "print.labelTitle": "ชื่อเพลง",
+  "print.labelComposer": "ผู้แต่ง",
+  "print.labelLyrics": "เนื้อเพลง",
+  "print.labelStyle": "สไตล์",
+  "print.labelExtra": "ข้อมูลเพิ่มเติม",
+  "print.labelTags": "แท็ก",
 
   // Import dialog
   "import.title": "นำเข้าโน้ต",

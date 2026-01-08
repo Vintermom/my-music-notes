@@ -112,12 +112,22 @@ export const en = {
 
   // Print dialog
   "print.title": "Print Options",
+  "print.pdfTitle": "Export PDF",
   "print.textOnly": "Text only",
   "print.appLayout": "App layout",
   "print.printButton": "Print",
+  "print.saveButton": "Save",
   "print.created": "Created",
   "print.updated": "Last updated",
   "print.printed": "Printed",
+  "print.saved": "Saved",
+  // Print labels (localized section headers)
+  "print.labelTitle": "Song Title",
+  "print.labelComposer": "Composer",
+  "print.labelLyrics": "Lyrics",
+  "print.labelStyle": "Style",
+  "print.labelExtra": "Extra Info",
+  "print.labelTags": "Tags",
 
   // Import dialog
   "import.title": "Import Note",
