@@ -1,4 +1,13 @@
 export const en = {
+  // Settings Help
+  "settings.help": "Help",
+  "settings.quickGuide": "Quick Guide",
+  "settings.helpLocal": "Notes are saved locally on this device.",
+  "settings.helpSection": "Use [Section Instrument] to structure your lyrics.",
+  "settings.helpVocal": "Use (VocalEffect) to describe voice details.",
+  "settings.helpStyle": "Style defines the overall sound of the song.",
+  "settings.helpExport": "Export or import notes using JSON files to move data between devices.",
+  "settings.helpBackup": "To avoid data loss, export your notes regularly, especially before clearing browser data.",
   // App
   "app.name": "My Music Notes",
 

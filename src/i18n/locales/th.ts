@@ -1,6 +1,16 @@
 import type { TranslationKey } from "./en";
 
 export const th: Record<TranslationKey, string> = {
+  // Settings Help
+  "settings.help": "ช่วยเหลือ",
+  "settings.quickGuide": "คู่มือเบื้องต้น",
+  "settings.helpLocal": "โน้ตถูกบันทึกไว้ในเครื่องนี้",
+  "settings.helpSection": "ใช้ [Section Instrument] เพื่อจัดโครงสร้างเนื้อเพลง",
+  "settings.helpVocal": "ใช้ (VocalEffect) เพื่ออธิบายรายละเอียดเสียงร้อง",
+  "settings.helpStyle": "สไตล์กำหนดเสียงโดยรวมของเพลง",
+  "settings.helpExport": "ส่งออกหรือนำเข้าโน้ตด้วยไฟล์ JSON เพื่อย้ายข้อมูลระหว่างอุปกรณ์",
+  "settings.helpBackup": "เพื่อป้องกันข้อมูลสูญหาย ให้ส่งออกโน้ตเป็นประจำ โดยเฉพาะก่อนล้างข้อมูลเบราว์เซอร์",
+
   // App
   "app.name": "My Music Notes",
 
