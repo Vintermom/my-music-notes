@@ -1,12 +1,12 @@
 import { Settings, ThemeOption } from "@/domain/types";
 import { t } from "@/i18n";
-import { ArrowLeft, Check, ChevronDown } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, ChevronRight, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getSettings, updateSettings } from "@/storage/settingsRepo";
 import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ImportSection } from "@/components/ImportDialog";
+import { ImportDialog } from "@/components/ImportDialog";
 
 // Theme config with color dots (HSL values matching index.css)
 const themes: { 
@@ -22,6 +22,7 @@ const themes: {
 export default function SettingsPage() {
   const navigate = useNavigate();
   const [settings, setSettings] = useState<Settings>(getSettings);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   // Apply theme class
   useEffect(() => {
@@ -82,7 +83,19 @@ export default function SettingsPage() {
         </section>
 
         {/* Import JSON */}
-        <ImportSection />
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            {t("menu.importJson")}
+          </h2>
+          <button
+            onClick={() => setImportDialogOpen(true)}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md border border-border bg-card hover:bg-accent/30 transition-colors"
+          >
+            <Upload className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm flex-1 text-left">{t("menu.importJson")}</span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </section>
 
         {/* Help */}
         <section className="space-y-4">
@@ -119,6 +132,9 @@ export default function SettingsPage() {
           </div>
         </section>
       </main>
+
+      {/* Import Dialog */}
+      <ImportDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} />
     </div>
   );
 }
