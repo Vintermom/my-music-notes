@@ -84,6 +84,7 @@ export const sv: Record<TranslationKey, string> = {
   "settings.themeD": "Mjuk mörk",
   "settings.about": "Om",
   "settings.version": "Version 1.0.0",
+  "settings.privacyNote": "Alla anteckningar lagras lokalt på din enhet. Ingen data laddas upp.",
 
   // Timeline
   "timeline.title": "Tidslinje",
@@ -117,6 +118,8 @@ export const sv: Record<TranslationKey, string> = {
   "import.importing": "Importerar...",
   "import.success": "Anteckning importerad",
   "import.error": "Kunde inte importera anteckning",
+  "import.invalidFormat": "Endast JSON-filer tillåts",
+  "import.fileTooLarge": "Filen är för stor (max 3MB)",
   "import.limitReached": "Daglig importgräns nådd",
   "import.limitMessage": "Gratisanvändare kan importera upp till 2 anteckningar per dag. Uppgradera till Pro för obegränsade importer.",
   "import.remainingToday": "importer kvar idag",
