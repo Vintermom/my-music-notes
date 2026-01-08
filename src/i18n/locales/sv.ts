@@ -115,12 +115,22 @@ export const sv: Record<TranslationKey, string> = {
 
   // Print dialog
   "print.title": "Utskriftsalternativ",
+  "print.pdfTitle": "Exportera PDF",
   "print.textOnly": "Endast text",
   "print.appLayout": "Applayout",
   "print.printButton": "Skriv ut",
+  "print.saveButton": "Spara",
   "print.created": "Skapad",
   "print.updated": "Senast uppdaterad",
   "print.printed": "Utskriven",
+  "print.saved": "Sparad",
+  // Print labels (localized section headers)
+  "print.labelTitle": "Låttitel",
+  "print.labelComposer": "Kompositör",
+  "print.labelLyrics": "Text",
+  "print.labelStyle": "Stil",
+  "print.labelExtra": "Extra info",
+  "print.labelTags": "Taggar",
 
   // Import dialog
   "import.title": "Importera anteckning",
