@@ -7,10 +7,15 @@ import { getSettings, updateSettings } from "@/storage/settingsRepo";
 import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-const themes: { value: ThemeOption; labelKey: "settings.themeA" | "settings.themeB" | "settings.themeD" }[] = [
-  { value: "theme-a", labelKey: "settings.themeA" },
-  { value: "theme-b", labelKey: "settings.themeB" },
-  { value: "theme-d", labelKey: "settings.themeD" },
+// Theme config with color dots (HSL values matching index.css)
+const themes: { 
+  value: ThemeOption; 
+  labelKey: "settings.themeA" | "settings.themeB" | "settings.themeD";
+  dotColor: string;
+}[] = [
+  { value: "theme-a", labelKey: "settings.themeA", dotColor: "hsl(35 70% 55%)" },   // Warm cream accent
+  { value: "theme-b", labelKey: "settings.themeB", dotColor: "hsl(210 15% 50%)" },  // Cool slate accent
+  { value: "theme-d", labelKey: "settings.themeD", dotColor: "hsl(35 60% 50%)" },   // Soft dark accent
 ];
 
 export default function SettingsPage() {
@@ -46,24 +51,29 @@ export default function SettingsPage() {
       {/* Content */}
       <main className="container max-w-xl mx-auto px-4 py-6 space-y-8">
         {/* Theme Selection */}
-        <section className="space-y-4">
+        <section className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
             {t("settings.theme")}
           </h2>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {themes.map((theme) => (
               <button
                 key={theme.value}
                 onClick={() => handleThemeChange(theme.value)}
-                className={`w-full flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md border transition-colors ${
                   settings.theme === theme.value
-                    ? "border-primary bg-accent"
-                    : "border-border bg-card hover:bg-accent/50"
+                    ? "border-primary/50 bg-accent/50"
+                    : "border-transparent hover:bg-accent/30"
                 }`}
               >
-                <span className="font-medium">{t(theme.labelKey)}</span>
+                {/* Color dot */}
+                <span 
+                  className="w-3 h-3 rounded-full shrink-0"
+                  style={{ backgroundColor: theme.dotColor }}
+                />
+                <span className="text-sm flex-1 text-left">{t(theme.labelKey)}</span>
                 {settings.theme === theme.value && (
-                  <Check className="h-5 w-5 text-primary" />
+                  <Check className="h-4 w-4 text-primary shrink-0" />
                 )}
               </button>
             ))}
