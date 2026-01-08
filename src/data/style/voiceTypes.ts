@@ -4,11 +4,11 @@ export interface StyleChip {
 }
 
 export const voiceTypes: StyleChip[] = [
-  { id: "female", label: "Female" },
-  { id: "male", label: "Male" },
-  { id: "child", label: "Child" },
-  { id: "choir", label: "Choir" },
-  { id: "group", label: "Group" },
-  { id: "duet", label: "Duet Male-Female" },
-  { id: "solo", label: "Solo" },
+  { id: "female-vocal", label: "Female vocal" },
+  { id: "male-vocal", label: "Male vocal" },
+  { id: "child-vocal", label: "Child vocal" },
+  { id: "choir-vocal", label: "Choir vocal" },
+  { id: "group-vocal", label: "Group vocal" },
+  { id: "duet-vocal", label: "Duet male–female vocal" },
+  { id: "solo-vocal", label: "Solo vocal" },
 ];
