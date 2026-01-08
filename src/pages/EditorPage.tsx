@@ -146,7 +146,7 @@ export default function EditorPage() {
 
   const getSelectedStyleChips = (): string[] => note?.style ? note.style.split(",").map((s) => s.trim()).filter(Boolean) : [];
 
-  // ISO 8601 format: YYYY-MM-DD HH:mm
+  // ISO 8601 format: YYYY-MM-DD HH:mm (UTC±X)
   const formatDateISO = (ts: number) => {
     const d = new Date(ts);
     const year = d.getFullYear();
@@ -154,7 +154,17 @@ export default function EditorPage() {
     const day = String(d.getDate()).padStart(2, "0");
     const hours = String(d.getHours()).padStart(2, "0");
     const mins = String(d.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day} ${hours}:${mins}`;
+    
+    // Get timezone offset in hours
+    const offsetMinutes = d.getTimezoneOffset();
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const sign = offsetMinutes <= 0 ? "+" : "-";
+    const tzString = offsetMins > 0 
+      ? `(UTC${sign}${offsetHours}:${String(offsetMins).padStart(2, "0")})`
+      : `(UTC${sign}${offsetHours})`;
+    
+    return `${year}-${month}-${day} ${hours}:${mins} ${tzString}`;
   };
 
   const handlePrint = (textOnly: boolean) => {
@@ -162,44 +172,54 @@ export default function EditorPage() {
     const isPdf = printMode === "pdf";
     const timestampLabel = isPdf ? t("print.saved") : t("print.printed");
     
+    // Common styles: All text BLACK, only labels BOLD
+    const labelStyle = "font-size:0.75rem;font-weight:bold;color:#000;margin:0;";
+    const valueStyle = "font-weight:normal;color:#000;";
+    const footerLabelStyle = "font-weight:bold;color:#000;";
+    const footerValueStyle = "font-weight:normal;color:#555;";
+    
     if (textOnly) {
       // Text-only mode with clear labeled sections and dividers
       const lines: string[] = [];
       
       if (note.title) {
-        lines.push(`<p style="font-size:0.75rem;color:#888;margin:0;">${t("print.labelTitle")}</p>`);
-        lines.push(`<h1 style="font-size:1.5rem;font-weight:600;margin:0 0 0.5rem 0;">${note.title}</h1>`);
+        lines.push(`<p style="${labelStyle}">${t("print.labelTitle")}</p>`);
+        lines.push(`<p style="font-size:1.125rem;${valueStyle}margin:0 0 0.5rem 0;">${note.title}</p>`);
       }
       if (note.composer) {
-        lines.push(`<p style="font-size:0.75rem;color:#888;margin:0;">${t("print.labelComposer")}</p>`);
-        lines.push(`<p style="margin:0 0 0.5rem 0;">${note.composer}</p>`);
+        lines.push(`<p style="${labelStyle}">${t("print.labelComposer")}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0 0 0.5rem 0;">${note.composer}</p>`);
       }
       
-      if (note.title || note.composer) lines.push(`<hr style="border:none;border-top:1px solid #ddd;margin:1rem 0;" />`);
+      if (note.title || note.composer) lines.push(`<hr style="border:none;border-top:1px solid #ccc;margin:1rem 0;" />`);
       
       if (note.lyrics) {
-        lines.push(`<p style="font-size:0.75rem;color:#888;margin:0 0 0.25rem 0;">${t("print.labelLyrics")}</p>`);
-        lines.push(`<pre style="font-family:monospace;white-space:pre-wrap;margin:0 0 1rem 0;line-height:1.6;">${note.lyrics}</pre>`);
+        lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelLyrics")}</p>`);
+        lines.push(`<pre style="font-family:monospace;white-space:pre-wrap;${valueStyle}margin:0 0 1rem 0;line-height:1.6;">${note.lyrics}</pre>`);
       }
       
       if (note.style) {
-        lines.push(`<p style="margin:0;"><span style="font-size:0.75rem;color:#888;">${t("print.labelStyle")}:</span> ${note.style}</p>`);
+        lines.push(`<p style="margin:0;"><span style="${labelStyle}">${t("print.labelStyle")}:</span> <span style="${valueStyle}">${note.style}</span></p>`);
       }
       
-      if (note.extraInfo) lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="font-size:0.75rem;color:#888;">${t("print.labelExtra")}:</span> ${note.extraInfo}</p>`);
+      if (note.extraInfo) {
+        lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="${labelStyle}">${t("print.labelExtra")}:</span> <span style="${valueStyle}">${note.extraInfo}</span></p>`);
+      }
       
-      if (note.tags.length > 0) lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="font-size:0.75rem;color:#888;">${t("print.labelTags")}:</span> ${note.tags.join(", ")}</p>`);
+      if (note.tags.length > 0) {
+        lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="${labelStyle}">${t("print.labelTags")}:</span> <span style="${valueStyle}">${note.tags.join(", ")}</span></p>`);
+      }
       
-      lines.push(`<hr style="border:none;border-top:1px solid #ddd;margin:1.5rem 0 1rem 0;" />`);
-      lines.push(`<div style="font-size:0.75rem;color:#888;line-height:1.4;">`);
-      lines.push(`<p style="margin:0;">${t("print.created")}: ${formatDateISO(note.createdAt)}</p>`);
-      lines.push(`<p style="margin:0;">${t("print.updated")}: ${formatDateISO(note.updatedAt)}</p>`);
-      lines.push(`<p style="margin:0;">${timestampLabel}: ${formatDateISO(Date.now())}</p>`);
+      lines.push(`<hr style="border:none;border-top:1px solid #ccc;margin:1.5rem 0 1rem 0;" />`);
+      lines.push(`<div style="font-size:0.75rem;line-height:1.6;">`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.created")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.createdAt)}</span></p>`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.updated")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.updatedAt)}</span></p>`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${timestampLabel}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
       lines.push(`</div>`);
       
       const w = window.open("", "_blank");
       if (w) {
-        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;max-width:800px;margin:0 auto;">${lines.join("")}</body></html>`);
+        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;max-width:800px;margin:0 auto;color:#000;">${lines.join("")}</body></html>`);
         w.document.close();
         w.print();
       }
@@ -211,58 +231,58 @@ export default function EditorPage() {
       };
       
       const lines: string[] = [];
-      lines.push(`<div style="background:${noteColorMap[note.color]};border-radius:1rem;padding:1.5rem;max-width:600px;margin:0 auto;">`);
+      lines.push(`<div style="background:${noteColorMap[note.color]};border-radius:1rem;padding:1.5rem;max-width:600px;margin:0 auto;color:#000;">`);
       
       if (note.title) {
-        lines.push(`<p style="font-size:0.7rem;color:#888;margin:0;">${t("print.labelTitle")}</p>`);
-        lines.push(`<h1 style="font-size:1.25rem;font-weight:600;margin:0 0 0.5rem 0;">${note.title}</h1>`);
+        lines.push(`<p style="${labelStyle}">${t("print.labelTitle")}</p>`);
+        lines.push(`<p style="font-size:1.125rem;${valueStyle}margin:0 0 0.5rem 0;">${note.title}</p>`);
       }
       if (note.composer) {
-        lines.push(`<p style="font-size:0.7rem;color:#888;margin:0;">${t("print.labelComposer")}</p>`);
-        lines.push(`<p style="color:#666;margin:0 0 1rem 0;">${note.composer}</p>`);
+        lines.push(`<p style="${labelStyle}">${t("print.labelComposer")}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0 0 1rem 0;">${note.composer}</p>`);
       }
       
       if (note.lyrics) {
         lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:1rem;">`);
-        lines.push(`<p style="font-size:0.7rem;color:#888;margin:0 0 0.25rem 0;">${t("print.labelLyrics")}</p>`);
-        lines.push(`<pre style="font-family:inherit;white-space:pre-wrap;margin:0;font-size:0.875rem;">${note.lyrics}</pre>`);
+        lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelLyrics")}</p>`);
+        lines.push(`<pre style="font-family:inherit;white-space:pre-wrap;${valueStyle}margin:0;font-size:0.875rem;">${note.lyrics}</pre>`);
         lines.push(`</div>`);
       }
       
       if (note.style) {
         lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:1rem;">`);
-        lines.push(`<p style="font-size:0.7rem;color:#888;margin:0 0 0.25rem 0;">${t("print.labelStyle")}</p>`);
-        lines.push(`<p style="margin:0;font-size:0.875rem;">${note.style}</p>`);
+        lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelStyle")}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0;font-size:0.875rem;">${note.style}</p>`);
         lines.push(`</div>`);
       }
       
       if (note.extraInfo) {
         lines.push(`<div style="background:rgba(255,255,255,0.3);border-radius:0.5rem;padding:0.5rem;margin-bottom:1rem;">`);
-        lines.push(`<p style="font-size:0.65rem;color:#888;margin:0 0 0.25rem 0;">${t("print.labelExtra")}</p>`);
-        lines.push(`<p style="margin:0;font-size:0.75rem;">${note.extraInfo}</p>`);
+        lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelExtra")}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0;font-size:0.75rem;">${note.extraInfo}</p>`);
         lines.push(`</div>`);
       }
       
       if (note.tags.length > 0) {
         lines.push(`<div style="margin-bottom:1rem;">`);
-        lines.push(`<p style="font-size:0.65rem;color:#888;margin:0 0 0.25rem 0;">${t("print.labelTags")}</p>`);
+        lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelTags")}</p>`);
         lines.push(`<div style="display:flex;flex-wrap:wrap;gap:0.25rem;">`);
         note.tags.forEach(tag => {
-          lines.push(`<span style="background:#e5e5e5;padding:0.25rem 0.5rem;border-radius:9999px;font-size:0.75rem;">${tag}</span>`);
+          lines.push(`<span style="background:#e0e0e0;padding:0.25rem 0.5rem;border-radius:9999px;font-size:0.75rem;${valueStyle}">${tag}</span>`);
         });
         lines.push(`</div></div>`);
       }
       
-      lines.push(`<div style="border-top:1px solid #ddd;padding-top:0.75rem;font-size:0.7rem;color:#888;line-height:1.4;">`);
-      lines.push(`<p style="margin:0;">${t("print.created")}: ${formatDateISO(note.createdAt)}</p>`);
-      lines.push(`<p style="margin:0;">${t("print.updated")}: ${formatDateISO(note.updatedAt)}</p>`);
-      lines.push(`<p style="margin:0;">${timestampLabel}: ${formatDateISO(Date.now())}</p>`);
+      lines.push(`<div style="border-top:1px solid #ccc;padding-top:0.75rem;font-size:0.75rem;line-height:1.6;">`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.created")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.createdAt)}</span></p>`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.updated")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.updatedAt)}</span></p>`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${timestampLabel}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
       lines.push(`</div>`);
       lines.push(`</div>`);
       
       const w = window.open("", "_blank");
       if (w) {
-        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;background:#f5f5f5;">${lines.join("")}</body></html>`);
+        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;background:#f5f5f5;color:#000;">${lines.join("")}</body></html>`);
         w.document.close();
         w.print();
       }

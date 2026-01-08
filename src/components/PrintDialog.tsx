@@ -25,7 +25,7 @@ const colorClasses: Record<NoteColor, string> = {
   purple: "bg-purple-50", orange: "bg-orange-50",
 };
 
-// ISO 8601 format: YYYY-MM-DD HH:mm
+// ISO 8601 format: YYYY-MM-DD HH:mm (UTC±X)
 function formatDateISO(timestamp: number): string {
   const d = new Date(timestamp);
   const year = d.getFullYear();
@@ -33,7 +33,17 @@ function formatDateISO(timestamp: number): string {
   const day = String(d.getDate()).padStart(2, "0");
   const hours = String(d.getHours()).padStart(2, "0");
   const mins = String(d.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day} ${hours}:${mins}`;
+  
+  // Get timezone offset in hours
+  const offsetMinutes = d.getTimezoneOffset();
+  const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+  const offsetMins = Math.abs(offsetMinutes % 60);
+  const sign = offsetMinutes <= 0 ? "+" : "-";
+  const tzString = offsetMins > 0 
+    ? `(UTC${sign}${offsetHours}:${String(offsetMins).padStart(2, "0")})`
+    : `(UTC${sign}${offsetHours})`;
+  
+  return `${year}-${month}-${day} ${hours}:${mins} ${tzString}`;
 }
 
 export function PrintDialog({ open, onOpenChange, note, onPrint, mode = "print" }: PrintDialogProps) {
@@ -73,124 +83,125 @@ export function PrintDialog({ open, onOpenChange, note, onPrint, mode = "print" 
           </RadioGroup>
 
           {/* Preview based on mode */}
+          {/* Preview - All text black, only labels bold */}
           {printMode === "text" ? (
-            <div className="border rounded-lg p-4 bg-muted/30 space-y-4 text-sm max-h-[300px] overflow-y-auto">
+            <div className="border rounded-lg p-4 bg-white space-y-4 text-sm max-h-[300px] overflow-y-auto text-black">
               {/* Song Title */}
               {note.title && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{t("print.labelTitle")}</p>
-                  <p className="text-lg font-semibold">{note.title}</p>
+                  <p className="text-xs font-bold text-black">{t("print.labelTitle")}</p>
+                  <p className="text-base font-normal text-black">{note.title}</p>
                 </div>
               )}
               
               {/* Composer */}
               {note.composer && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{t("print.labelComposer")}</p>
-                  <p>{note.composer}</p>
+                  <p className="text-xs font-bold text-black">{t("print.labelComposer")}</p>
+                  <p className="font-normal text-black">{note.composer}</p>
                 </div>
               )}
               
-              {(note.title || note.composer) && <hr className="border-border" />}
+              {(note.title || note.composer) && <hr className="border-gray-300" />}
               
               {/* Lyrics */}
               {note.lyrics && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("print.labelLyrics")}</p>
-                  <div className="whitespace-pre-wrap font-mono text-xs">{note.lyrics}</div>
+                  <p className="text-xs font-bold text-black mb-1">{t("print.labelLyrics")}</p>
+                  <div className="whitespace-pre-wrap font-mono text-xs font-normal text-black">{note.lyrics}</div>
                 </div>
               )}
               
               {/* Style / Extra / Tags */}
               {note.style && (
                 <div>
-                  <span className="text-xs font-medium text-muted-foreground">{t("print.labelStyle")}: </span>
-                  <span className="text-muted-foreground">{note.style}</span>
+                  <span className="text-xs font-bold text-black">{t("print.labelStyle")}: </span>
+                  <span className="font-normal text-black">{note.style}</span>
                 </div>
               )}
               
               {note.extraInfo && (
                 <div>
-                  <span className="text-xs font-medium text-muted-foreground">{t("print.labelExtra")}: </span>
-                  <span className="text-muted-foreground">{note.extraInfo}</span>
+                  <span className="text-xs font-bold text-black">{t("print.labelExtra")}: </span>
+                  <span className="font-normal text-black">{note.extraInfo}</span>
                 </div>
               )}
               
               {note.tags.length > 0 && (
                 <div>
-                  <span className="text-xs font-medium text-muted-foreground">{t("print.labelTags")}: </span>
-                  <span className="text-muted-foreground">{note.tags.join(", ")}</span>
+                  <span className="text-xs font-bold text-black">{t("print.labelTags")}: </span>
+                  <span className="font-normal text-black">{note.tags.join(", ")}</span>
                 </div>
               )}
               
-              <hr className="border-border" />
+              <hr className="border-gray-300" />
               
-              {/* Footer timestamps */}
-              <div className="text-xs text-muted-foreground space-y-0.5">
-                <p>{t("print.created")}: {formatDateISO(note.createdAt)}</p>
-                <p>{t("print.updated")}: {formatDateISO(note.updatedAt)}</p>
-                <p>{isPdfMode ? t("print.saved") : t("print.printed")}: {formatDateISO(Date.now())}</p>
+              {/* Footer timestamps - labels bold, values regular */}
+              <div className="text-xs text-gray-600 space-y-0.5">
+                <p><span className="font-bold text-black">{t("print.created")}:</span> <span className="font-normal">{formatDateISO(note.createdAt)}</span></p>
+                <p><span className="font-bold text-black">{t("print.updated")}:</span> <span className="font-normal">{formatDateISO(note.updatedAt)}</span></p>
+                <p><span className="font-bold text-black">{isPdfMode ? t("print.saved") : t("print.printed")}:</span> <span className="font-normal">{formatDateISO(Date.now())}</span></p>
               </div>
             </div>
           ) : (
-            <div className={`border rounded-xl p-4 space-y-4 max-h-[300px] overflow-y-auto ${colorClasses[note.color]}`}>
+            <div className={`border rounded-xl p-4 space-y-4 max-h-[300px] overflow-y-auto ${colorClasses[note.color]} text-black`}>
               {/* Song Title */}
               {note.title && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{t("print.labelTitle")}</p>
-                  <h2 className="text-xl font-semibold">{note.title}</h2>
+                  <p className="text-xs font-bold text-black">{t("print.labelTitle")}</p>
+                  <h2 className="text-lg font-normal text-black">{note.title}</h2>
                 </div>
               )}
               
               {/* Composer */}
               {note.composer && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{t("print.labelComposer")}</p>
-                  <p>{note.composer}</p>
+                  <p className="text-xs font-bold text-black">{t("print.labelComposer")}</p>
+                  <p className="font-normal text-black">{note.composer}</p>
                 </div>
               )}
               
               {/* Lyrics */}
               {note.lyrics && (
-                <div className="p-3 bg-background/50 rounded-lg">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("print.labelLyrics")}</p>
-                  <div className="whitespace-pre-wrap text-sm">{note.lyrics}</div>
+                <div className="p-3 bg-white/50 rounded-lg">
+                  <p className="text-xs font-bold text-black mb-1">{t("print.labelLyrics")}</p>
+                  <div className="whitespace-pre-wrap text-sm font-normal text-black">{note.lyrics}</div>
                 </div>
               )}
               
               {/* Style */}
               {note.style && (
-                <div className="p-3 bg-background/50 rounded-lg">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("print.labelStyle")}</p>
-                  <p className="text-sm">{note.style}</p>
+                <div className="p-3 bg-white/50 rounded-lg">
+                  <p className="text-xs font-bold text-black mb-1">{t("print.labelStyle")}</p>
+                  <p className="text-sm font-normal text-black">{note.style}</p>
                 </div>
               )}
               
               {/* Extra Info */}
               {note.extraInfo && (
-                <div className="p-2 bg-background/30 rounded-lg">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("print.labelExtra")}</p>
-                  <p className="text-xs">{note.extraInfo}</p>
+                <div className="p-2 bg-white/30 rounded-lg">
+                  <p className="text-xs font-bold text-black mb-1">{t("print.labelExtra")}</p>
+                  <p className="text-xs font-normal text-black">{note.extraInfo}</p>
                 </div>
               )}
               
               {/* Tags */}
               {note.tags.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-1">{t("print.labelTags")}</p>
+                  <p className="text-xs font-bold text-black mb-1">{t("print.labelTags")}</p>
                   <div className="flex flex-wrap gap-1">
                     {note.tags.map((tag, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-secondary rounded-full text-xs">{tag}</span>
+                      <span key={i} className="px-2 py-0.5 bg-gray-200 rounded-full text-xs font-normal text-black">{tag}</span>
                     ))}
                   </div>
                 </div>
               )}
               
-              {/* Footer timestamps */}
-              <div className="pt-2 border-t text-xs text-muted-foreground space-y-0.5">
-                <p>{t("print.created")}: {formatDateISO(note.createdAt)}</p>
-                <p>{t("print.updated")}: {formatDateISO(note.updatedAt)}</p>
-                <p>{isPdfMode ? t("print.saved") : t("print.printed")}: {formatDateISO(Date.now())}</p>
+              {/* Footer timestamps - labels bold, values regular */}
+              <div className="pt-2 border-t border-gray-300 text-xs text-gray-600 space-y-0.5">
+                <p><span className="font-bold text-black">{t("print.created")}:</span> <span className="font-normal">{formatDateISO(note.createdAt)}</span></p>
+                <p><span className="font-bold text-black">{t("print.updated")}:</span> <span className="font-normal">{formatDateISO(note.updatedAt)}</span></p>
+                <p><span className="font-bold text-black">{isPdfMode ? t("print.saved") : t("print.printed")}:</span> <span className="font-normal">{formatDateISO(Date.now())}</span></p>
               </div>
             </div>
           )}
