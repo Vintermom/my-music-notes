@@ -176,7 +176,7 @@ export default function EditorPage() {
     const labelStyle = "font-size:0.75rem;font-weight:bold;color:#000;margin:0;";
     const valueStyle = "font-weight:normal;color:#000;";
     const footerLabelStyle = "font-weight:bold;color:#000;";
-    const footerValueStyle = "font-weight:normal;color:#555;";
+    const footerValueStyle = "font-weight:normal;color:#000;";
     
     if (textOnly) {
       // Text-only mode with clear labeled sections and dividers
@@ -195,7 +195,12 @@ export default function EditorPage() {
       
       if (note.lyrics) {
         lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelLyrics")}</p>`);
-        lines.push(`<pre style="font-family:monospace;white-space:pre-wrap;${valueStyle}margin:0 0 1rem 0;line-height:1.6;">${note.lyrics}</pre>`);
+        lines.push(`<pre style="font-family:monospace;white-space:pre-wrap;${valueStyle}margin:0 0 0.5rem 0;line-height:1.6;">${note.lyrics}</pre>`);
+      }
+      
+      // Divider between Lyrics and Style/Extra/Tags
+      if (note.lyrics && (note.style || note.extraInfo || note.tags.length > 0)) {
+        lines.push(`<hr style="border:none;border-top:1px solid #ccc;margin:1rem 0;" />`);
       }
       
       if (note.style) {
@@ -243,10 +248,15 @@ export default function EditorPage() {
       }
       
       if (note.lyrics) {
-        lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:1rem;">`);
+        lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:0.5rem;">`);
         lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelLyrics")}</p>`);
         lines.push(`<pre style="font-family:inherit;white-space:pre-wrap;${valueStyle}margin:0;font-size:0.875rem;">${note.lyrics}</pre>`);
         lines.push(`</div>`);
+      }
+      
+      // Divider between Lyrics and Style/Extra/Tags
+      if (note.lyrics && (note.style || note.extraInfo || note.tags.length > 0)) {
+        lines.push(`<hr style="border:none;border-top:1px solid #ccc;margin:1rem 0;" />`);
       }
       
       if (note.style) {
