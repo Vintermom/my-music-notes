@@ -1,25 +1,13 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { t } from "@/i18n";
-import { Note, IMPORT_MAX_SIZE_BYTES } from "@/domain/types";
-import { safeGet, safeSet } from "@/storage/localStorage";
+import { Note, IMPORT_MAX_SIZE_BYTES, STORAGE_SCHEMA_VERSION } from "@/domain/types";
+import { safeGet, safeSet, restoreFromBackup } from "@/storage/localStorage";
 import { createNote, createNotesBackup } from "@/storage/notesRepo";
 import { validateImportedNote } from "@/storage/validation";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Upload, AlertCircle } from "lucide-react";
-
-interface ImportDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onImportSuccess: (note: Note) => void;
-}
 
 const IMPORT_KEY = "import_tracking";
 const FREE_DAILY_LIMIT = 2;
@@ -41,9 +29,9 @@ function getImportTracking(): ImportTracking {
   return tracking;
 }
 
-function incrementImportCount(): void {
+function incrementImportCount(count: number = 1): void {
   const tracking = getImportTracking();
-  tracking.count += 1;
+  tracking.count += count;
   safeSet(IMPORT_KEY, tracking);
 }
 
@@ -56,7 +44,43 @@ function canImport(): boolean {
   return getRemainingImports() > 0;
 }
 
-export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDialogProps) {
+// Exported JSON structure types
+interface SingleNoteExport {
+  version?: number;
+  storageVersion?: number;
+  exportedAt?: string;
+  note: unknown;
+}
+
+interface BundleExport {
+  version?: number;
+  storageVersion?: number;
+  exportedAt?: string;
+  notes: unknown[];
+}
+
+type ExportedData = SingleNoteExport | BundleExport | unknown;
+
+function isBundle(data: unknown): data is BundleExport {
+  return (
+    data !== null &&
+    typeof data === "object" &&
+    "notes" in data &&
+    Array.isArray((data as BundleExport).notes)
+  );
+}
+
+function isSingleNoteExport(data: unknown): data is SingleNoteExport {
+  return (
+    data !== null &&
+    typeof data === "object" &&
+    "note" in data &&
+    (data as SingleNoteExport).note !== undefined
+  );
+}
+
+export function ImportSection() {
+  const navigate = useNavigate();
   const [isImporting, setIsImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +100,7 @@ export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDial
       return;
     }
 
-    // Check file size (3MB limit)
+    // Check file size (3MB limit from types)
     if (file.size > IMPORT_MAX_SIZE_BYTES) {
       setImportError(t("import.fileTooLarge"));
       toast.error(t("import.fileTooLarge"));
@@ -90,44 +114,81 @@ export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDial
 
     setIsImporting(true);
 
-    try {
-      // Create backup before import
-      createNotesBackup();
+    // Create backup before import
+    const backupCreated = createNotesBackup();
 
+    try {
       const text = await file.text();
       
       // Parse JSON safely
-      let data: unknown;
+      let data: ExportedData;
       try {
         data = JSON.parse(text);
       } catch {
         throw new Error("Invalid JSON format");
       }
 
-      // Handle both formats: direct note or wrapped with version
-      let noteData: unknown;
-      if (data && typeof data === "object" && "note" in data) {
-        noteData = (data as { note: unknown }).note;
+      // Extract notes to import
+      const notesToImport: Partial<Note>[] = [];
+
+      if (isBundle(data)) {
+        // Bundle format: { storageVersion, exportedAt, notes: [...] }
+        for (const noteData of data.notes) {
+          const validated = validateImportedNote(noteData);
+          if (validated) {
+            notesToImport.push(validated);
+          }
+        }
+      } else if (isSingleNoteExport(data)) {
+        // Single note wrapped: { version/storageVersion, exportedAt, note: {...} }
+        const validated = validateImportedNote(data.note);
+        if (validated) {
+          notesToImport.push(validated);
+        }
       } else {
-        noteData = data;
+        // Direct note object (legacy format)
+        const validated = validateImportedNote(data);
+        if (validated) {
+          notesToImport.push(validated);
+        }
       }
 
-      // Validate imported data strictly
-      const validatedNote = validateImportedNote(noteData);
-      if (!validatedNote) {
-        throw new Error("Invalid note structure");
+      if (notesToImport.length === 0) {
+        throw new Error("No valid notes found in file");
       }
 
-      // Create new note from validated data (generates new id, timestamps)
-      const newNote = createNote(validatedNote);
+      // Check import limit
+      const actualImportCount = Math.min(notesToImport.length, getRemainingImports());
+      if (actualImportCount < notesToImport.length) {
+        toast.info(`Only importing ${actualImportCount} of ${notesToImport.length} notes (daily limit)`);
+      }
 
-      incrementImportCount();
-      toast.success(t("import.success"));
-      onImportSuccess(newNote);
-      onOpenChange(false);
+      // Create new notes
+      const createdNotes: Note[] = [];
+      for (let i = 0; i < actualImportCount; i++) {
+        const newNote = createNote(notesToImport[i]);
+        createdNotes.push(newNote);
+      }
+
+      incrementImportCount(createdNotes.length);
+      
+      if (createdNotes.length === 1) {
+        toast.success(t("import.success"));
+      } else {
+        toast.success(`${createdNotes.length} notes imported successfully`);
+      }
+
+      // Navigate to home to show newly imported notes
+      navigate("/");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       console.error("[Import] Failed:", message);
+      
+      // Rollback to backup if available
+      if (backupCreated) {
+        restoreFromBackup("notes");
+      }
+      
       setImportError(t("import.error"));
       toast.error(t("import.error"));
     } finally {
@@ -140,62 +201,50 @@ export function ImportDialog({ open, onOpenChange, onImportSuccess }: ImportDial
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("import.title")}</DialogTitle>
-          {!limitReached && (
-            <DialogDescription>
+    <section className="space-y-3">
+      <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+        {t("menu.importJson")}
+      </h2>
+      <div className="p-4 rounded-lg border border-border bg-card space-y-3">
+        {limitReached ? (
+          <div className="flex items-start gap-3 text-sm">
+            <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="font-medium text-destructive">{t("import.limitReached")}</p>
+              <p className="text-muted-foreground text-xs">{t("import.limitMessage")}</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">
               {remaining} {t("import.remainingToday")}
-            </DialogDescription>
-          )}
-        </DialogHeader>
-
-        <div className="py-4">
-          {limitReached ? (
-            <div className="flex flex-col items-center gap-4 py-4 text-center">
-              <AlertCircle className="h-12 w-12 text-destructive" />
-              <div className="space-y-2">
-                <p className="font-medium text-destructive">{t("import.limitReached")}</p>
-                <p className="text-sm text-muted-foreground">{t("import.limitMessage")}</p>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-4">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json,application/json"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="import-file"
-              />
-              <label
-                htmlFor="import-file"
-                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-              >
-                <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                <span className="text-sm text-muted-foreground">
-                  {isImporting ? t("import.importing") : t("import.selectFile")}
-                </span>
-                <span className="text-xs text-muted-foreground mt-1">
-                  JSON only, max 3MB
-                </span>
-              </label>
-              
-              {importError && (
-                <p className="text-sm text-destructive text-center">{importError}</p>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className="flex justify-end">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t("dialog.cancel")}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              onChange={handleFileSelect}
+              className="hidden"
+              id="settings-import-file"
+            />
+            <label
+              htmlFor="settings-import-file"
+              className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+            >
+              <Upload className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">
+                {isImporting ? t("import.importing") : t("import.selectFile")}
+              </span>
+            </label>
+            <p className="text-xs text-muted-foreground text-center">
+              JSON only, max 3MB
+            </p>
+            {importError && (
+              <p className="text-sm text-destructive text-center">{importError}</p>
+            )}
+          </>
+        )}
+      </div>
+    </section>
   );
 }

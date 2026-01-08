@@ -9,7 +9,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Clock, Copy, Trash2, ChevronDown, ChevronUp, Upload,
+  ClipboardCopy, Clock, Copy, Trash2, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,6 @@ import { StylePicker } from "@/components/StylePicker";
 import { TimelineSheet } from "@/components/TimelineSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
-import { ImportDialog } from "@/components/ImportDialog";
 
 const colorClasses: Record<NoteColor, string> = {
   default: "note-bg-default", cream: "note-bg-cream", pink: "note-bg-pink",
@@ -48,7 +47,6 @@ export default function EditorPage() {
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [clearStyleDialogOpen, setClearStyleDialogOpen] = useState(false);
   const [printDialogOpen, setPrintDialogOpen] = useState(false);
-  const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [lyricsExpanded, setLyricsExpanded] = useState(true);
   const [styleExpanded, setStyleExpanded] = useState(true);
 
@@ -284,7 +282,6 @@ export default function EditorPage() {
                 <DropdownMenuItem onClick={() => setPrintDialogOpen(true)}><Printer className="h-4 w-4 mr-2" />{t("menu.print")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setPrintDialogOpen(true)}><Printer className="h-4 w-4 mr-2" />{t("menu.exportPdf")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleExportJson}><FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setImportDialogOpen(true)}><Upload className="h-4 w-4 mr-2" />{t("menu.importJson")}</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleCopyAll}><ClipboardCopy className="h-4 w-4 mr-2" />{t("menu.copyAll")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleCopyLyrics}><Copy className="h-4 w-4 mr-2" />{t("editor.copyLyrics")}</DropdownMenuItem>
@@ -361,7 +358,6 @@ export default function EditorPage() {
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
       <TimelineSheet open={timelineOpen} onOpenChange={setTimelineOpen} createdAt={note.createdAt} timeline={note.timeline} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} />
-      <ImportDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} onImportSuccess={(n) => navigate(`/edit/${n.id}`)} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
