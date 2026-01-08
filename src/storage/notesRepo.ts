@@ -227,11 +227,11 @@ export function searchNotes(notes: Note[], query: string): Note[] {
 }
 
 /**
- * Export note as JSON with schema version
+ * Export note as JSON with schema version (updated format)
  */
 export function exportNoteAsJson(note: Note): string {
   return JSON.stringify({
-    version: STORAGE_SCHEMA_VERSION,
+    storageVersion: STORAGE_SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
     note,
   }, null, 2);

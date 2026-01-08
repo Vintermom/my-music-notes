@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getSettings, updateSettings } from "@/storage/settingsRepo";
 import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ImportSection } from "@/components/ImportDialog";
 
 // Theme config with color dots (HSL values matching index.css)
 const themes: { 
@@ -79,6 +80,9 @@ export default function SettingsPage() {
             ))}
           </div>
         </section>
+
+        {/* Import JSON */}
+        <ImportSection />
 
         {/* Help */}
         <section className="space-y-4">
