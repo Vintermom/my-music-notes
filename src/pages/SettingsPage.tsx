@@ -13,9 +13,9 @@ const themes: {
   labelKey: "settings.themeA" | "settings.themeB" | "settings.themeD";
   dotColor: string;
 }[] = [
-  { value: "theme-a", labelKey: "settings.themeA", dotColor: "hsl(35 70% 55%)" },   // Warm cream accent
-  { value: "theme-b", labelKey: "settings.themeB", dotColor: "hsl(210 15% 50%)" },  // Cool slate accent
-  { value: "theme-d", labelKey: "settings.themeD", dotColor: "hsl(35 60% 50%)" },   // Soft dark accent
+  { value: "theme-a", labelKey: "settings.themeA", dotColor: "#EED3A1" },  // Warm cream
+  { value: "theme-b", labelKey: "settings.themeB", dotColor: "#7A8A9A" },  // Cool slate
+  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#3A4552" },  // Soft dark
 ];
 
 export default function SettingsPage() {
