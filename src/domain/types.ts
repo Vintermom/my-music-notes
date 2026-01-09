@@ -10,7 +10,8 @@ export type NoteColor =
 
 export type SortOption = "updatedDesc" | "createdDesc" | "titleAsc";
 
-export type ThemeOption = "system" | "theme-a" | "theme-c" | "theme-d";
+// "system" follows OS, "theme-n" = Neutral Light (for system-light), others are manual
+export type ThemeOption = "system" | "theme-n" | "theme-a" | "theme-c" | "theme-d";
 
 // Storage schema version for migration support
 export const STORAGE_SCHEMA_VERSION = 1;

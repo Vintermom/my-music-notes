@@ -26,19 +26,20 @@ const themes: {
   { value: "system", labelKey: "settings.themeSystem", dotColor: "#888888", icon: Monitor },
   { value: "theme-a", labelKey: "settings.themeA", dotColor: "#F2EFDB", icon: Sun },
   { value: "theme-c", labelKey: "settings.themeC", dotColor: "#D2DEBF", icon: Leaf },
-  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#2A3240", icon: Moon },
+  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#1a1d24", icon: Moon },
 ];
 
-// Resolve system theme to actual theme
-function resolveSystemTheme(): "theme-a" | "theme-d" {
+// Resolve system theme to actual theme class
+// System Light → Neutral (no class = :root), System Dark → theme-d
+function resolveSystemTheme(): "theme-n" | "theme-d" {
   if (typeof window !== "undefined" && window.matchMedia) {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "theme-d" : "theme-a";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "theme-d" : "theme-n";
   }
-  return "theme-a";
+  return "theme-n";
 }
 
-// Get the effective theme (resolved from system if needed)
-function getEffectiveTheme(theme: ThemeOption): "theme-a" | "theme-c" | "theme-d" {
+// Get the effective theme class (resolved from system if needed)
+function getEffectiveTheme(theme: ThemeOption): "theme-n" | "theme-a" | "theme-c" | "theme-d" {
   if (theme === "system") {
     return resolveSystemTheme();
   }
@@ -49,7 +50,7 @@ function getEffectiveTheme(theme: ThemeOption): "theme-a" | "theme-c" | "theme-d
 function getThemeDisplayLabel(theme: ThemeOption): string {
   if (theme === "system") {
     const resolved = resolveSystemTheme();
-    const resolvedLabel = resolved === "theme-d" ? t("settings.themeD") : t("settings.themeA");
+    const resolvedLabel = resolved === "theme-d" ? t("settings.themeD") : "Light";
     return `${t("settings.themeSystem")} (${resolvedLabel})`;
   }
   const themeConfig = themes.find(th => th.value === theme);
@@ -66,9 +67,10 @@ export default function SettingsPage() {
   useEffect(() => {
     const applyTheme = () => {
       const root = document.documentElement;
-      root.classList.remove("theme-a", "theme-c", "theme-d");
+      root.classList.remove("theme-n", "theme-a", "theme-c", "theme-d");
       const effectiveTheme = getEffectiveTheme(settings.theme);
-      if (effectiveTheme !== "theme-a") {
+      // theme-n uses :root (no class needed), others add class
+      if (effectiveTheme !== "theme-n") {
         root.classList.add(effectiveTheme);
       }
     };
