@@ -65,7 +65,6 @@ export const en = {
   "menu.importJson": "Import JSON",
   "menu.copyAll": "Copy All",
   "menu.duplicate": "Duplicate",
-  "menu.timeline": "Timeline",
   "menu.delete": "Delete",
 
   // Insert sheet
@@ -93,11 +92,9 @@ export const en = {
   "settings.version": "Version 1.0.0",
   "settings.privacyNote": "All notes are stored locally on your device. No data is uploaded.",
 
-  // Timeline
-  "timeline.title": "Timeline",
-  "timeline.created": "Created",
-  "timeline.updated": "Updated",
-  "timeline.noChanges": "No changes recorded",
+  // Timestamps
+  "timestamp.lastEdited": "Last edited",
+  "timestamp.created": "Created",
 
   // Dialogs
   "dialog.deleteTitle": "Delete Note",

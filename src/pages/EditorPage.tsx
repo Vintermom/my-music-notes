@@ -9,7 +9,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Clock, Copy, Trash2, ChevronDown, ChevronUp,
+  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +22,6 @@ import { ColorPicker } from "@/components/ColorPicker";
 import { TagsInput } from "@/components/TagsInput";
 import { InsertSheet } from "@/components/InsertSheet";
 import { StylePicker } from "@/components/StylePicker";
-import { TimelineSheet } from "@/components/TimelineSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
 
@@ -42,7 +41,6 @@ export default function EditorPage() {
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
-  const [timelineOpen, setTimelineOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [clearStyleDialogOpen, setClearStyleDialogOpen] = useState(false);
@@ -347,7 +345,7 @@ export default function EditorPage() {
                 <DropdownMenuItem onClick={() => setClearDialogOpen(true)}><Trash2 className="h-4 w-4 mr-2" />{t("editor.clearLyrics")}</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleDuplicate}><Copy className="h-4 w-4 mr-2" />{t("menu.duplicate")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTimelineOpen(true)}><Clock className="h-4 w-4 mr-2" />{t("menu.timeline")}</DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)} className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4 mr-2" />{t("menu.delete")}</DropdownMenuItem>
               </DropdownMenuContent>
@@ -407,6 +405,12 @@ export default function EditorPage() {
         </div>
 
         <TagsInput value={note.tags} onChange={(tags) => updateField("tags", tags)} />
+
+        {/* Timestamp Display */}
+        <div className="text-xs text-muted-foreground space-y-1 pt-4 border-t border-border/50">
+          <p>{t("timestamp.lastEdited")}: {formatDateISO(note.updatedAt)}</p>
+          <p>{t("timestamp.created")}: {formatDateISO(note.createdAt)}</p>
+        </div>
       </main>
 
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 no-print">
@@ -415,7 +419,6 @@ export default function EditorPage() {
 
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
-      <TimelineSheet open={timelineOpen} onOpenChange={setTimelineOpen} createdAt={note.createdAt} timeline={note.timeline} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
