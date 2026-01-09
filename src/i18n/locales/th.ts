@@ -89,9 +89,8 @@ export const th: Record<TranslationKey, string> = {
   // Settings
   "settings.title": "การตั้งค่า",
   "settings.theme": "ธีม",
-  "settings.themeA": "ครีมอุ่น",
-  "settings.themeB": "สเลทเย็น",
-  "settings.themeF": "เขียวป่า",
+  "settings.themeA": "สว่าง – ครีม",
+  "settings.themeC": "สว่าง – เขียว",
   "settings.themeD": "มืด",
   "settings.about": "เกี่ยวกับ",
   "settings.version": "เวอร์ชัน 1.0.0",
