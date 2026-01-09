@@ -91,7 +91,7 @@ export const sv: Record<TranslationKey, string> = {
   "settings.theme": "Tema",
   "settings.themeA": "Varm kräm",
   "settings.themeB": "Sval skiffer",
-  "settings.themeD": "Mjuk mörk",
+  "settings.themeD": "Mörk",
   "settings.about": "Om",
   "settings.version": "Version 1.0.0",
   "settings.privacyNote": "Alla anteckningar lagras lokalt på din enhet. Ingen data laddas upp.",
