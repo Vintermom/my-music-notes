@@ -64,6 +64,7 @@ export const th: Record<TranslationKey, string> = {
   // More menu
   "menu.print": "พิมพ์",
   "menu.exportPdf": "ส่งออก PDF",
+  "menu.saveAsPdf": "บันทึกเป็น PDF",
   "menu.exportJson": "ส่งออก JSON",
   "menu.importJson": "นำเข้า JSON",
   "menu.copyAll": "คัดลอกทั้งหมด",
@@ -90,6 +91,7 @@ export const th: Record<TranslationKey, string> = {
   "settings.theme": "ธีม",
   "settings.themeA": "ครีมอุ่น",
   "settings.themeB": "สเลทเย็น",
+  "settings.themeF": "เขียวป่า",
   "settings.themeD": "มืด",
   "settings.about": "เกี่ยวกับ",
   "settings.version": "เวอร์ชัน 1.0.0",
@@ -156,6 +158,10 @@ export const th: Record<TranslationKey, string> = {
   "toast.undoApplied": "เลิกทำแล้ว",
   "toast.noUndoHistory": "ไม่มีอะไรให้เลิกทำ",
   "toast.jsonExported": "ส่งออก JSON แล้ว",
+  "toast.jsonExportedFile": "ส่งออกแล้ว: {filename}",
+  "toast.pdfSaved": "บันทึก PDF แล้ว: {filename}",
+  "toast.exportFailed": "ส่งออกไม่สำเร็จ",
+  "toast.printNotAvailable": "ไม่สามารถพิมพ์บนมือถือได้",
   "toast.insertedAt": "แทรกที่ตำแหน่งเคอร์เซอร์แล้ว",
 
   // Colors
