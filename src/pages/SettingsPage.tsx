@@ -1,41 +1,93 @@
 import { Settings, ThemeOption } from "@/domain/types";
 import { t } from "@/i18n";
-import { ArrowLeft, Check, ChevronDown, ChevronRight, Upload } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, Upload, Monitor, Sun, Moon, Leaf } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getSettings, updateSettings } from "@/storage/settingsRepo";
 import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 import { ImportDialog } from "@/components/ImportDialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
-// Theme config with color dots
+// Theme config with color dots and icons
 const themes: { 
   value: ThemeOption; 
-  labelKey: "settings.themeA" | "settings.themeC" | "settings.themeD";
+  labelKey: "settings.themeSystem" | "settings.themeA" | "settings.themeC" | "settings.themeD";
   dotColor: string;
+  icon: React.ElementType;
 }[] = [
-  { value: "theme-a", labelKey: "settings.themeA", dotColor: "#E8E4CB" },  // Cream
-  { value: "theme-c", labelKey: "settings.themeC", dotColor: "#C5D1A8" },  // Green
-  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#2A3240" },  // Dark
+  { value: "system", labelKey: "settings.themeSystem", dotColor: "#888888", icon: Monitor },
+  { value: "theme-a", labelKey: "settings.themeA", dotColor: "#F2EFDB", icon: Sun },
+  { value: "theme-c", labelKey: "settings.themeC", dotColor: "#D2DEBF", icon: Leaf },
+  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#2A3240", icon: Moon },
 ];
+
+// Resolve system theme to actual theme
+function resolveSystemTheme(): "theme-a" | "theme-d" {
+  if (typeof window !== "undefined" && window.matchMedia) {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "theme-d" : "theme-a";
+  }
+  return "theme-a";
+}
+
+// Get the effective theme (resolved from system if needed)
+function getEffectiveTheme(theme: ThemeOption): "theme-a" | "theme-c" | "theme-d" {
+  if (theme === "system") {
+    return resolveSystemTheme();
+  }
+  return theme;
+}
+
+// Get display label for current theme
+function getThemeDisplayLabel(theme: ThemeOption): string {
+  if (theme === "system") {
+    const resolved = resolveSystemTheme();
+    const resolvedLabel = resolved === "theme-d" ? t("settings.themeD") : t("settings.themeA");
+    return `${t("settings.themeSystem")} (${resolvedLabel})`;
+  }
+  const themeConfig = themes.find(th => th.value === theme);
+  return themeConfig ? t(themeConfig.labelKey) : t("settings.themeA");
+}
 
 export default function SettingsPage() {
   const navigate = useNavigate();
   const [settings, setSettings] = useState<Settings>(getSettings);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [themePickerOpen, setThemePickerOpen] = useState(false);
 
-  // Apply theme class
+  // Apply theme class and listen for system theme changes
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove("theme-a", "theme-b", "theme-c", "theme-d", "theme-e", "theme-f");
-    if (settings.theme !== "theme-a") {
-      root.classList.add(settings.theme);
+    const applyTheme = () => {
+      const root = document.documentElement;
+      root.classList.remove("theme-a", "theme-c", "theme-d");
+      const effectiveTheme = getEffectiveTheme(settings.theme);
+      if (effectiveTheme !== "theme-a") {
+        root.classList.add(effectiveTheme);
+      }
+    };
+
+    applyTheme();
+
+    // Listen for system theme changes when using system theme
+    if (settings.theme === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const handleChange = () => applyTheme();
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
     }
   }, [settings.theme]);
 
   const handleThemeChange = (theme: ThemeOption) => {
     const updated = updateSettings({ theme });
     setSettings(updated);
+    setThemePickerOpen(false);
   };
 
   return (
@@ -52,34 +104,53 @@ export default function SettingsPage() {
 
       {/* Content */}
       <main className="container max-w-xl mx-auto px-4 py-6 space-y-8">
-        {/* Theme Selection */}
+        {/* Theme Selection - Single menu item with drawer */}
         <section className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
             {t("settings.theme")}
           </h2>
-          <div className="space-y-1.5">
-            {themes.map((theme) => (
-              <button
-                key={theme.value}
-                onClick={() => handleThemeChange(theme.value)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md border transition-colors ${
-                  settings.theme === theme.value
-                    ? "border-primary/50 bg-accent/50"
-                    : "border-transparent hover:bg-accent/30"
-                }`}
-              >
-                {/* Color dot */}
-                <span 
-                  className="w-3 h-3 rounded-full shrink-0 border border-border/50"
-                  style={{ backgroundColor: theme.dotColor }}
-                />
-                <span className="text-sm flex-1 text-left">{t(theme.labelKey)}</span>
-                {settings.theme === theme.value && (
-                  <Check className="h-4 w-4 text-primary shrink-0" />
-                )}
+          <Drawer open={themePickerOpen} onOpenChange={setThemePickerOpen}>
+            <DrawerTrigger asChild>
+              <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md border border-border bg-card hover:bg-accent/30 transition-colors">
+                <span className="text-sm flex-1 text-left">{t("settings.theme")}</span>
+                <span className="text-sm text-muted-foreground">{getThemeDisplayLabel(settings.theme)}</span>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </button>
-            ))}
-          </div>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>{t("settings.theme")}</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4 pb-6 space-y-1">
+                {themes.map((theme) => {
+                  const Icon = theme.icon;
+                  return (
+                    <button
+                      key={theme.value}
+                      onClick={() => handleThemeChange(theme.value)}
+                      className={`w-full flex items-center gap-3 px-3 py-3 rounded-md transition-colors ${
+                        settings.theme === theme.value
+                          ? "bg-accent"
+                          : "hover:bg-accent/50"
+                      }`}
+                    >
+                      {/* Color dot */}
+                      <span 
+                        className="w-4 h-4 rounded-full shrink-0 border border-border/50"
+                        style={{ backgroundColor: theme.dotColor }}
+                      />
+                      {/* Icon */}
+                      <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <span className="text-sm flex-1 text-left">{t(theme.labelKey)}</span>
+                      {settings.theme === theme.value && (
+                        <Check className="h-4 w-4 text-primary shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </DrawerContent>
+          </Drawer>
         </section>
 
         {/* Import JSON */}

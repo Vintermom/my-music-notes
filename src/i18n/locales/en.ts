@@ -86,6 +86,7 @@ export const en = {
   // Settings
   "settings.title": "Settings",
   "settings.theme": "Theme",
+  "settings.themeSystem": "System",
   "settings.themeA": "Light – Cream",
   "settings.themeC": "Light – Green",
   "settings.themeD": "Dark",
