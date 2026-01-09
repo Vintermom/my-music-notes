@@ -47,20 +47,22 @@ npm run dev
 
 ### Android/Play Store Release Steps
 
-1. Install Capacitor: `npm install @capacitor/core @capacitor/cli @capacitor/android`
-2. Initialize: `npx cap init "My Music Notes" "app.lovable.mymusicnotes"`
-3. Add Android: `npx cap add android`
-4. Update `capacitor.config.ts`:
-   - Set `appId: "app.lovable.mymusicnotes"`
-   - Set `appName: "My Music Notes"`
-   - Set `webDir: "dist"`
-5. Build: `npm run build && npx cap sync`
-6. Open in Android Studio: `npx cap open android`
-7. In Android Studio:
+Capacitor is pre-configured in this project. To build for Android:
+
+1. Clone the repo and install dependencies: `npm install`
+2. Add Android platform: `npx cap add android`
+3. Build and sync: `npm run build && npx cap sync`
+4. Open in Android Studio: `npx cap open android`
+5. In Android Studio:
    - Update `versionCode` (integer, increment each release)
    - Update `versionName` (e.g., "1.0.0")
    - Generate signed APK/AAB for Play Store
-8. Ensure no unnecessary permissions in AndroidManifest.xml
+6. Ensure no unnecessary permissions in AndroidManifest.xml
+
+**Capacitor Config** (already set in `capacitor.config.ts`):
+- `appId: "app.lovable.mymusicnotes"`
+- `appName: "My Music Notes"`
+- `webDir: "dist"`
 
 ### Version Management
 
