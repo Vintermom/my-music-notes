@@ -91,7 +91,7 @@ export const th: Record<TranslationKey, string> = {
   "settings.theme": "ธีม",
   "settings.themeA": "ครีมอุ่น",
   "settings.themeB": "สเลทเย็น",
-  "settings.themeD": "มืดนุ่ม",
+  "settings.themeD": "มืด",
   "settings.about": "เกี่ยวกับ",
   "settings.version": "เวอร์ชัน 1.0.0",
   "settings.privacyNote": "โน้ตทั้งหมดจัดเก็บไว้ในเครื่องของคุณ ไม่มีข้อมูลถูกอัปโหลด",

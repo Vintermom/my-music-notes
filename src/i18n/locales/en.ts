@@ -88,7 +88,7 @@ export const en = {
   "settings.theme": "Theme",
   "settings.themeA": "Warm Cream",
   "settings.themeB": "Cool Slate",
-  "settings.themeD": "Soft Dark",
+  "settings.themeD": "Dark",
   "settings.about": "About",
   "settings.version": "Version 1.0.0",
   "settings.privacyNote": "All notes are stored locally on your device. No data is uploaded.",
