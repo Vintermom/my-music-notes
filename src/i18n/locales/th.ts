@@ -68,7 +68,6 @@ export const th: Record<TranslationKey, string> = {
   "menu.importJson": "นำเข้า JSON",
   "menu.copyAll": "คัดลอกทั้งหมด",
   "menu.duplicate": "ทำสำเนา",
-  "menu.timeline": "ไทม์ไลน์",
   "menu.delete": "ลบ",
 
   // Insert sheet
@@ -96,11 +95,9 @@ export const th: Record<TranslationKey, string> = {
   "settings.version": "เวอร์ชัน 1.0.0",
   "settings.privacyNote": "โน้ตทั้งหมดจัดเก็บไว้ในเครื่องของคุณ ไม่มีข้อมูลถูกอัปโหลด",
 
-  // Timeline
-  "timeline.title": "ไทม์ไลน์",
-  "timeline.created": "สร้างเมื่อ",
-  "timeline.updated": "อัปเดตเมื่อ",
-  "timeline.noChanges": "ไม่มีการเปลี่ยนแปลง",
+  // Timestamps
+  "timestamp.lastEdited": "แก้ไขล่าสุด",
+  "timestamp.created": "สร้างเมื่อ",
 
   // Dialogs
   "dialog.deleteTitle": "ลบโน้ต",

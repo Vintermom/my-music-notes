@@ -68,7 +68,6 @@ export const sv: Record<TranslationKey, string> = {
   "menu.importJson": "Importera JSON",
   "menu.copyAll": "Kopiera allt",
   "menu.duplicate": "Duplicera",
-  "menu.timeline": "Tidslinje",
   "menu.delete": "Radera",
 
   // Insert sheet
@@ -96,11 +95,9 @@ export const sv: Record<TranslationKey, string> = {
   "settings.version": "Version 1.0.0",
   "settings.privacyNote": "Alla anteckningar lagras lokalt på din enhet. Ingen data laddas upp.",
 
-  // Timeline
-  "timeline.title": "Tidslinje",
-  "timeline.created": "Skapad",
-  "timeline.updated": "Uppdaterad",
-  "timeline.noChanges": "Inga ändringar registrerade",
+  // Timestamps
+  "timestamp.lastEdited": "Senast redigerad",
+  "timestamp.created": "Skapad",
 
   // Dialogs
   "dialog.deleteTitle": "Radera anteckning",

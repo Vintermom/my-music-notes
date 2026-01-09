@@ -84,7 +84,7 @@ export function createNote(data?: Partial<Note>): Note {
     id: generateId(),
     createdAt: now,
     updatedAt: now,
-    timeline: [{ timestamp: now, action: "created" }],
+    timeline: [],
   };
 
   const notes = getAllNotes();
@@ -102,12 +102,8 @@ export function updateNote(id: string, updates: Partial<Omit<Note, "id" | "creat
 
   const now = Date.now();
   const currentNote = notes[index];
-  const timeline = [...currentNote.timeline, { timestamp: now, action: "updated" as const }];
-
-  // Keep only last 50 timeline entries
-  if (timeline.length > 50) {
-    timeline.splice(0, timeline.length - 50);
-  }
+  
+  // Keep existing timeline (no longer adding new entries)
 
   // Apply field limits to updates
   const sanitizedUpdates: Partial<Note> = {};
@@ -128,7 +124,7 @@ export function updateNote(id: string, updates: Partial<Omit<Note, "id" | "creat
     ...currentNote,
     ...sanitizedUpdates,
     updatedAt: now,
-    timeline,
+    timeline: currentNote.timeline,
   };
 
   // Validate the updated note
@@ -163,7 +159,7 @@ export function duplicateNote(id: string): Note | null {
     isPinned: false,
     createdAt: now,
     updatedAt: now,
-    timeline: [{ timestamp: now, action: "created" }],
+    timeline: [],
   };
 
   const notes = getAllNotes();
