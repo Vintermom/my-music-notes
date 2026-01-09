@@ -1,19 +1,28 @@
 import { en, type TranslationKey } from "./locales/en";
-// These are imported but not used at runtime yet (prepared for future)
-// import { th } from "./locales/th";
-// import { sv } from "./locales/sv";
+import { th } from "./locales/th";
+import { sv } from "./locales/sv";
 
-// Fixed to English for now - no language switch UI
-export const currentLang = "en" as const;
+const supportedLangs = ["en", "th", "sv"] as const;
+type SupportedLang = (typeof supportedLangs)[number];
 
-const translations = {
+const translations: Record<SupportedLang, Record<TranslationKey, string>> = {
   en,
-  // th,
-  // sv,
-} as const;
+  th,
+  sv,
+};
+
+function detectLanguage(): SupportedLang {
+  const browserLang = navigator.language?.split("-")[0]?.toLowerCase();
+  if (browserLang && supportedLangs.includes(browserLang as SupportedLang)) {
+    return browserLang as SupportedLang;
+  }
+  return "en";
+}
+
+export const currentLang: SupportedLang = detectLanguage();
 
 export function t(key: TranslationKey): string {
-  return translations[currentLang][key] || key;
+  return translations[currentLang][key] || translations.en[key] || key;
 }
 
 export type { TranslationKey };
