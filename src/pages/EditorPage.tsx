@@ -424,36 +424,54 @@ export default function EditorPage() {
         </div>
       </header>
 
-      <main className="container max-w-3xl mx-auto px-4 py-6 space-y-6 pb-24">
-        <Input placeholder={t("editor.title")} value={note.title} onChange={(e) => updateField("title", e.target.value)} className="text-xl font-semibold input-soft border-none bg-transparent focus-visible:ring-0 px-0" />
-        <Input placeholder={t("editor.composer")} value={note.composer} onChange={(e) => updateField("composer", e.target.value)} className="input-soft border-none bg-transparent focus-visible:ring-0 px-0 text-muted-foreground" />
+      <main className="container max-w-3xl mx-auto px-4 py-4 space-y-3 pb-24">
+        {/* Title - compact, notebook style */}
+        <Input 
+          placeholder={t("editor.title")} 
+          value={note.title} 
+          onChange={(e) => updateField("title", e.target.value)} 
+          className={`text-lg font-semibold h-9 px-2 ${isMobileApp ? "input-mobile" : "input-desktop border-transparent bg-transparent"}`}
+        />
+        {/* Composer - compact */}
+        <Input 
+          placeholder={t("editor.composer")} 
+          value={note.composer} 
+          onChange={(e) => updateField("composer", e.target.value)} 
+          className={`text-sm h-8 px-2 text-muted-foreground ${isMobileApp ? "input-mobile" : "input-desktop border-transparent bg-transparent"}`}
+        />
 
         {/* Lyrics Section */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">{t("editor.lyrics")}</label>
-              <Button variant="ghost" size="sm" onClick={() => setInsertSheetOpen(true)} className="h-7 px-2 text-xs no-print"><Plus className="h-3 w-3 mr-1" />{t("editor.insertSheet")}</Button>
+              <label className="text-xs font-medium text-muted-foreground">{t("editor.lyrics")}</label>
+              <Button variant="ghost" size="sm" onClick={() => setInsertSheetOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("editor.insertSheet")}</Button>
             </div>
-            <div className="flex items-center gap-1 no-print">
-              <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-7 px-2"><Undo2 className="h-3 w-3 mr-1" />{t("editor.undo")}</Button>
-              <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} className="h-7 w-7">{lyricsExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</Button>
+            <div className="flex items-center gap-0.5 no-print">
+              <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs"><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} className="h-6 w-6">{lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
-          <Textarea ref={lyricsRef} placeholder={t("editor.lyrics")} value={note.lyrics} onChange={(e) => updateField("lyrics", e.target.value)} className={`textarea-soft resize-none transition-all ${lyricsExpanded ? "min-h-[200px]" : "min-h-[60px] max-h-[60px]"}`} />
+          <Textarea 
+            ref={lyricsRef} 
+            placeholder={t("editor.lyrics")} 
+            value={note.lyrics} 
+            onChange={(e) => updateField("lyrics", e.target.value)} 
+            className={`resize-none transition-all text-sm ${lyricsExpanded ? "min-h-[180px]" : "min-h-[50px] max-h-[50px]"} ${isMobileApp ? "textarea-mobile" : "textarea-desktop"}`} 
+          />
         </div>
 
         {/* Style Section */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">{t("editor.style")}</label>
-              <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-7 px-2 text-xs no-print"><Plus className="h-3 w-3 mr-1" />{t("stylePicker.title")}</Button>
+              <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
+              <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
             </div>
-            <div className="flex items-center gap-1 no-print">
-              <span className="text-xs text-muted-foreground mr-2">{styleCharCount} / {styleCharLimit}</span>
-              <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-7 px-2"><Undo2 className="h-3 w-3 mr-1" />{t("editor.undo")}</Button>
-              <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} className="h-7 w-7">{styleExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</Button>
+            <div className="flex items-center gap-0.5 no-print">
+              <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
+              <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-6 px-1.5 text-xs"><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} className="h-6 w-6">{styleExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
           <Textarea 
@@ -464,14 +482,19 @@ export default function EditorPage() {
                 updateField("style", e.target.value);
               }
             }} 
-            className={`textarea-soft resize-none transition-all ${styleExpanded ? "min-h-[80px]" : "min-h-[40px] max-h-[40px]"}`} 
+            className={`resize-none transition-all text-sm ${styleExpanded ? "min-h-[70px]" : "min-h-[36px] max-h-[36px]"} ${isMobileApp ? "textarea-mobile" : "textarea-desktop"}`} 
           />
         </div>
 
-        {/* Extra Info - reduced height, secondary */}
-        <div className="space-y-2 opacity-80">
-          <label className="text-xs font-medium text-muted-foreground">{t("editor.extraInfo")}</label>
-          <Textarea placeholder={t("editor.extraInfo")} value={note.extraInfo} onChange={(e) => updateField("extraInfo", e.target.value)} className="min-h-[50px] max-h-[50px] resize-none textarea-soft text-sm" />
+        {/* Extra Info - compact */}
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground/70">{t("editor.extraInfo")}</label>
+          <Textarea 
+            placeholder={t("editor.extraInfo")} 
+            value={note.extraInfo} 
+            onChange={(e) => updateField("extraInfo", e.target.value)} 
+            className={`min-h-[40px] max-h-[40px] resize-none text-xs ${isMobileApp ? "textarea-mobile" : "textarea-desktop"}`} 
+          />
         </div>
 
         <TagsInput value={note.tags} onChange={(tags) => updateField("tags", tags)} />

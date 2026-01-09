@@ -89,9 +89,8 @@ export const sv: Record<TranslationKey, string> = {
   // Settings
   "settings.title": "Inställningar",
   "settings.theme": "Tema",
-  "settings.themeA": "Varm kräm",
-  "settings.themeB": "Sval skiffer",
-  "settings.themeF": "Skogsgrön",
+  "settings.themeA": "Ljus – Kräm",
+  "settings.themeC": "Ljus – Grön",
   "settings.themeD": "Mörk",
   "settings.about": "Om",
   "settings.version": "Version 1.0.0",

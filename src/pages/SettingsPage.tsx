@@ -8,16 +8,15 @@ import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ImportDialog } from "@/components/ImportDialog";
 
-// Theme config with color dots (HSL values matching index.css)
+// Theme config with color dots
 const themes: { 
   value: ThemeOption; 
-  labelKey: "settings.themeA" | "settings.themeB" | "settings.themeF" | "settings.themeD";
+  labelKey: "settings.themeA" | "settings.themeC" | "settings.themeD";
   dotColor: string;
 }[] = [
-  { value: "theme-a", labelKey: "settings.themeA", dotColor: "#EED3A1" },  // Warm cream
-  { value: "theme-b", labelKey: "settings.themeB", dotColor: "#7A8A9A" },  // Cool slate
-  { value: "theme-f", labelKey: "settings.themeF", dotColor: "#4A9D6E" },  // Forest green
-  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#3A4552" },  // Refined dark
+  { value: "theme-a", labelKey: "settings.themeA", dotColor: "#E8E4CB" },  // Cream
+  { value: "theme-c", labelKey: "settings.themeC", dotColor: "#C5D1A8" },  // Green
+  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#2A3240" },  // Dark
 ];
 
 export default function SettingsPage() {
@@ -71,7 +70,7 @@ export default function SettingsPage() {
               >
                 {/* Color dot */}
                 <span 
-                  className="w-3 h-3 rounded-full shrink-0"
+                  className="w-3 h-3 rounded-full shrink-0 border border-border/50"
                   style={{ backgroundColor: theme.dotColor }}
                 />
                 <span className="text-sm flex-1 text-left">{t(theme.labelKey)}</span>
