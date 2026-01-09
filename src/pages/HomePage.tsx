@@ -39,14 +39,7 @@ export default function HomePage() {
     safeSet("mobileGridCols", newValue);
   };
 
-  // Apply theme class - only support 3 themes now
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove("theme-a", "theme-b", "theme-d");
-    if (settings.theme !== "theme-a") {
-      root.classList.add(settings.theme);
-    }
-  }, [settings.theme]);
+  // Theme is now applied globally in App.tsx - no local override needed
 
   const handleCreateNote = () => {
     const note = createNote();
