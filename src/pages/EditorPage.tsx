@@ -6,10 +6,12 @@ import { getNoteById, updateNote, deleteNote, duplicateNote, downloadNoteJson } 
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
 import { useStyleHistory } from "@/hooks/useStyleHistory";
 import { useDebounce } from "@/hooks/useDebounce";
+import { isMobile, isNativePlatform } from "@/lib/platform";
+import { exportNotePdfMobile, exportNoteJsonMobile } from "@/lib/mobileExport";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp,
+  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +50,10 @@ export default function EditorPage() {
   const [printMode, setPrintMode] = useState<"print" | "pdf">("print");
   const [lyricsExpanded, setLyricsExpanded] = useState(true);
   const [styleExpanded, setStyleExpanded] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
+
+  // Platform detection
+  const isMobileApp = isMobile() && isNativePlatform();
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
   const { pushToHistory: pushStyleHistory, undo: undoStyle, canUndo: canUndoStyle, reset: resetStyleHistory } = useStyleHistory(note?.style || "");
@@ -163,6 +169,38 @@ export default function EditorPage() {
       : `(UTC${sign}${offsetHours})`;
     
     return `${year}-${month}-${day} ${hours}:${mins} ${tzString}`;
+  };
+
+  // Handle Print action - disabled on mobile
+  const handlePrintAction = () => {
+    if (isMobileApp) {
+      toast.error(t("toast.printNotAvailable"));
+      return;
+    }
+    setPrintMode("print");
+    setPrintDialogOpen(true);
+  };
+
+  // Handle PDF action - different behavior on mobile vs desktop
+  const handlePdfAction = async () => {
+    if (!note) return;
+    
+    if (isMobileApp) {
+      // Mobile: Use native PDF generation and share
+      setIsExporting(true);
+      const result = await exportNotePdfMobile(note);
+      setIsExporting(false);
+      
+      if (result.success && result.filename) {
+        toast.success(t("toast.pdfSaved").replace("{filename}", result.filename));
+      } else {
+        toast.error(t("toast.exportFailed"));
+      }
+    } else {
+      // Desktop: Use existing print dialog in PDF mode
+      setPrintMode("pdf");
+      setPrintDialogOpen(true);
+    }
   };
 
   const handlePrint = (textOnly: boolean) => {
@@ -297,7 +335,28 @@ export default function EditorPage() {
     }
   };
 
-  const handleExportJson = () => { if (note) { downloadNoteJson(note); toast.success(t("toast.jsonExported")); } };
+  // Handle JSON export - different behavior on mobile vs desktop
+  const handleExportJson = async () => {
+    if (!note) return;
+    
+    if (isMobileApp) {
+      // Mobile: Use native file system and share
+      setIsExporting(true);
+      const result = await exportNoteJsonMobile(note);
+      setIsExporting(false);
+      
+      if (result.success && result.filename) {
+        toast.success(t("toast.jsonExportedFile").replace("{filename}", result.filename));
+      } else {
+        toast.error(t("toast.exportFailed"));
+      }
+    } else {
+      // Desktop: Use existing download behavior
+      downloadNoteJson(note);
+      toast.success(t("toast.jsonExported"));
+    }
+  };
+
   const handleCopyAll = () => {
     if (!note) return;
     const content = [note.title && `Title: ${note.title}`, note.composer && `Composer: ${note.composer}`, note.lyrics && `\nLyrics:\n${note.lyrics}`, note.style && `\nStyle: ${note.style}`, note.extraInfo && `\nExtra Info: ${note.extraInfo}`, note.tags.length > 0 && `\nTags: ${note.tags.join(", ")}`].filter(Boolean).join("\n");
@@ -336,9 +395,20 @@ export default function EditorPage() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-5 w-5" /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => { setPrintMode("print"); setPrintDialogOpen(true); }}><Printer className="h-4 w-4 mr-2" />{t("menu.print")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => { setPrintMode("pdf"); setPrintDialogOpen(true); }}><Printer className="h-4 w-4 mr-2" />{t("menu.exportPdf")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExportJson}><FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}</DropdownMenuItem>
+                {/* Print - only show on desktop */}
+                {!isMobileApp && (
+                  <DropdownMenuItem onClick={handlePrintAction}>
+                    <Printer className="h-4 w-4 mr-2" />{t("menu.print")}
+                  </DropdownMenuItem>
+                )}
+                {/* PDF - different label on mobile */}
+                <DropdownMenuItem onClick={handlePdfAction} disabled={isExporting}>
+                  <FileDown className="h-4 w-4 mr-2" />
+                  {isMobileApp ? t("menu.saveAsPdf") : t("menu.exportPdf")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportJson} disabled={isExporting}>
+                  <FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleCopyAll}><ClipboardCopy className="h-4 w-4 mr-2" />{t("menu.copyAll")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleCopyLyrics}><Copy className="h-4 w-4 mr-2" />{t("editor.copyLyrics")}</DropdownMenuItem>
@@ -355,8 +425,8 @@ export default function EditorPage() {
       </header>
 
       <main className="container max-w-3xl mx-auto px-4 py-6 space-y-6 pb-24">
-        <Input placeholder={t("editor.title")} value={note.title} onChange={(e) => updateField("title", e.target.value)} className="text-xl font-semibold border-none bg-transparent focus-visible:ring-0 px-0" />
-        <Input placeholder={t("editor.composer")} value={note.composer} onChange={(e) => updateField("composer", e.target.value)} className="border-none bg-transparent focus-visible:ring-0 px-0 text-muted-foreground" />
+        <Input placeholder={t("editor.title")} value={note.title} onChange={(e) => updateField("title", e.target.value)} className="text-xl font-semibold input-soft border-none bg-transparent focus-visible:ring-0 px-0" />
+        <Input placeholder={t("editor.composer")} value={note.composer} onChange={(e) => updateField("composer", e.target.value)} className="input-soft border-none bg-transparent focus-visible:ring-0 px-0 text-muted-foreground" />
 
         {/* Lyrics Section */}
         <div className="space-y-2">
@@ -370,7 +440,7 @@ export default function EditorPage() {
               <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} className="h-7 w-7">{lyricsExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</Button>
             </div>
           </div>
-          <Textarea ref={lyricsRef} placeholder={t("editor.lyrics")} value={note.lyrics} onChange={(e) => updateField("lyrics", e.target.value)} className={`bg-background/50 border-border resize-none transition-all ${lyricsExpanded ? "min-h-[200px]" : "min-h-[60px] max-h-[60px]"}`} />
+          <Textarea ref={lyricsRef} placeholder={t("editor.lyrics")} value={note.lyrics} onChange={(e) => updateField("lyrics", e.target.value)} className={`textarea-soft resize-none transition-all ${lyricsExpanded ? "min-h-[200px]" : "min-h-[60px] max-h-[60px]"}`} />
         </div>
 
         {/* Style Section */}
@@ -394,14 +464,14 @@ export default function EditorPage() {
                 updateField("style", e.target.value);
               }
             }} 
-            className={`bg-background/50 border-border resize-none transition-all ${styleExpanded ? "min-h-[80px]" : "min-h-[40px] max-h-[40px]"}`} 
+            className={`textarea-soft resize-none transition-all ${styleExpanded ? "min-h-[80px]" : "min-h-[40px] max-h-[40px]"}`} 
           />
         </div>
 
         {/* Extra Info - reduced height, secondary */}
         <div className="space-y-2 opacity-80">
           <label className="text-xs font-medium text-muted-foreground">{t("editor.extraInfo")}</label>
-          <Textarea placeholder={t("editor.extraInfo")} value={note.extraInfo} onChange={(e) => updateField("extraInfo", e.target.value)} className="min-h-[50px] max-h-[50px] resize-none bg-background/30 border-border text-sm" />
+          <Textarea placeholder={t("editor.extraInfo")} value={note.extraInfo} onChange={(e) => updateField("extraInfo", e.target.value)} className="min-h-[50px] max-h-[50px] resize-none textarea-soft text-sm" />
         </div>
 
         <TagsInput value={note.tags} onChange={(tags) => updateField("tags", tags)} />

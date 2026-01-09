@@ -64,6 +64,7 @@ export const sv: Record<TranslationKey, string> = {
   // More menu
   "menu.print": "Skriv ut",
   "menu.exportPdf": "Exportera PDF",
+  "menu.saveAsPdf": "Spara som PDF",
   "menu.exportJson": "Exportera JSON",
   "menu.importJson": "Importera JSON",
   "menu.copyAll": "Kopiera allt",
@@ -90,6 +91,7 @@ export const sv: Record<TranslationKey, string> = {
   "settings.theme": "Tema",
   "settings.themeA": "Varm kräm",
   "settings.themeB": "Sval skiffer",
+  "settings.themeF": "Skogsgrön",
   "settings.themeD": "Mörk",
   "settings.about": "Om",
   "settings.version": "Version 1.0.0",
@@ -156,6 +158,10 @@ export const sv: Record<TranslationKey, string> = {
   "toast.undoApplied": "Ångrat",
   "toast.noUndoHistory": "Inget att ångra",
   "toast.jsonExported": "JSON exporterad",
+  "toast.jsonExportedFile": "Exporterad: {filename}",
+  "toast.pdfSaved": "PDF sparad: {filename}",
+  "toast.exportFailed": "Export misslyckades",
+  "toast.printNotAvailable": "Utskrift är inte tillgänglig på mobil",
   "toast.insertedAt": "Infogat vid markören",
 
   // Colors

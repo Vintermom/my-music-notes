@@ -11,12 +11,13 @@ import { ImportDialog } from "@/components/ImportDialog";
 // Theme config with color dots (HSL values matching index.css)
 const themes: { 
   value: ThemeOption; 
-  labelKey: "settings.themeA" | "settings.themeB" | "settings.themeD";
+  labelKey: "settings.themeA" | "settings.themeB" | "settings.themeF" | "settings.themeD";
   dotColor: string;
 }[] = [
   { value: "theme-a", labelKey: "settings.themeA", dotColor: "#EED3A1" },  // Warm cream
   { value: "theme-b", labelKey: "settings.themeB", dotColor: "#7A8A9A" },  // Cool slate
-  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#3A4552" },  // Soft dark
+  { value: "theme-f", labelKey: "settings.themeF", dotColor: "#4A9D6E" },  // Forest green
+  { value: "theme-d", labelKey: "settings.themeD", dotColor: "#3A4552" },  // Refined dark
 ];
 
 export default function SettingsPage() {
@@ -27,7 +28,7 @@ export default function SettingsPage() {
   // Apply theme class
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove("theme-a", "theme-b", "theme-c", "theme-d", "theme-e");
+    root.classList.remove("theme-a", "theme-b", "theme-c", "theme-d", "theme-e", "theme-f");
     if (settings.theme !== "theme-a") {
       root.classList.add(settings.theme);
     }

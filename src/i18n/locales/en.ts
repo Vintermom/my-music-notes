@@ -61,6 +61,7 @@ export const en = {
   // More menu
   "menu.print": "Print",
   "menu.exportPdf": "Export PDF",
+  "menu.saveAsPdf": "Save as PDF",
   "menu.exportJson": "Export JSON",
   "menu.importJson": "Import JSON",
   "menu.copyAll": "Copy All",
@@ -87,6 +88,7 @@ export const en = {
   "settings.theme": "Theme",
   "settings.themeA": "Warm Cream",
   "settings.themeB": "Cool Slate",
+  "settings.themeF": "Forest Green",
   "settings.themeD": "Dark",
   "settings.about": "About",
   "settings.version": "Version 1.0.0",
@@ -153,6 +155,10 @@ export const en = {
   "toast.undoApplied": "Undo applied",
   "toast.noUndoHistory": "Nothing to undo",
   "toast.jsonExported": "JSON exported",
+  "toast.jsonExportedFile": "Exported: {filename}",
+  "toast.pdfSaved": "PDF saved: {filename}",
+  "toast.exportFailed": "Export failed",
+  "toast.printNotAvailable": "Print is not available on mobile",
   "toast.insertedAt": "Inserted at cursor",
 
   // Colors
