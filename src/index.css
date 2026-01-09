@@ -6,40 +6,86 @@
 
 @layer base {
   :root {
-    /* Theme A - Light Cream (#F2EFDB base) */
-    --background: 48 45% 90%;
-    --foreground: 35 30% 15%;
+    /* Theme N - Neutral Light (pure white, OS-like) - DEFAULT for System Light */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 15%;
 
-    --card: 48 50% 94%;
-    --card-foreground: 35 30% 15%;
+    --card: 0 0% 98%;
+    --card-foreground: 220 15% 15%;
 
-    --popover: 48 50% 96%;
-    --popover-foreground: 35 30% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 30 65% 45%;
+    --primary: 220 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 35% 88%;
-    --secondary-foreground: 35 25% 25%;
+    --secondary: 220 10% 94%;
+    --secondary-foreground: 220 15% 25%;
 
-    --muted: 45 30% 90%;
-    --muted-foreground: 35 15% 40%;
+    --muted: 220 10% 96%;
+    --muted-foreground: 220 10% 45%;
 
-    --accent: 30 50% 88%;
-    --accent-foreground: 30 65% 35%;
+    --accent: 220 15% 92%;
+    --accent-foreground: 220 70% 45%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 45 25% 82%;
-    --input: 45 30% 86%;
-    --ring: 30 65% 45%;
+    --border: 220 10% 88%;
+    --input: 220 10% 94%;
+    --ring: 220 70% 50%;
 
     --radius: 0.75rem;
 
     /* Note colors - soft pastels */
-    --note-default: 48 50% 94%;
-    --note-cream: 45 60% 92%;
+    --note-default: 0 0% 98%;
+    --note-cream: 45 60% 94%;
+    --note-pink: 350 55% 96%;
+    --note-blue: 210 55% 96%;
+    --note-green: 145 45% 94%;
+    --note-yellow: 50 65% 94%;
+    --note-purple: 280 45% 96%;
+    --note-orange: 30 65% 94%;
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px 0 hsl(220 15% 15% / 0.06), 0 1px 2px -1px hsl(220 15% 15% / 0.04);
+    --shadow-card-hover: 0 4px 12px 0 hsl(220 15% 15% / 0.1), 0 2px 4px -2px hsl(220 15% 15% / 0.06);
+    --shadow-fab: 0 4px 16px 0 hsl(220 70% 50% / 0.35);
+    --shadow-sheet: 0 -4px 24px 0 hsl(220 15% 15% / 0.1);
+  }
+
+  .theme-a {
+    /* Theme A - Light Cream (#F2EFDB base) - warmer, higher contrast */
+    --background: 48 50% 91%;
+    --foreground: 35 35% 12%;
+
+    --card: 48 55% 95%;
+    --card-foreground: 35 35% 12%;
+
+    --popover: 48 55% 97%;
+    --popover-foreground: 35 35% 12%;
+
+    --primary: 30 70% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 45 40% 86%;
+    --secondary-foreground: 35 30% 22%;
+
+    --muted: 45 35% 88%;
+    --muted-foreground: 35 20% 35%;
+
+    --accent: 30 55% 86%;
+    --accent-foreground: 30 70% 32%;
+
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 45 30% 78%;
+    --input: 45 35% 84%;
+    --ring: 30 70% 42%;
+
+    --note-default: 48 55% 95%;
+    --note-cream: 45 65% 92%;
     --note-pink: 350 55% 94%;
     --note-blue: 210 55% 94%;
     --note-green: 145 45% 92%;
@@ -47,101 +93,100 @@
     --note-purple: 280 45% 94%;
     --note-orange: 30 65% 92%;
 
-    /* Shadows */
-    --shadow-card: 0 1px 3px 0 hsl(35 30% 15% / 0.08), 0 1px 2px -1px hsl(35 30% 15% / 0.06);
-    --shadow-card-hover: 0 4px 12px 0 hsl(35 30% 15% / 0.12), 0 2px 4px -2px hsl(35 30% 15% / 0.08);
-    --shadow-fab: 0 4px 16px 0 hsl(30 65% 45% / 0.35);
-    --shadow-sheet: 0 -4px 24px 0 hsl(35 30% 15% / 0.12);
+    --shadow-card: 0 1px 3px 0 hsl(35 35% 12% / 0.08), 0 1px 2px -1px hsl(35 35% 12% / 0.06);
+    --shadow-card-hover: 0 4px 12px 0 hsl(35 35% 12% / 0.12), 0 2px 4px -2px hsl(35 35% 12% / 0.08);
+    --shadow-fab: 0 4px 16px 0 hsl(30 70% 42% / 0.35);
+    --shadow-sheet: 0 -4px 24px 0 hsl(35 35% 12% / 0.12);
   }
 
   .theme-c {
-    /* Theme C - Light Green (#D2DEBF base) */
-    --background: 90 30% 85%;
-    --foreground: 100 25% 15%;
+    /* Theme C - Light Green (#D2DEBF base) - higher contrast */
+    --background: 90 32% 86%;
+    --foreground: 100 30% 12%;
 
-    --card: 90 35% 90%;
-    --card-foreground: 100 25% 15%;
+    --card: 90 38% 91%;
+    --card-foreground: 100 30% 12%;
 
-    --popover: 90 35% 92%;
-    --popover-foreground: 100 25% 15%;
+    --popover: 90 38% 93%;
+    --popover-foreground: 100 30% 12%;
 
-    --primary: 140 45% 38%;
+    --primary: 140 50% 35%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 90 25% 82%;
-    --secondary-foreground: 100 20% 25%;
+    --secondary: 90 28% 80%;
+    --secondary-foreground: 100 25% 22%;
 
-    --muted: 90 20% 85%;
-    --muted-foreground: 100 15% 40%;
+    --muted: 90 24% 83%;
+    --muted-foreground: 100 18% 35%;
 
-    --accent: 140 35% 82%;
-    --accent-foreground: 140 45% 28%;
+    --accent: 140 38% 80%;
+    --accent-foreground: 140 50% 25%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 90 20% 75%;
-    --input: 90 25% 80%;
-    --ring: 140 45% 38%;
+    --border: 90 22% 72%;
+    --input: 90 28% 78%;
+    --ring: 140 50% 35%;
 
-    --note-default: 90 35% 90%;
+    --note-default: 90 38% 91%;
     --note-cream: 45 50% 90%;
     --note-pink: 350 45% 92%;
     --note-blue: 210 45% 90%;
-    --note-green: 120 40% 88%;
+    --note-green: 120 42% 88%;
     --note-yellow: 50 55% 90%;
     --note-purple: 280 35% 92%;
     --note-orange: 30 55% 90%;
 
-    --shadow-card: 0 1px 3px 0 hsl(100 25% 15% / 0.08), 0 1px 2px -1px hsl(100 25% 15% / 0.06);
-    --shadow-card-hover: 0 4px 12px 0 hsl(100 25% 15% / 0.12), 0 2px 4px -2px hsl(100 25% 15% / 0.08);
-    --shadow-fab: 0 4px 16px 0 hsl(140 45% 38% / 0.35);
-    --shadow-sheet: 0 -4px 24px 0 hsl(100 25% 15% / 0.12);
+    --shadow-card: 0 1px 3px 0 hsl(100 30% 12% / 0.08), 0 1px 2px -1px hsl(100 30% 12% / 0.06);
+    --shadow-card-hover: 0 4px 12px 0 hsl(100 30% 12% / 0.12), 0 2px 4px -2px hsl(100 30% 12% / 0.08);
+    --shadow-fab: 0 4px 16px 0 hsl(140 50% 35% / 0.35);
+    --shadow-sheet: 0 -4px 24px 0 hsl(100 30% 12% / 0.12);
   }
 
   .theme-d {
-    /* Theme D - Dark (harmonious deep) */
-    --background: 225 20% 11%;
-    --foreground: 220 15% 88%;
+    /* Theme D - Dark (refined harmony, better contrast) */
+    --background: 225 22% 10%;
+    --foreground: 220 20% 92%;
 
-    --card: 225 18% 15%;
-    --card-foreground: 220 15% 88%;
+    --card: 225 20% 14%;
+    --card-foreground: 220 20% 92%;
 
-    --popover: 225 18% 15%;
-    --popover-foreground: 220 15% 88%;
+    --popover: 225 20% 14%;
+    --popover-foreground: 220 20% 92%;
 
-    --primary: 200 80% 55%;
-    --primary-foreground: 225 20% 8%;
+    --primary: 200 85% 58%;
+    --primary-foreground: 225 22% 8%;
 
-    --secondary: 225 15% 22%;
-    --secondary-foreground: 220 15% 75%;
+    --secondary: 225 16% 20%;
+    --secondary-foreground: 220 18% 78%;
 
-    --muted: 225 15% 18%;
-    --muted-foreground: 220 10% 50%;
+    --muted: 225 16% 16%;
+    --muted-foreground: 220 12% 55%;
 
-    --accent: 200 35% 22%;
-    --accent-foreground: 200 80% 65%;
+    --accent: 200 40% 20%;
+    --accent-foreground: 200 85% 68%;
 
-    --destructive: 0 65% 50%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 225 12% 25%;
-    --input: 225 15% 20%;
-    --ring: 200 80% 55%;
+    --border: 225 14% 22%;
+    --input: 225 16% 18%;
+    --ring: 200 85% 58%;
 
-    --note-default: 225 18% 15%;
-    --note-cream: 45 10% 18%;
-    --note-pink: 350 10% 18%;
-    --note-blue: 210 15% 18%;
-    --note-green: 145 10% 16%;
-    --note-yellow: 50 12% 17%;
-    --note-purple: 280 10% 18%;
-    --note-orange: 30 12% 18%;
+    --note-default: 225 20% 14%;
+    --note-cream: 45 12% 16%;
+    --note-pink: 350 12% 16%;
+    --note-blue: 210 18% 16%;
+    --note-green: 145 12% 15%;
+    --note-yellow: 50 14% 15%;
+    --note-purple: 280 12% 16%;
+    --note-orange: 30 14% 16%;
 
-    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.35), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
-    --shadow-card-hover: 0 4px 12px 0 hsl(0 0% 0% / 0.45), 0 2px 4px -2px hsl(0 0% 0% / 0.35);
-    --shadow-fab: 0 4px 16px 0 hsl(200 80% 55% / 0.4);
-    --shadow-sheet: 0 -4px 24px 0 hsl(0 0% 0% / 0.45);
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px -1px hsl(0 0% 0% / 0.35);
+    --shadow-card-hover: 0 4px 12px 0 hsl(0 0% 0% / 0.5), 0 2px 4px -2px hsl(0 0% 0% / 0.4);
+    --shadow-fab: 0 4px 16px 0 hsl(200 85% 58% / 0.45);
+    --shadow-sheet: 0 -4px 24px 0 hsl(0 0% 0% / 0.5);
   }
 }
 
@@ -253,29 +298,31 @@
     }
   }
 
-  /* Mobile input - filled, no borders */
+  /* Mobile input - filled backgrounds, no borders/rings, subtle focus */
   .input-mobile {
-    @apply bg-muted/80 rounded-lg px-3 py-2 text-foreground;
-    @apply border-0 outline-none;
+    @apply bg-muted rounded-lg px-3 py-1.5 text-foreground text-sm;
+    @apply border-0 outline-none ring-0;
     @apply transition-all duration-150;
   }
   .input-mobile:focus {
-    @apply bg-muted shadow-sm;
+    @apply bg-accent/60;
+    box-shadow: 0 1px 4px 0 hsl(var(--foreground) / 0.06);
   }
   .input-mobile::placeholder {
-    @apply text-muted-foreground/60;
+    @apply text-muted-foreground/70;
   }
 
   .textarea-mobile {
-    @apply bg-muted/80 rounded-lg px-3 py-2 text-foreground;
-    @apply border-0 outline-none resize-none;
+    @apply bg-muted rounded-lg px-3 py-2 text-foreground text-sm;
+    @apply border-0 outline-none ring-0 resize-none;
     @apply transition-all duration-150;
   }
   .textarea-mobile:focus {
-    @apply bg-muted shadow-sm;
+    @apply bg-accent/60;
+    box-shadow: 0 1px 4px 0 hsl(var(--foreground) / 0.06);
   }
   .textarea-mobile::placeholder {
-    @apply text-muted-foreground/60;
+    @apply text-muted-foreground/70;
   }
 
   /* Desktop input - soft borders (unchanged) */
