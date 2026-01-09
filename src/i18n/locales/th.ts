@@ -89,6 +89,7 @@ export const th: Record<TranslationKey, string> = {
   // Settings
   "settings.title": "การตั้งค่า",
   "settings.theme": "ธีม",
+  "settings.themeSystem": "ระบบ",
   "settings.themeA": "สว่าง – ครีม",
   "settings.themeC": "สว่าง – เขียว",
   "settings.themeD": "มืด",

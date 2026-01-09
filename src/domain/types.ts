@@ -10,7 +10,7 @@ export type NoteColor =
 
 export type SortOption = "updatedDesc" | "createdDesc" | "titleAsc";
 
-export type ThemeOption = "theme-a" | "theme-c" | "theme-d";
+export type ThemeOption = "system" | "theme-a" | "theme-c" | "theme-d";
 
 // Storage schema version for migration support
 export const STORAGE_SCHEMA_VERSION = 1;
@@ -90,7 +90,7 @@ export const DEFAULT_NOTE: Omit<Note, "id" | "createdAt" | "updatedAt" | "timeli
 };
 
 export const DEFAULT_SETTINGS: Settings = {
-  theme: "theme-a",
+  theme: "system",
   defaultSort: "updatedDesc",
 };
 
