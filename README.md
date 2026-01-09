@@ -73,3 +73,5 @@ Capacitor is pre-configured in this project. To build for Android:
 ## License
 
 MIT
+
+sync-check
