@@ -233,12 +233,10 @@ export default function EditorPage() {
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.updated")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.updatedAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${timestampLabel}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
       
-      // Export metadata
-      if (isPdf) {
-        lines.push(`<hr style="border:none;border-top:1px solid #eee;margin:0.75rem 0;" />`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedFrom")}:</span> <span style="${footerValueStyle}">${t("print.exportedFromDesktop")}</span></p>`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.appVersion")}:</span> <span style="${footerValueStyle}">${APP_VERSION}</span></p>`);
-      }
+      // Export metadata (shown for both PDF and Print)
+      lines.push(`<hr style="border:none;border-top:1px solid #eee;margin:0.75rem 0;" />`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedFrom")}:</span> <span style="${footerValueStyle}">${t("print.exportedFromDesktop")}</span></p>`);
+      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.appVersion")}:</span> <span style="${footerValueStyle}">${APP_VERSION}</span></p>`);
       lines.push(`</div>`);
       
       const w = window.open("", "_blank");
