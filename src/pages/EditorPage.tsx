@@ -235,12 +235,9 @@ export default function EditorPage() {
       
       // Export metadata
       if (isPdf) {
-        const langLabel = currentLang === "th" ? t("print.langThai") : currentLang === "sv" ? t("print.langSwedish") : t("print.langEnglish");
         lines.push(`<hr style="border:none;border-top:1px solid #eee;margin:0.75rem 0;" />`);
         lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedFrom")}:</span> <span style="${footerValueStyle}">${t("print.exportedFromDesktop")}</span></p>`);
         lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.appVersion")}:</span> <span style="${footerValueStyle}">${APP_VERSION}</span></p>`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.uiLanguage")}:</span> <span style="${footerValueStyle}">${langLabel}</span></p>`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedAt")}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
       }
       lines.push(`</div>`);
       
