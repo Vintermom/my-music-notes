@@ -112,14 +112,10 @@ export function PrintDialog({ open, onOpenChange, note, onPrint, mode = "print" 
               <p><span className="font-bold text-black">{t("print.updated")}:</span> <span className="font-normal">{formatDateISO(note.updatedAt)}</span></p>
               <p><span className="font-bold text-black">{isPdfMode ? t("print.saved") : t("print.printed")}:</span> <span className="font-normal">{formatDateISO(Date.now())}</span></p>
               
-              {/* Export metadata (PDF only) */}
-              {isPdfMode && (
-                <>
-                  <hr className="border-gray-200 my-1" />
-                  <p><span className="font-bold text-black">{t("print.exportedFrom")}:</span> <span className="font-normal">{t("print.exportedFromDesktop")}</span></p>
-                  <p><span className="font-bold text-black">{t("print.appVersion")}:</span> <span className="font-normal">{APP_VERSION}</span></p>
-                </>
-              )}
+              {/* Export metadata (shown for both PDF and Print) */}
+              <hr className="border-gray-200 my-1" />
+              <p><span className="font-bold text-black">{t("print.exportedFrom")}:</span> <span className="font-normal">{t("print.exportedFromDesktop")}</span></p>
+              <p><span className="font-bold text-black">{t("print.appVersion")}:</span> <span className="font-normal">{APP_VERSION}</span></p>
             </div>
           </div>
         </div>
