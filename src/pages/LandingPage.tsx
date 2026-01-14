@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Music, Download, Play } from "lucide-react";
+import { Download, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { t, getCurrentLang, setLanguage, type SupportedLang } from "@/i18n";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import appIcon from "@/assets/app-icon.png";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -47,13 +48,12 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         {/* Logo / Icon */}
-        <div className="mb-8 relative">
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br from-rose-500 via-orange-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-orange-500/30">
-            <Music className="w-12 h-12 md:w-16 md:h-16 text-white" />
-          </div>
-          <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg">
-            <span className="text-white text-xs">♪</span>
-          </div>
+        <div className="mb-12">
+          <img 
+            src={appIcon} 
+            alt="My Music Notes" 
+            className="w-24 h-24 md:w-32 md:h-32 rounded-3xl shadow-2xl shadow-orange-500/30"
+          />
         </div>
 
         {/* App Name */}
