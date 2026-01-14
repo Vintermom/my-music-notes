@@ -61,7 +61,7 @@ export default function EditorPage() {
         resetLyricsHistory(loadedNote.lyrics);
         resetStyleHistory(loadedNote.style);
       } else {
-        navigate("/");
+        navigate("/app");
       }
     }
   }, [id, navigate, resetLyricsHistory, resetStyleHistory]);
@@ -331,7 +331,7 @@ export default function EditorPage() {
     toast.success(t("toast.allCopied"));
   };
   const handleDuplicate = () => { if (note) { const dup = duplicateNote(note.id); if (dup) { toast.success(t("toast.noteDuplicated")); navigate(`/edit/${dup.id}`); } } };
-  const confirmDelete = () => { if (note) { deleteNote(note.id); toast.success(t("toast.noteDeleted")); navigate("/"); } };
+  const confirmDelete = () => { if (note) { deleteNote(note.id); toast.success(t("toast.noteDeleted")); navigate("/app"); } };
   const handleTogglePin = () => { if (!note) return; updateField("isPinned", !note.isPinned); toast.success(note.isPinned ? t("toast.noteUnpinned") : t("toast.notePinned")); };
 
   const styleCharCount = note?.style?.length || 0;
@@ -344,7 +344,7 @@ export default function EditorPage() {
       <header className="sticky top-0 z-10 bg-inherit border-b border-border/50 no-print">
         <div className="container max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}><ArrowLeft className="h-5 w-5" /></Button>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/app")}><ArrowLeft className="h-5 w-5" /></Button>
             {/* Auto-save indicator */}
             {autoSaveStatus !== "idle" && (
               <span className="text-xs text-muted-foreground">

@@ -173,6 +173,7 @@ export const sv: Record<TranslationKey, string> = {
   "toast.exportFailed": "Export misslyckades",
   "toast.printNotAvailable": "Utskrift är inte tillgänglig på mobil",
   "toast.insertedAt": "Infogat vid markören",
+  "toast.demoCopySaved": "Din kopia har sparats!",
 
   // Colors
   "color.default": "Standard",
@@ -183,4 +184,21 @@ export const sv: Record<TranslationKey, string> = {
   "color.yellow": "Gul",
   "color.purple": "Lila",
   "color.orange": "Orange",
+
+  // Landing page
+  "landing.tagline": "Skriv låtar. Bevara dem säkert.",
+  "landing.supporting": "En enkel plats att skriva låtar, på ditt sätt.",
+  "landing.installApp": "Installera appen",
+  "landing.tryDemo": "Prova demo",
+  "landing.about": "Om",
+  "landing.copyright": "© My Music Notes",
+
+  // Demo mode
+  "demo.badge": "Demo",
+  "demo.helper": "Spara skapar din egen kopia",
+  "demo.sampleTitle": "Sommarbris",
+  "demo.sampleComposer": "Demo Artist",
+  "demo.sampleLyrics": "[Intro]\n\n[Vers 1]\nMorgonljuset kommer genom mitt fönster...",
+  "demo.sampleStyle": "Akustisk, Drömmande, Folk Pop",
+  "demo.sampleTags": "demo, akustisk, sommar",
 };

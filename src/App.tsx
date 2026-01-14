@@ -8,8 +8,10 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { LocalFirstNotice } from "@/components/LocalFirstNotice";
 import { getSettings } from "@/storage/settingsRepo";
 import { ThemeOption } from "@/domain/types";
+import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import EditorPage from "./pages/EditorPage";
+import DemoPage from "./pages/DemoPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
@@ -77,7 +79,9 @@ const App = () => {
         <LocalFirstNotice />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/app" element={<HomePage />} />
+            <Route path="/demo" element={<DemoPage />} />
             <Route path="/edit/:id" element={<EditorPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<NotFound />} />

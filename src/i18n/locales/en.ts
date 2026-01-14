@@ -11,6 +11,23 @@ export const en = {
   // App
   "app.name": "My Music Notes",
 
+  // Landing page
+  "landing.tagline": "Write songs. Keep them safe.",
+  "landing.supporting": "A simple place to write songs, your way.",
+  "landing.installApp": "Install App",
+  "landing.tryDemo": "Try Demo",
+  "landing.about": "About",
+  "landing.copyright": "© My Music Notes",
+
+  // Demo mode
+  "demo.badge": "Demo",
+  "demo.helper": "Saving creates your own copy",
+  "demo.sampleTitle": "Summer Breeze",
+  "demo.sampleComposer": "Demo Artist",
+  "demo.sampleLyrics": "[Intro]\n\n[Verse 1]\nThe morning light comes through my window\nSoft and golden, warm and slow\n(Whispered) Like a secret the sun wants to share\n\n[Chorus]\nSummer breeze, take me away\nTo a place where I can stay\nWhere the music never ends\nAnd the melody transcends\n\n[Verse 2]\nI pick up my guitar and start to play\nWords and notes find their way\n(Spoken) Sometimes the best songs write themselves\n\n[Bridge]\nIn the quiet of this room\nMelodies begin to bloom\n\n[Outro]\n(Humming) Mmm...",
+  "demo.sampleStyle": "Acoustic, Dreamy, Folk Pop",
+  "demo.sampleTags": "demo, acoustic, summer",
+
   // Home
   "home.pinnedNotes": "Pinned",
   "home.otherNotes": "Notes",
@@ -170,6 +187,7 @@ export const en = {
   "toast.exportFailed": "Export failed",
   "toast.printNotAvailable": "Print is not available on mobile",
   "toast.insertedAt": "Inserted at cursor",
+  "toast.demoCopySaved": "Your copy has been saved!",
 
   // Colors
   "color.default": "Default",
