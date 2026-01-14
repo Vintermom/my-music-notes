@@ -48,7 +48,7 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         {/* Logo / Icon */}
-        <div className="mb-12">
+        <div className="mb-6">
           <img 
             src={appIcon} 
             alt="My Music Notes" 
@@ -57,7 +57,7 @@ export default function LandingPage() {
         </div>
 
         {/* App Name */}
-        <h1 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-orange-600 to-purple-700 mb-4 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-orange-600 to-purple-700 mb-3 text-center">
           {t("app.name")}
         </h1>
 
