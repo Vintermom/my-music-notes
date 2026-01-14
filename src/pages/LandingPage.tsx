@@ -52,7 +52,7 @@ export default function LandingPage() {
           <img 
             src={appIcon} 
             alt="My Music Notes" 
-            className="w-24 h-24 md:w-32 md:h-32 rounded-3xl shadow-2xl shadow-orange-500/30"
+            className="w-[100px] h-[100px] md:w-[130px] md:h-[130px] rounded-3xl shadow-2xl shadow-orange-500/30"
           />
         </div>
 
