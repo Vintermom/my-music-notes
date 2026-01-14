@@ -1,4 +1,4 @@
-import { t, currentLang } from "@/i18n";
+import { t } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
 import { Note } from "@/domain/types";
 import {
@@ -118,8 +118,6 @@ export function PrintDialog({ open, onOpenChange, note, onPrint, mode = "print" 
                   <hr className="border-gray-200 my-1" />
                   <p><span className="font-bold text-black">{t("print.exportedFrom")}:</span> <span className="font-normal">{t("print.exportedFromDesktop")}</span></p>
                   <p><span className="font-bold text-black">{t("print.appVersion")}:</span> <span className="font-normal">{APP_VERSION}</span></p>
-                  <p><span className="font-bold text-black">{t("print.uiLanguage")}:</span> <span className="font-normal">{currentLang === "th" ? t("print.langThai") : currentLang === "sv" ? t("print.langSwedish") : t("print.langEnglish")}</span></p>
-                  <p><span className="font-bold text-black">{t("print.exportedAt")}:</span> <span className="font-normal">{formatDateISO(Date.now())}</span></p>
                 </>
               )}
             </div>
