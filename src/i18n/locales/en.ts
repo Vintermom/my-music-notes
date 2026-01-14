@@ -91,8 +91,18 @@ export const en = {
   "settings.themeC": "Light – Green",
   "settings.themeD": "Dark",
   "settings.about": "About",
-  "settings.version": "Version 1.0.0",
+  "settings.version": "Version",
   "settings.privacyNote": "All notes are stored locally on your device. No data is uploaded.",
+
+  // PDF export metadata
+  "print.exportedFrom": "Exported from",
+  "print.exportedFromDesktop": "Desktop (Web)",
+  "print.appVersion": "App version",
+  "print.uiLanguage": "UI language",
+  "print.exportedAt": "Exported at",
+  "print.langEnglish": "English",
+  "print.langThai": "Thai",
+  "print.langSwedish": "Swedish",
 
   // Timestamps
   "timestamp.lastEdited": "Last edited",

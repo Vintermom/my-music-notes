@@ -94,8 +94,18 @@ export const sv: Record<TranslationKey, string> = {
   "settings.themeC": "Ljus – Grön",
   "settings.themeD": "Mörk",
   "settings.about": "Om",
-  "settings.version": "Version 1.0.0",
+  "settings.version": "Version",
   "settings.privacyNote": "Alla anteckningar lagras lokalt på din enhet. Ingen data laddas upp.",
+
+  // PDF export metadata
+  "print.exportedFrom": "Exporterad från",
+  "print.exportedFromDesktop": "Skrivbord (Webb)",
+  "print.appVersion": "Appversion",
+  "print.uiLanguage": "UI-språk",
+  "print.exportedAt": "Exporterad",
+  "print.langEnglish": "Engelska",
+  "print.langThai": "Thai",
+  "print.langSwedish": "Svenska",
 
   // Timestamps
   "timestamp.lastEdited": "Senast redigerad",
