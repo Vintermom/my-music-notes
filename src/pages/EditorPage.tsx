@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
-import { t } from "@/i18n";
+import { t, currentLang } from "@/i18n";
+import { APP_VERSION } from "@/lib/appVersion";
 import { getNoteById, updateNote, deleteNote, duplicateNote, downloadNoteJson } from "@/storage/notesRepo";
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
 import { useStyleHistory } from "@/hooks/useStyleHistory";
@@ -231,6 +232,16 @@ export default function EditorPage() {
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.created")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.createdAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.updated")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.updatedAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${timestampLabel}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
+      
+      // Export metadata
+      if (isPdf) {
+        const langLabel = currentLang === "th" ? t("print.langThai") : currentLang === "sv" ? t("print.langSwedish") : t("print.langEnglish");
+        lines.push(`<hr style="border:none;border-top:1px solid #eee;margin:0.75rem 0;" />`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedFrom")}:</span> <span style="${footerValueStyle}">${t("print.exportedFromDesktop")}</span></p>`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.appVersion")}:</span> <span style="${footerValueStyle}">${APP_VERSION}</span></p>`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.uiLanguage")}:</span> <span style="${footerValueStyle}">${langLabel}</span></p>`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedAt")}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
+      }
       lines.push(`</div>`);
       
       const w = window.open("", "_blank");
@@ -298,6 +309,16 @@ export default function EditorPage() {
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.created")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.createdAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.updated")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.updatedAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${timestampLabel}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
+      
+      // Export metadata
+      if (isPdf) {
+        const langLabel = currentLang === "th" ? t("print.langThai") : currentLang === "sv" ? t("print.langSwedish") : t("print.langEnglish");
+        lines.push(`<hr style="border:none;border-top:1px solid #eee;margin:0.75rem 0;" />`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedFrom")}:</span> <span style="${footerValueStyle}">${t("print.exportedFromDesktop")}</span></p>`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.appVersion")}:</span> <span style="${footerValueStyle}">${APP_VERSION}</span></p>`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.uiLanguage")}:</span> <span style="${footerValueStyle}">${langLabel}</span></p>`);
+        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedAt")}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
+      }
       lines.push(`</div>`);
       lines.push(`</div>`);
       

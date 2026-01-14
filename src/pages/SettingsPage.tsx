@@ -1,5 +1,6 @@
 import { Settings, ThemeOption } from "@/domain/types";
 import { t } from "@/i18n";
+import { APP_VERSION } from "@/lib/appVersion";
 import { ArrowLeft, Check, ChevronRight, Upload, Monitor, Sun, Moon, Leaf } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -200,7 +201,7 @@ export default function SettingsPage() {
           </h2>
           <div className="p-4 rounded-lg border border-border bg-card space-y-2">
             <p className="text-foreground font-medium">{t("app.name")}</p>
-            <p className="text-sm text-muted-foreground">{t("settings.version")}</p>
+            <p className="text-sm text-muted-foreground">{t("settings.version")} {APP_VERSION}</p>
             <p className="text-xs text-muted-foreground mt-3">{t("settings.privacyNote")}</p>
           </div>
         </section>

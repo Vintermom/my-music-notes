@@ -94,8 +94,18 @@ export const th: Record<TranslationKey, string> = {
   "settings.themeC": "สว่าง – เขียว",
   "settings.themeD": "มืด",
   "settings.about": "เกี่ยวกับ",
-  "settings.version": "เวอร์ชัน 1.0.0",
+  "settings.version": "เวอร์ชัน",
   "settings.privacyNote": "โน้ตทั้งหมดจัดเก็บไว้ในเครื่องของคุณ ไม่มีข้อมูลถูกอัปโหลด",
+
+  // PDF export metadata
+  "print.exportedFrom": "ส่งออกจาก",
+  "print.exportedFromDesktop": "เดสก์ท็อป (เว็บ)",
+  "print.appVersion": "เวอร์ชันแอป",
+  "print.uiLanguage": "ภาษา UI",
+  "print.exportedAt": "ส่งออกเมื่อ",
+  "print.langEnglish": "อังกฤษ",
+  "print.langThai": "ไทย",
+  "print.langSwedish": "สวีเดน",
 
   // Timestamps
   "timestamp.lastEdited": "แก้ไขล่าสุด",
