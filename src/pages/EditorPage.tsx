@@ -6,8 +6,6 @@ import { getNoteById, updateNote, deleteNote, duplicateNote, downloadNoteJson } 
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
 import { useStyleHistory } from "@/hooks/useStyleHistory";
 import { useDebounce } from "@/hooks/useDebounce";
-import { isMobile, isNativePlatform } from "@/lib/platform";
-import { exportNotePdfMobile, exportNoteJsonMobile } from "@/lib/mobileExport";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
@@ -50,10 +48,6 @@ export default function EditorPage() {
   const [printMode, setPrintMode] = useState<"print" | "pdf">("print");
   const [lyricsExpanded, setLyricsExpanded] = useState(true);
   const [styleExpanded, setStyleExpanded] = useState(true);
-  const [isExporting, setIsExporting] = useState(false);
-
-  // Platform detection
-  const isMobileApp = isMobile() && isNativePlatform();
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
   const { pushToHistory: pushStyleHistory, undo: undoStyle, canUndo: canUndoStyle, reset: resetStyleHistory } = useStyleHistory(note?.style || "");
@@ -171,36 +165,17 @@ export default function EditorPage() {
     return `${year}-${month}-${day} ${hours}:${mins} ${tzString}`;
   };
 
-  // Handle Print action - disabled on mobile
+  // Handle Print action
   const handlePrintAction = () => {
-    if (isMobileApp) {
-      toast.error(t("toast.printNotAvailable"));
-      return;
-    }
     setPrintMode("print");
     setPrintDialogOpen(true);
   };
 
-  // Handle PDF action - different behavior on mobile vs desktop
-  const handlePdfAction = async () => {
+  // Handle PDF action
+  const handlePdfAction = () => {
     if (!note) return;
-    
-    if (isMobileApp) {
-      // Mobile: Use native PDF generation and share
-      setIsExporting(true);
-      const result = await exportNotePdfMobile(note);
-      setIsExporting(false);
-      
-      if (result.success && result.filename) {
-        toast.success(t("toast.pdfSaved").replace("{filename}", result.filename));
-      } else {
-        toast.error(t("toast.exportFailed"));
-      }
-    } else {
-      // Desktop: Use existing print dialog in PDF mode
-      setPrintMode("pdf");
-      setPrintDialogOpen(true);
-    }
+    setPrintMode("pdf");
+    setPrintDialogOpen(true);
   };
 
   const handlePrint = (textOnly: boolean) => {
@@ -335,26 +310,11 @@ export default function EditorPage() {
     }
   };
 
-  // Handle JSON export - different behavior on mobile vs desktop
-  const handleExportJson = async () => {
+  // Handle JSON export
+  const handleExportJson = () => {
     if (!note) return;
-    
-    if (isMobileApp) {
-      // Mobile: Use native file system and share
-      setIsExporting(true);
-      const result = await exportNoteJsonMobile(note);
-      setIsExporting(false);
-      
-      if (result.success && result.filename) {
-        toast.success(t("toast.jsonExportedFile").replace("{filename}", result.filename));
-      } else {
-        toast.error(t("toast.exportFailed"));
-      }
-    } else {
-      // Desktop: Use existing download behavior
-      downloadNoteJson(note);
-      toast.success(t("toast.jsonExported"));
-    }
+    downloadNoteJson(note);
+    toast.success(t("toast.jsonExported"));
   };
 
   const handleCopyAll = () => {
@@ -395,18 +355,13 @@ export default function EditorPage() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-5 w-5" /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {/* Print - only show on desktop */}
-                {!isMobileApp && (
-                  <DropdownMenuItem onClick={handlePrintAction}>
-                    <Printer className="h-4 w-4 mr-2" />{t("menu.print")}
-                  </DropdownMenuItem>
-                )}
-                {/* PDF - different label on mobile */}
-                <DropdownMenuItem onClick={handlePdfAction} disabled={isExporting}>
-                  <FileDown className="h-4 w-4 mr-2" />
-                  {isMobileApp ? t("menu.saveAsPdf") : t("menu.exportPdf")}
+                <DropdownMenuItem onClick={handlePrintAction}>
+                  <Printer className="h-4 w-4 mr-2" />{t("menu.print")}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExportJson} disabled={isExporting}>
+                <DropdownMenuItem onClick={handlePdfAction}>
+                  <FileDown className="h-4 w-4 mr-2" />{t("menu.exportPdf")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportJson}>
                   <FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -430,14 +385,14 @@ export default function EditorPage() {
           placeholder={t("editor.title")} 
           value={note.title} 
           onChange={(e) => updateField("title", e.target.value)} 
-          className={`text-lg font-semibold h-9 px-2 ${isMobileApp ? "input-mobile" : "input-desktop border-transparent bg-transparent"}`}
+          className="text-lg font-semibold h-9 px-2 input-desktop border-transparent bg-transparent"
         />
         {/* Composer - compact */}
         <Input 
           placeholder={t("editor.composer")} 
           value={note.composer} 
           onChange={(e) => updateField("composer", e.target.value)} 
-          className={`text-sm h-8 px-2 text-muted-foreground ${isMobileApp ? "input-mobile" : "input-desktop border-transparent bg-transparent"}`}
+          className="text-sm h-8 px-2 text-muted-foreground input-desktop border-transparent bg-transparent"
         />
 
         {/* Lyrics Section */}
@@ -457,7 +412,7 @@ export default function EditorPage() {
             placeholder={t("editor.lyrics")} 
             value={note.lyrics} 
             onChange={(e) => updateField("lyrics", e.target.value)} 
-            className={`resize-none transition-all text-sm ${lyricsExpanded ? "min-h-[180px]" : "min-h-[50px] max-h-[50px]"} ${isMobileApp ? "textarea-mobile" : "textarea-desktop"}`} 
+            className={`resize-none transition-all text-sm ${lyricsExpanded ? "min-h-[180px]" : "min-h-[50px] max-h-[50px]"} textarea-desktop`} 
           />
         </div>
 
@@ -482,7 +437,7 @@ export default function EditorPage() {
                 updateField("style", e.target.value);
               }
             }} 
-            className={`resize-none transition-all text-sm ${styleExpanded ? "min-h-[70px]" : "min-h-[36px] max-h-[36px]"} ${isMobileApp ? "textarea-mobile" : "textarea-desktop"}`} 
+            className={`resize-none transition-all text-sm ${styleExpanded ? "min-h-[70px]" : "min-h-[36px] max-h-[36px]"} textarea-desktop`} 
           />
         </div>
 
@@ -493,7 +448,7 @@ export default function EditorPage() {
             placeholder={t("editor.extraInfo")} 
             value={note.extraInfo} 
             onChange={(e) => updateField("extraInfo", e.target.value)} 
-            className={`min-h-[40px] max-h-[40px] resize-none text-xs ${isMobileApp ? "textarea-mobile" : "textarea-desktop"}`} 
+            className="min-h-[40px] max-h-[40px] resize-none text-xs textarea-desktop" 
           />
         </div>
 
