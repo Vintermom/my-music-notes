@@ -173,6 +173,7 @@ export const th: Record<TranslationKey, string> = {
   "toast.exportFailed": "ส่งออกไม่สำเร็จ",
   "toast.printNotAvailable": "ไม่สามารถพิมพ์บนมือถือได้",
   "toast.insertedAt": "แทรกที่ตำแหน่งเคอร์เซอร์แล้ว",
+  "toast.demoCopySaved": "บันทึกสำเนาของคุณแล้ว!",
 
   // Colors
   "color.default": "ค่าเริ่มต้น",
@@ -183,4 +184,21 @@ export const th: Record<TranslationKey, string> = {
   "color.yellow": "เหลือง",
   "color.purple": "ม่วง",
   "color.orange": "ส้ม",
+
+  // Landing page
+  "landing.tagline": "เขียนเพลง เก็บรักษาไว้อย่างปลอดภัย",
+  "landing.supporting": "สถานที่ง่ายๆ สำหรับเขียนเพลง ในแบบของคุณ",
+  "landing.installApp": "ติดตั้งแอป",
+  "landing.tryDemo": "ลองใช้เดโม",
+  "landing.about": "เกี่ยวกับ",
+  "landing.copyright": "© My Music Notes",
+
+  // Demo mode
+  "demo.badge": "เดโม",
+  "demo.helper": "การบันทึกจะสร้างสำเนาของคุณเอง",
+  "demo.sampleTitle": "สายลมฤดูร้อน",
+  "demo.sampleComposer": "ศิลปินตัวอย่าง",
+  "demo.sampleLyrics": "[อินโทร]\n\n[ท่อนที่ 1]\nแสงยามเช้าส่องผ่านหน้าต่าง...",
+  "demo.sampleStyle": "อะคูสติก, ฝันหวาน, โฟล์คป็อป",
+  "demo.sampleTags": "ตัวอย่าง, อะคูสติก, ฤดูร้อน",
 };
