@@ -232,16 +232,14 @@ export default function EditorPage() {
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.created")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.createdAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.updated")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.updatedAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${timestampLabel}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
-      
-      // Export metadata (shown for both PDF and Print)
-      lines.push(`<hr style="border:none;border-top:1px solid #eee;margin:0.75rem 0;" />`);
-      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedFrom")}:</span> <span style="${footerValueStyle}">${t("print.exportedFromDesktop")}</span></p>`);
-      lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.appVersion")}:</span> <span style="${footerValueStyle}">${APP_VERSION}</span></p>`);
       lines.push(`</div>`);
+      
+      // Page footer metadata (appears on every page)
+      const pageFooter = `${t("print.exportedFrom")}: ${t("print.exportedFromDesktop")} · ${t("print.appVersion")}: ${APP_VERSION}`;
       
       const w = window.open("", "_blank");
       if (w) {
-        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;max-width:800px;margin:0 auto;color:#000;">${lines.join("")}</body></html>`);
+        w.document.write(`<html><head><title>${note.title || "Note"}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;max-width:800px;margin:0 auto;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
         w.document.close();
         w.print();
       }
@@ -304,22 +302,15 @@ export default function EditorPage() {
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.created")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.createdAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.updated")}:</span> <span style="${footerValueStyle}">${formatDateISO(note.updatedAt)}</span></p>`);
       lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${timestampLabel}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
+      lines.push(`</div>`);
+      lines.push(`</div>`);
       
-      // Export metadata
-      if (isPdf) {
-        const langLabel = currentLang === "th" ? t("print.langThai") : currentLang === "sv" ? t("print.langSwedish") : t("print.langEnglish");
-        lines.push(`<hr style="border:none;border-top:1px solid #eee;margin:0.75rem 0;" />`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedFrom")}:</span> <span style="${footerValueStyle}">${t("print.exportedFromDesktop")}</span></p>`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.appVersion")}:</span> <span style="${footerValueStyle}">${APP_VERSION}</span></p>`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.uiLanguage")}:</span> <span style="${footerValueStyle}">${langLabel}</span></p>`);
-        lines.push(`<p style="margin:0;"><span style="${footerLabelStyle}">${t("print.exportedAt")}:</span> <span style="${footerValueStyle}">${formatDateISO(Date.now())}</span></p>`);
-      }
-      lines.push(`</div>`);
-      lines.push(`</div>`);
+      // Page footer metadata (appears on every page)
+      const pageFooter = `${t("print.exportedFrom")}: ${t("print.exportedFromDesktop")} · ${t("print.appVersion")}: ${APP_VERSION}`;
       
       const w = window.open("", "_blank");
       if (w) {
-        w.document.write(`<html><head><title>${note.title || "Note"}</title></head><body style="font-family:system-ui;padding:2rem;background:#f5f5f5;color:#000;">${lines.join("")}</body></html>`);
+        w.document.write(`<html><head><title>${note.title || "Note"}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;background:#f5f5f5;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
         w.document.close();
         w.print();
       }
