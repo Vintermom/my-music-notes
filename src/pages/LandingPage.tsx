@@ -1,13 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { Download, Play } from "lucide-react";
+import { Download, Play, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { t, getCurrentLang, setLanguage, type SupportedLang } from "@/i18n";
 import { useState } from "react";
 import appIcon from "@/assets/app-icon.png";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { InstallHintDialog } from "@/components/InstallHintDialog";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const [currentLang, setCurrentLang] = useState<SupportedLang>(getCurrentLang());
+  const [showInstallHint, setShowInstallHint] = useState(false);
+  const { canInstall, isInstalled, promptInstall } = usePWAInstall();
 
   const handleLanguageChange = (lang: SupportedLang) => {
     setLanguage(lang);
@@ -16,13 +20,45 @@ export default function LandingPage() {
     window.location.reload();
   };
 
-  const handleInstall = () => {
-    navigate("/app");
+  const handleInstall = async () => {
+    if (isInstalled) {
+      // App is installed, navigate to main app
+      navigate("/app");
+      return;
+    }
+
+    if (canInstall) {
+      // Trigger native install prompt
+      const installed = await promptInstall();
+      if (!installed) {
+        // User dismissed, show hint anyway
+        setShowInstallHint(true);
+      }
+    } else {
+      // Show install hint dialog with platform-specific instructions
+      setShowInstallHint(true);
+    }
   };
 
   const handleDemo = () => {
     navigate("/demo");
   };
+
+  // Determine button text and icon
+  const getInstallButtonContent = () => {
+    if (isInstalled) {
+      return {
+        text: t("landing.openApp"),
+        icon: <ExternalLink className="w-5 h-5 mr-2" />,
+      };
+    }
+    return {
+      text: t("landing.installApp"),
+      icon: <Download className="w-5 h-5 mr-2" />,
+    };
+  };
+
+  const buttonContent = getInstallButtonContent();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-purple-50 flex flex-col">
@@ -78,8 +114,8 @@ export default function LandingPage() {
             size="lg"
             className="flex-1 h-14 text-lg font-semibold bg-gradient-to-r from-rose-500 via-orange-500 to-purple-600 hover:from-rose-600 hover:via-orange-600 hover:to-purple-700 shadow-lg shadow-orange-500/25 transition-all hover:shadow-xl hover:shadow-orange-500/30 hover:scale-[1.02]"
           >
-            <Download className="w-5 h-5 mr-2" />
-            {t("landing.installApp")}
+            {buttonContent.icon}
+            {buttonContent.text}
           </Button>
           <Button
             onClick={handleDemo}
@@ -103,6 +139,13 @@ export default function LandingPage() {
           </a>
         </div>
       </footer>
+
+      {/* Install Hint Dialog */}
+      <InstallHintDialog
+        open={showInstallHint}
+        onClose={() => setShowInstallHint(false)}
+        isInstalled={isInstalled}
+      />
     </div>
   );
 }

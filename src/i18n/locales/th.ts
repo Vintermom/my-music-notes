@@ -189,6 +189,7 @@ export const th: Record<TranslationKey, string> = {
   "landing.tagline": "เขียนเพลง เก็บรักษาไว้อย่างปลอดภัย",
   "landing.supporting": "สถานที่ง่ายๆ สำหรับเขียนเพลง ในแบบของคุณ",
   "landing.installApp": "ติดตั้งแอป",
+  "landing.openApp": "เปิดแอป",
   "landing.tryDemo": "ลองใช้เดโม",
   "landing.about": "เกี่ยวกับ",
   "landing.copyright": "© My Music Notes",

@@ -189,6 +189,7 @@ export const sv: Record<TranslationKey, string> = {
   "landing.tagline": "Skriv låtar. Bevara dem säkert.",
   "landing.supporting": "En enkel plats att skriva låtar, på ditt sätt.",
   "landing.installApp": "Installera appen",
+  "landing.openApp": "Öppna appen",
   "landing.tryDemo": "Prova demo",
   "landing.about": "Om",
   "landing.copyright": "© My Music Notes",

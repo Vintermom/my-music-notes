@@ -15,6 +15,7 @@ export const en = {
   "landing.tagline": "Write songs. Keep them safe.",
   "landing.supporting": "A simple place to write songs, your way.",
   "landing.installApp": "Install App",
+  "landing.openApp": "Open App",
   "landing.tryDemo": "Try Demo",
   "landing.about": "About",
   "landing.copyright": "© My Music Notes",
