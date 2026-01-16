@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SplashScreen } from "@/components/SplashScreen";
 import { getSettings } from "@/storage/settingsRepo";
 import { ThemeOption } from "@/domain/types";
@@ -56,21 +56,31 @@ function applyTheme(theme: ThemeOption) {
   }
 }
 
-// Wrapper component to handle standalone redirect - routes with PWA detection
-function AppRoutes() {
-  const location = useLocation();
+// Wrapper for landing page that redirects if in standalone mode
+function LandingOrRedirect() {
   const isStandalone = isStandaloneMode();
-  
-  // In standalone mode, redirect landing and demo to /app
-  if (isStandalone && (location.pathname === "/" || location.pathname === "/demo")) {
+  if (isStandalone) {
     return <Navigate to="/app" replace />;
   }
-  
+  return <LandingPage />;
+}
+
+// Wrapper for demo page that redirects if in standalone mode
+function DemoOrRedirect() {
+  const isStandalone = isStandaloneMode();
+  if (isStandalone) {
+    return <Navigate to="/app" replace />;
+  }
+  return <DemoPage />;
+}
+
+// Routes component
+function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<LandingOrRedirect />} />
       <Route path="/app" element={<HomePage />} />
-      <Route path="/demo" element={<DemoPage />} />
+      <Route path="/demo" element={<DemoOrRedirect />} />
       <Route path="/edit/:id" element={<EditorPage />} />
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="*" element={<NotFound />} />
