@@ -57,7 +57,7 @@ export default function LandingPage() {
         </div>
 
         {/* App Name */}
-        <h1 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-orange-600 to-purple-700 mb-3 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-orange-600 to-purple-700 mb-3 text-center leading-tight py-1 overflow-visible">
           {t("app.name")}
         </h1>
 
