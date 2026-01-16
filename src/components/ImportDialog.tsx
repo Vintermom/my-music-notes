@@ -219,8 +219,10 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
       handleClose();
       navigate("/");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      console.error("[Import] Failed:", message);
+      if (import.meta.env.DEV) {
+        const message = error instanceof Error ? error.message : "Unknown error";
+        console.error("[Import] Failed:", message);
+      }
       
       // Rollback to backup if available
       if (backupCreated) {
