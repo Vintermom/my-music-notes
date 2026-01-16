@@ -26,7 +26,9 @@ export function getAllNotes(): Note[] {
   // Check for corruption first
   const rawData = getRawStorage(NOTES_KEY);
   if (isStorageCorrupted(rawData)) {
-    console.warn("[NotesRepo] Storage corrupted, returning empty array");
+    if (import.meta.env.DEV) {
+      console.warn("[NotesRepo] Storage corrupted, returning empty array");
+    }
     return [];
   }
 

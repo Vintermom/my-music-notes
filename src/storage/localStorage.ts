@@ -22,7 +22,9 @@ function isStorageAvailable(): boolean {
  */
 export function safeGet<T>(key: string, defaultValue: T): T {
   if (!isStorageAvailable()) {
-    console.warn("[Storage] localStorage not available, using default");
+    if (import.meta.env.DEV) {
+      console.warn("[Storage] localStorage not available, using default");
+    }
     return defaultValue;
   }
 
@@ -34,7 +36,9 @@ export function safeGet<T>(key: string, defaultValue: T): T {
     return parsed as T;
   } catch (error) {
     // Data is corrupted - log warning but don't crash
-    console.warn(`[Storage] Corrupted data for key "${key}", using default`, error);
+    if (import.meta.env.DEV) {
+      console.warn("[Storage] Corrupted data, using default", error);
+    }
     return defaultValue;
   }
 }
@@ -44,7 +48,9 @@ export function safeGet<T>(key: string, defaultValue: T): T {
  */
 export function safeSet<T>(key: string, value: T): boolean {
   if (!isStorageAvailable()) {
-    console.warn("[Storage] localStorage not available, cannot save");
+    if (import.meta.env.DEV) {
+      console.warn("[Storage] localStorage not available, cannot save");
+    }
     return false;
   }
 
@@ -53,7 +59,9 @@ export function safeSet<T>(key: string, value: T): boolean {
     return true;
   } catch (error) {
     // Likely quota exceeded
-    console.error(`[Storage] Failed to save key "${key}"`, error);
+    if (import.meta.env.DEV) {
+      console.error("[Storage] Failed to save", error);
+    }
     return false;
   }
 }
