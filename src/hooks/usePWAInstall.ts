@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -11,82 +11,94 @@ interface BeforeInstallPromptEvent extends Event {
 
 type InstallState = "idle" | "installable" | "installed" | "not-supported";
 
-export function usePWAInstall() {
-  const [installState, setInstallState] = useState<InstallState>("idle");
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+// Global storage for the deferred prompt to persist across component mounts
+let globalDeferredPrompt: BeforeInstallPromptEvent | null = null;
+let globalListenerAdded = false;
 
-  // Check if app is already installed
-  const checkInstalled = useCallback(() => {
-    // Check display-mode
+export function usePWAInstall() {
+  const [installState, setInstallState] = useState<InstallState>(() => {
+    // Check if already installed on initial render
     if (window.matchMedia("(display-mode: standalone)").matches) {
-      return true;
+      return "installed";
     }
-    // Check iOS standalone
     if ((navigator as unknown as { standalone?: boolean }).standalone === true) {
-      return true;
+      return "installed";
     }
-    return false;
-  }, []);
+    // If we already have a stored prompt, we're installable
+    if (globalDeferredPrompt) {
+      return "installable";
+    }
+    return "idle";
+  });
+  
+  const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(globalDeferredPrompt);
 
   useEffect(() => {
-    // Initial check
-    if (checkInstalled()) {
-      setInstallState("installed");
-      return;
-    }
+    // Skip if already installed
+    if (installState === "installed") return;
 
     const handleBeforeInstallPrompt = (e: Event) => {
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
-      // Store the event for later use
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      // Store the event globally and in ref
+      const promptEvent = e as BeforeInstallPromptEvent;
+      globalDeferredPrompt = promptEvent;
+      deferredPromptRef.current = promptEvent;
       setInstallState("installable");
     };
 
     const handleAppInstalled = () => {
       setInstallState("installed");
-      setDeferredPrompt(null);
+      globalDeferredPrompt = null;
+      deferredPromptRef.current = null;
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
+    // Only add global listener once
+    if (!globalListenerAdded) {
+      window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.addEventListener("appinstalled", handleAppInstalled);
+      globalListenerAdded = true;
+    }
 
     // Listen for display mode changes
     const displayModeQuery = window.matchMedia("(display-mode: standalone)");
     const handleDisplayModeChange = (e: MediaQueryListEvent) => {
       if (e.matches) {
         setInstallState("installed");
+        globalDeferredPrompt = null;
+        deferredPromptRef.current = null;
       }
     };
     displayModeQuery.addEventListener("change", handleDisplayModeChange);
 
-    // After a short delay, if no prompt event, mark as not-supported
+    // After a delay, if no prompt event and still idle, mark as not-supported
+    // Use longer timeout to give browser time to fire the event
     const timeout = setTimeout(() => {
-      if (!deferredPrompt && installState === "idle") {
+      if (!globalDeferredPrompt && installState === "idle") {
         setInstallState("not-supported");
       }
-    }, 3000);
+    }, 5000);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      window.removeEventListener("appinstalled", handleAppInstalled);
       displayModeQuery.removeEventListener("change", handleDisplayModeChange);
       clearTimeout(timeout);
     };
-  }, [checkInstalled, deferredPrompt, installState]);
+  }, [installState]);
 
   const promptInstall = useCallback(async (): Promise<boolean> => {
-    if (!deferredPrompt) {
+    const prompt = deferredPromptRef.current || globalDeferredPrompt;
+    if (!prompt) {
       return false;
     }
 
     try {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+      await prompt.prompt();
+      const { outcome } = await prompt.userChoice;
       
       if (outcome === "accepted") {
         setInstallState("installed");
-        setDeferredPrompt(null);
+        globalDeferredPrompt = null;
+        deferredPromptRef.current = null;
         return true;
       }
       return false;
@@ -96,7 +108,7 @@ export function usePWAInstall() {
       }
       return false;
     }
-  }, [deferredPrompt]);
+  }, []);
 
   return {
     installState,

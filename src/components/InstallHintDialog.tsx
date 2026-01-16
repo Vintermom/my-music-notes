@@ -34,12 +34,20 @@ function detectPlatform(): Platform {
   return "desktop";
 }
 
-// Translations for install hints
+// Get browser language and map to supported language
+function getBrowserLang(): "en" | "sv" | "th" {
+  const lang = navigator.language.toLowerCase();
+  if (lang.startsWith("sv")) return "sv";
+  if (lang.startsWith("th")) return "th";
+  return "en";
+}
+
+// Translations for install hints - using exact text from requirements
 const installHintTexts = {
   en: {
     title: "Install My Music Notes",
     alreadyInstalled: "The app is already installed on your device.",
-    desktop: "Click the Install icon in the address bar, or open the browser menu and choose \"Install App\".",
+    desktop: "To install, click the install icon in the address bar, or open the browser menu and choose 'Install app'.",
     android: "Open the browser menu and tap \"Install app\" or \"Add to Home screen\".",
     ios: "Tap Share, then choose \"Add to Home Screen\".",
     close: "OK",
@@ -47,7 +55,7 @@ const installHintTexts = {
   sv: {
     title: "Installera My Music Notes",
     alreadyInstalled: "Appen är redan installerad på din enhet.",
-    desktop: "Klicka på Installera-ikonen i adressfältet eller välj \"Installera app\" i webbläsarens meny.",
+    desktop: "För att installera: klicka på installationsikonen i adressfältet, eller öppna webbläsarens meny och välj 'Installera app'.",
     android: "Öppna webbläsarens meny och välj \"Installera app\" eller \"Lägg till på startskärmen\".",
     ios: "Tryck på Dela och välj \"Lägg till på hemskärmen\".",
     close: "OK",
@@ -55,7 +63,7 @@ const installHintTexts = {
   th: {
     title: "ติดตั้ง My Music Notes",
     alreadyInstalled: "แอปนี้ถูกติดตั้งบนอุปกรณ์ของคุณแล้ว",
-    desktop: "คลิกไอคอนติดตั้งที่แถบที่อยู่ หรือเปิดเมนูแล้วเลือก \"ติดตั้งแอป\"",
+    desktop: "หากต้องการติดตั้ง: กดไอคอนติดตั้งที่แถบที่อยู่ หรือเปิดเมนูเบราว์เซอร์แล้วเลือก 'ติดตั้งแอป'.",
     android: "เปิดเมนูแล้วเลือก \"ติดตั้งแอป\" หรือ \"เพิ่มไปยังหน้าจอหลัก\"",
     ios: "กดปุ่มแชร์ แล้วเลือก \"เพิ่มไปยังหน้าจอหลัก\"",
     close: "ตกลง",
@@ -63,8 +71,9 @@ const installHintTexts = {
 };
 
 export function InstallHintDialog({ open, onClose, isInstalled }: InstallHintDialogProps) {
-  const lang = getCurrentLang();
-  const texts = installHintTexts[lang] || installHintTexts.en;
+  // Use browser language for fallback dialog (not app language setting)
+  const browserLang = getBrowserLang();
+  const texts = installHintTexts[browserLang];
   const platform = detectPlatform();
 
   const getHintText = () => {
