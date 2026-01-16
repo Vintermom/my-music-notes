@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { SplashScreen } from "@/components/SplashScreen";
 import { getSettings } from "@/storage/settingsRepo";
 import { ThemeOption } from "@/domain/types";
@@ -13,6 +13,19 @@ import EditorPage from "./pages/EditorPage";
 import DemoPage from "./pages/DemoPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
+
+// Check if running as installed PWA (standalone mode)
+function isStandaloneMode(): boolean {
+  // Check display-mode media query
+  if (window.matchMedia("(display-mode: standalone)").matches) {
+    return true;
+  }
+  // Check iOS standalone
+  if ((navigator as unknown as { standalone?: boolean }).standalone === true) {
+    return true;
+  }
+  return false;
+}
 
 const queryClient = new QueryClient();
 
@@ -41,6 +54,28 @@ function applyTheme(theme: ThemeOption) {
   if (effectiveTheme !== "theme-n") {
     root.classList.add(effectiveTheme);
   }
+}
+
+// Wrapper component to handle standalone redirect
+function AppRoutes() {
+  const location = useLocation();
+  const isStandalone = isStandaloneMode();
+  
+  // In standalone mode, redirect landing and demo to /app
+  if (isStandalone && (location.pathname === "/" || location.pathname === "/demo")) {
+    return <Navigate to="/app" replace />;
+  }
+  
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/app" element={<HomePage />} />
+      <Route path="/demo" element={<DemoPage />} />
+      <Route path="/edit/:id" element={<EditorPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 }
 
 const App = () => {
@@ -76,14 +111,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <HashRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/app" element={<HomePage />} />
-            <Route path="/demo" element={<DemoPage />} />
-            <Route path="/edit/:id" element={<EditorPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppRoutes />
         </HashRouter>
       </TooltipProvider>
     </QueryClientProvider>
