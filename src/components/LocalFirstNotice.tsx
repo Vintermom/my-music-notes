@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { currentLang } from "@/i18n";
 import {
   Dialog,
