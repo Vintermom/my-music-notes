@@ -2,9 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
+import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
+export default defineConfig(({ mode }) => ({
   base: "/my-music-notes/",
   
   server: {
@@ -13,6 +14,7 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
+    mode === 'development' && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "favicon.png", "icons/icon-192.png", "icons/icon-512.png"],
@@ -61,7 +63,7 @@ export default defineConfig(() => ({
         ]
       }
     })
-  ],
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
