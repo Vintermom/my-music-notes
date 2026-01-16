@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
         name: "My Music Notes",
         short_name: "My Music Notes",
         description: "Write songs. Keep them safe.",
-        start_url: "/my-music-notes/#/",
+        start_url: "/my-music-notes/#/app",
         scope: "/my-music-notes/",
         display: "standalone",
         background_color: "#FFF7ED",
