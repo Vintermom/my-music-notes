@@ -25,6 +25,7 @@ import { InsertSheet } from "@/components/InsertSheet";
 import { StylePicker } from "@/components/StylePicker";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
+import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
 
 const colorClasses: Record<NoteColor, string> = {
   default: "note-bg-default", cream: "note-bg-cream", pink: "note-bg-pink",
@@ -49,6 +50,7 @@ export default function EditorPage() {
   const [printMode, setPrintMode] = useState<"print" | "pdf">("print");
   const [lyricsExpanded, setLyricsExpanded] = useState(true);
   const [styleExpanded, setStyleExpanded] = useState(true);
+  const [showFirstSaveNotice, setShowFirstSaveNotice] = useState(false);
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
   const { pushToHistory: pushStyleHistory, undo: undoStyle, canUndo: canUndoStyle, reset: resetStyleHistory } = useStyleHistory(note?.style || "");
@@ -75,9 +77,18 @@ export default function EditorPage() {
   }, [autoSaveStatus]);
 
   const debouncedSave = useDebounce((noteToSave: Note) => {
+    const wasFirstSave = !hasFirstSaveOccurred();
     setAutoSaveStatus("saving");
     updateNote(noteToSave.id, noteToSave);
     setAutoSaveStatus("saved");
+    
+    // Show notice only on first ever save
+    if (wasFirstSave) {
+      markFirstSave();
+      if (shouldShowFirstSaveNotice()) {
+        setShowFirstSaveNotice(true);
+      }
+    }
   }, 1000);
 
   const updateField = useCallback(
@@ -94,10 +105,19 @@ export default function EditorPage() {
 
   const handleSave = () => {
     if (!note) return;
+    const wasFirstSave = !hasFirstSaveOccurred();
     setIsSaving(true);
     updateNote(note.id, note);
     setIsSaving(false);
     toast.success(t("toast.noteSaved"));
+    
+    // Show notice only on first ever save
+    if (wasFirstSave) {
+      markFirstSave();
+      if (shouldShowFirstSaveNotice()) {
+        setShowFirstSaveNotice(true);
+      }
+    }
   };
 
   const handleUndoLyrics = () => {
@@ -478,6 +498,7 @@ export default function EditorPage() {
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
+      <LocalFirstNotice open={showFirstSaveNotice} onOpenChange={setShowFirstSaveNotice} />
     </div>
   );
 }
