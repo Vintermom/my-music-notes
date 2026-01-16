@@ -56,7 +56,7 @@ function applyTheme(theme: ThemeOption) {
   }
 }
 
-// Wrapper component to handle standalone redirect
+// Wrapper component to handle standalone redirect - routes with PWA detection
 function AppRoutes() {
   const location = useLocation();
   const isStandalone = isStandaloneMode();
