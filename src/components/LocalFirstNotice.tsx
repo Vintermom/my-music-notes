@@ -10,6 +10,40 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const NOTICE_DISMISSED_KEY = "mymusicnotes_localfirst_notice_dismissed";
+const FIRST_SAVE_KEY = "mymusicnotes_first_save_done";
+
+// Check if this is a first save scenario and notice should show
+export function shouldShowFirstSaveNotice(): boolean {
+  try {
+    const dismissed = localStorage.getItem(NOTICE_DISMISSED_KEY);
+    const firstSaveDone = localStorage.getItem(FIRST_SAVE_KEY);
+    // Show if: first save just happened AND notice not dismissed
+    return firstSaveDone === "true" && dismissed !== "true";
+  } catch {
+    return false;
+  }
+}
+
+// Mark that first save has occurred
+export function markFirstSave(): void {
+  try {
+    const alreadyDone = localStorage.getItem(FIRST_SAVE_KEY);
+    if (!alreadyDone) {
+      localStorage.setItem(FIRST_SAVE_KEY, "true");
+    }
+  } catch {
+    // Ignore
+  }
+}
+
+// Check if first save has already been done before
+export function hasFirstSaveOccurred(): boolean {
+  try {
+    return localStorage.getItem(FIRST_SAVE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
 
 // Translations for the notice (EN, TH, SV only)
 const noticeTranslations = {
@@ -45,22 +79,13 @@ function getNoticeLang(): SupportedNoticeLang {
   return "en";
 }
 
-export function LocalFirstNotice() {
-  const [open, setOpen] = useState(false);
-  const [dontShowAgain, setDontShowAgain] = useState(false);
+interface LocalFirstNoticeProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
-  useEffect(() => {
-    // Check if notice was previously dismissed
-    try {
-      const dismissed = localStorage.getItem(NOTICE_DISMISSED_KEY);
-      if (dismissed !== "true") {
-        setOpen(true);
-      }
-    } catch {
-      // localStorage not available, show notice
-      setOpen(true);
-    }
-  }, []);
+export function LocalFirstNotice({ open, onOpenChange }: LocalFirstNoticeProps) {
+  const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const handleClose = () => {
     if (dontShowAgain) {
@@ -70,14 +95,14 @@ export function LocalFirstNotice() {
         // Ignore storage errors
       }
     }
-    setOpen(false);
+    onOpenChange(false);
   };
 
   const lang = getNoticeLang();
   const texts = noticeTranslations[lang];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{texts.title}</DialogTitle>
