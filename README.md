@@ -43,15 +43,15 @@ npm run dev
 1. Run `npm run build` to create production build
 2. Test PWA installation on mobile browsers
 3. Verify offline functionality
-4. Deploy static files to hosting (Lovable, Vercel, Netlify, etc.)
+4. Deploy static files to hosting (Vercel, Netlify, GitHub Pages, etc.)
 
 ### Android/Play Store Release Steps
 
-Capacitor is pre-configured in this project. To build for Android:
+This project uses Capacitor for native Android builds.
 
 1. Clone the repo and install dependencies: `npm install`
-2. Add Android platform: `npx cap add android`
-3. Build and sync: `npm run build && npx cap sync`
+2. If not added yet: `npx cap add android`
+3. Build and sync: `npm run build && npx cap sync android`
 4. Open in Android Studio: `npx cap open android`
 5. In Android Studio:
    - Update `versionCode` (integer, increment each release)
@@ -59,8 +59,8 @@ Capacitor is pre-configured in this project. To build for Android:
    - Generate signed APK/AAB for Play Store
 6. Ensure no unnecessary permissions in AndroidManifest.xml
 
-**Capacitor Config** (already set in `capacitor.config.ts`):
-- `appId: "app.lovable.mymusicnotes"`
+**Capacitor Config** (set in `capacitor.config.ts`):
+- `appId: "io.vintermom.mymusicnotes"`
 - `appName: "My Music Notes"`
 - `webDir: "dist"`
 
@@ -73,5 +73,3 @@ Capacitor is pre-configured in this project. To build for Android:
 ## License
 
 MIT
-
-sync-check
