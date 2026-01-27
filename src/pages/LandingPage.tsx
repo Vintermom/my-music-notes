@@ -7,6 +7,13 @@ import appIcon from "@/assets/app-icon.png";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { InstallHintDialog } from "@/components/InstallHintDialog";
 
+// Extend Window interface for gtag
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 export default function LandingPage() {
   const navigate = useNavigate();
   const [currentLang, setCurrentLang] = useState<SupportedLang>(getCurrentLang());
@@ -21,6 +28,11 @@ export default function LandingPage() {
   };
 
   const handleInstall = async () => {
+    // Track GA4 event
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "pwa_install_click", { action: "click" });
+    }
+
     if (isInstalled) {
       // App is installed, navigate to main app
       navigate("/app");
@@ -41,6 +53,11 @@ export default function LandingPage() {
   };
 
   const handleDemo = () => {
+    // Track GA4 event
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "demo_click", { action: "click" });
+    }
+
     navigate("/demo");
   };
 
