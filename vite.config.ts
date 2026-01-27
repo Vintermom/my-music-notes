@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/my-music-notes/",
+  base: "/",
   
   server: {
     host: "::",
@@ -22,20 +22,20 @@ export default defineConfig(({ mode }) => ({
         name: "My Music Notes",
         short_name: "My Music Notes",
         description: "Write songs. Keep them safe.",
-        start_url: "/my-music-notes/#/app",
-        scope: "/my-music-notes/",
+        start_url: "/#/app",
+        scope: "/",
         display: "standalone",
         background_color: "#FFF7ED",
         theme_color: "#F97316",
         icons: [
           {
-            src: "/my-music-notes/icons/icon-192.png",
+            src: "/icons/icon-192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any maskable"
           },
           {
-            src: "/my-music-notes/icons/icon-512.png",
+            src: "/icons/icon-512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable"
