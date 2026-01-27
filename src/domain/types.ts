@@ -24,7 +24,7 @@ export const FIELD_LIMITS = {
   tagSingle: 50,
   tagsMax: 20,
   lyrics: 50000, // Large but bounded
-  style: 500,
+  style: 2000,
   stylePro: 1000,
 } as const;
 

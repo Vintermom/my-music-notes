@@ -430,7 +430,8 @@ export default function EditorPage() {
               <Button variant="ghost" size="sm" onClick={() => setInsertSheetOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("editor.insertSheet")}</Button>
             </div>
             <div className="flex items-center gap-0.5 no-print">
-              <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs"><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={handleCopyLyrics} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
               <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} className="h-6 w-6">{lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
@@ -452,7 +453,8 @@ export default function EditorPage() {
             </div>
             <div className="flex items-center gap-0.5 no-print">
               <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
-              <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-6 px-1.5 text-xs"><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={handleCopyStyle} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
               <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} className="h-6 w-6">{styleExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
