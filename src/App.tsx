@@ -7,11 +7,13 @@ import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SplashScreen } from "@/components/SplashScreen";
 import { getSettings } from "@/storage/settingsRepo";
 import { ThemeOption } from "@/domain/types";
+import { PrivacyAcceptanceNotice } from "@/components/PrivacyAcceptanceNotice";
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import EditorPage from "./pages/EditorPage";
 import DemoPage from "./pages/DemoPage";
 import SettingsPage from "./pages/SettingsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import NotFound from "./pages/NotFound";
 
 // Check if running as installed PWA (standalone mode)
@@ -83,6 +85,7 @@ function AppRoutes() {
       <Route path="/demo" element={<DemoOrRedirect />} />
       <Route path="/edit/:id" element={<EditorPage />} />
       <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -120,6 +123,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <PrivacyAcceptanceNotice />
         <HashRouter>
           <AppRoutes />
         </HashRouter>

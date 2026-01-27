@@ -134,8 +134,8 @@ export default function LandingPage() {
         <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
           <span>{t("landing.copyright")}</span>
           <span className="text-gray-300">•</span>
-          <a href="#" className="hover:text-gray-700 transition-colors">
-            {t("landing.about")}
+          <a href="#/privacy" className="hover:text-gray-700 transition-colors">
+            Privacy Policy
           </a>
         </div>
       </footer>

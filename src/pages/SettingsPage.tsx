@@ -1,7 +1,7 @@
 import { Settings, ThemeOption } from "@/domain/types";
 import { t } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
-import { ArrowLeft, Check, ChevronRight, Upload, Monitor, Sun, Moon, Leaf } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, Upload, Monitor, Sun, Moon, Leaf, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getSettings, updateSettings } from "@/storage/settingsRepo";
@@ -192,6 +192,21 @@ export default function SettingsPage() {
               </div>
             </CollapsibleContent>
           </Collapsible>
+        </section>
+
+        {/* Privacy Policy */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Privacy
+          </h2>
+          <button
+            onClick={() => navigate("/privacy")}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md border border-border bg-card hover:bg-accent/30 transition-colors"
+          >
+            <Shield className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm flex-1 text-left">Privacy Policy</span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
         </section>
 
         {/* About */}
