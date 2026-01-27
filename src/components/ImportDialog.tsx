@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { t } from "@/i18n";
 import { Note, IMPORT_MAX_SIZE_BYTES } from "@/domain/types";
-import { safeGet, safeSet, restoreFromBackup } from "@/storage/localStorage";
+import { restoreFromBackup } from "@/storage/localStorage";
 import { createNote, createNotesBackup } from "@/storage/notesRepo";
 import { validateImportedNote } from "@/storage/validation";
 import { toast } from "sonner";
@@ -16,40 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Upload, AlertCircle, FileText, X } from "lucide-react";
 
-const IMPORT_KEY = "import_tracking";
-const FREE_DAILY_LIMIT = 2;
-
-interface ImportTracking {
-  date: string;
-  count: number;
-}
-
-function getImportTracking(): ImportTracking {
-  const today = new Date().toDateString();
-  const tracking = safeGet<ImportTracking>(IMPORT_KEY, { date: today, count: 0 });
-  
-  // Reset if different day
-  if (tracking.date !== today) {
-    return { date: today, count: 0 };
-  }
-  
-  return tracking;
-}
-
-function incrementImportCount(count: number = 1): void {
-  const tracking = getImportTracking();
-  tracking.count += count;
-  safeSet(IMPORT_KEY, tracking);
-}
-
-function getRemainingImports(): number {
-  const tracking = getImportTracking();
-  return Math.max(0, FREE_DAILY_LIMIT - tracking.count);
-}
-
-function canImport(): boolean {
-  return getRemainingImports() > 0;
-}
 
 // Exported JSON structure types
 interface SingleNoteExport {
@@ -97,8 +63,6 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
   const [importError, setImportError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const remaining = getRemainingImports();
-  const limitReached = !canImport();
 
   const resetState = () => {
     setImportError(null);
@@ -142,11 +106,6 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
 
   const handleImport = async () => {
     if (!selectedFile) return;
-
-    if (!canImport()) {
-      setImportError(t("import.limitReached"));
-      return;
-    }
 
     setIsImporting(true);
     setImportError(null);
@@ -194,20 +153,12 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
         throw new Error("No valid notes found in file");
       }
 
-      // Check import limit
-      const actualImportCount = Math.min(notesToImport.length, getRemainingImports());
-      if (actualImportCount < notesToImport.length) {
-        toast.info(`Only importing ${actualImportCount} of ${notesToImport.length} notes (daily limit)`);
-      }
-
       // Create new notes
       const createdNotes: Note[] = [];
-      for (let i = 0; i < actualImportCount; i++) {
-        const newNote = createNote(notesToImport[i]);
+      for (const noteData of notesToImport) {
+        const newNote = createNote(noteData);
         createdNotes.push(newNote);
       }
-
-      incrementImportCount(createdNotes.length);
       
       if (createdNotes.length === 1) {
         toast.success(t("import.success"));
@@ -242,65 +193,48 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          {/* Remaining imports */}
-          <p className="text-sm text-muted-foreground">
-            {remaining} {t("import.remainingToday")}
+          {/* File picker area */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json,application/json"
+            onChange={handleFileChange}
+            className="hidden"
+            id="import-file-input"
+          />
+          <label
+            htmlFor="import-file-input"
+            className="flex flex-col items-center justify-center gap-2 w-full py-6 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+          >
+            {selectedFile ? (
+              <>
+                <FileText className="h-6 w-6 text-primary" />
+                <span className="text-sm font-medium text-foreground">{selectedFile.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {(selectedFile.size / 1024).toFixed(1)} KB
+                </span>
+              </>
+            ) : (
+              <>
+                <Upload className="h-6 w-6 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
+                  {t("import.selectFile")}
+                </span>
+              </>
+            )}
+          </label>
+
+          {/* Helper text */}
+          <p className="text-xs text-muted-foreground text-center">
+            JSON only, max 3MB
           </p>
 
-          {limitReached ? (
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-              <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-destructive">{t("import.limitReached")}</p>
-                <p className="text-xs text-muted-foreground">{t("import.limitMessage")}</p>
-              </div>
+          {/* Error message */}
+          {importError && (
+            <div className="flex items-center gap-2 p-2 rounded bg-destructive/10 text-destructive text-sm">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{importError}</span>
             </div>
-          ) : (
-            <>
-              {/* File picker area */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json,application/json"
-                onChange={handleFileChange}
-                className="hidden"
-                id="import-file-input"
-              />
-              <label
-                htmlFor="import-file-input"
-                className="flex flex-col items-center justify-center gap-2 w-full py-6 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-              >
-                {selectedFile ? (
-                  <>
-                    <FileText className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{selectedFile.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {(selectedFile.size / 1024).toFixed(1)} KB
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-6 w-6 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
-                      {t("import.selectFile")}
-                    </span>
-                  </>
-                )}
-              </label>
-
-              {/* Helper text */}
-              <p className="text-xs text-muted-foreground text-center">
-                JSON only, max 3MB
-              </p>
-
-              {/* Error message */}
-              {importError && (
-                <div className="flex items-center gap-2 p-2 rounded bg-destructive/10 text-destructive text-sm">
-                  <AlertCircle className="h-4 w-4 shrink-0" />
-                  <span>{importError}</span>
-                </div>
-              )}
-            </>
           )}
         </div>
 
@@ -310,7 +244,7 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
           </Button>
           <Button 
             onClick={handleImport} 
-            disabled={!selectedFile || isImporting || limitReached}
+            disabled={!selectedFile || isImporting}
           >
             {isImporting ? t("import.importing") : "Import"}
           </Button>
