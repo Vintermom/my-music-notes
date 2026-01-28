@@ -255,7 +255,7 @@ export default function EditorPage() {
       lines.push(`</div>`);
       
       // Page footer metadata (appears on every page)
-      const pageFooter = `${t("print.exportedFrom")}: ${t("print.exportedFromDesktop")} · ${t("print.appVersion")}: ${APP_VERSION}`;
+      const pageFooter = `${t("print.exportedFrom")}: ${t("app.name")} (${t("print.appType")}) · ${t("print.version")} ${APP_VERSION} · ${formatDateISO(Date.now())}`;
       
       const w = window.open("", "_blank");
       if (w) {
@@ -326,7 +326,7 @@ export default function EditorPage() {
       lines.push(`</div>`);
       
       // Page footer metadata (appears on every page)
-      const pageFooter = `${t("print.exportedFrom")}: ${t("print.exportedFromDesktop")} · ${t("print.appVersion")}: ${APP_VERSION}`;
+      const pageFooter = `${t("print.exportedFrom")}: ${t("app.name")} (${t("print.appType")}) · ${t("print.version")} ${APP_VERSION} · ${formatDateISO(Date.now())}`;
       
       const w = window.open("", "_blank");
       if (w) {

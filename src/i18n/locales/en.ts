@@ -114,8 +114,8 @@ export const en = {
 
   // PDF export metadata
   "print.exportedFrom": "Exported from",
-  "print.exportedFromDesktop": "Desktop (Web)",
-  "print.appVersion": "App version",
+  "print.appType": "WebApp",
+  "print.version": "Version",
   "print.uiLanguage": "UI language",
   "print.exportedAt": "Exported at",
   "print.langEnglish": "English",

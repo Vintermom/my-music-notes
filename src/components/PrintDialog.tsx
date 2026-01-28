@@ -115,7 +115,7 @@ export function PrintDialog({ open, onOpenChange, note, onPrint, mode = "print" 
             
             {/* Page footer preview - shown on every page */}
             <div className="border-t border-gray-200 pt-2 mt-2 text-center text-xs text-gray-600">
-              {t("print.exportedFrom")}: {t("print.exportedFromDesktop")} · {t("print.appVersion")}: {APP_VERSION}
+              {t("print.exportedFrom")}: {t("app.name")} ({t("print.appType")}) · {t("print.version")} {APP_VERSION} · {formatDateISO(Date.now())}
             </div>
           </div>
         </div>
