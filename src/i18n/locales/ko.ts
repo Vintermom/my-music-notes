@@ -140,6 +140,7 @@ export const ko: Record<TranslationKey, string> = {
   "print.labelStyle": "스타일",
   "print.labelExtra": "추가 정보",
   "print.labelTags": "태그",
+  "print.downloadPdfBeta": "PDF 다운로드 (베타)",
 
   // Import dialog
   "import.title": "노트 가져오기",

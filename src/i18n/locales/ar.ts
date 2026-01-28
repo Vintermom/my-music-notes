@@ -140,6 +140,7 @@ export const ar: Record<TranslationKey, string> = {
   "print.labelStyle": "النمط",
   "print.labelExtra": "معلومات إضافية",
   "print.labelTags": "الوسوم",
+  "print.downloadPdfBeta": "تحميل PDF (تجريبي)",
 
   // Import dialog
   "import.title": "استيراد ملاحظة",

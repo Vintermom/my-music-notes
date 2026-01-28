@@ -140,6 +140,7 @@ export const ja: Record<TranslationKey, string> = {
   "print.labelStyle": "スタイル",
   "print.labelExtra": "追加情報",
   "print.labelTags": "タグ",
+  "print.downloadPdfBeta": "PDF ダウンロード (ベータ)",
 
   // Import dialog
   "import.title": "ノートをインポート",
