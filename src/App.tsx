@@ -8,6 +8,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { getSettings } from "@/storage/settingsRepo";
 import { ThemeOption } from "@/domain/types";
 import { PrivacyAcceptanceNotice } from "@/components/PrivacyAcceptanceNotice";
+import { applyTextDirection } from "@/i18n";
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import EditorPage from "./pages/EditorPage";
@@ -98,6 +99,7 @@ const App = () => {
   useEffect(() => {
     const settings = getSettings();
     applyTheme(settings.theme);
+    applyTextDirection(); // Ensure RTL direction is applied
 
     // Listen for system theme changes when using system theme
     if (settings.theme === "system") {

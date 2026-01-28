@@ -202,4 +202,24 @@ export const sv: Record<TranslationKey, string> = {
   "demo.sampleLyrics": "[Intro]\n\n[Vers 1]\nMorgonljuset kommer genom mitt fönster...",
   "demo.sampleStyle": "Akustisk, Drömmande, Folk Pop",
   "demo.sampleTags": "demo, akustisk, sommar",
+
+  // Language settings
+  "settings.language": "Språk",
+  "settings.languageAuto": "Auto (System)",
+  "settings.langThai": "ไทย",
+  "settings.langEnglish": "English",
+  "settings.langSwedish": "Svenska",
+  "settings.langKorean": "한국어",
+  "settings.langJapanese": "日本語",
+  "settings.langArabic": "العربية",
+
+  // Update check
+  "settings.updates": "Uppdateringar",
+  "settings.checkForUpdates": "Sök efter uppdateringar",
+  "settings.upToDate": "Du är uppdaterad!",
+  "settings.upToDateMessage": "Du har den senaste versionen ({version}).",
+  "settings.updateAvailable": "Uppdatering tillgänglig",
+  "settings.updateAvailableMessage": "En ny version ({version}) finns tillgänglig. Uppdatera sidan eller installera om appen för att uppdatera.",
+  "settings.checkingForUpdates": "Söker efter uppdateringar...",
+  "toast.updateCheckFailed": "Kunde inte söka efter uppdateringar",
 };

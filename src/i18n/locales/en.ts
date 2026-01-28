@@ -199,6 +199,26 @@ export const en = {
   "color.yellow": "Yellow",
   "color.purple": "Purple",
   "color.orange": "Orange",
+
+  // Language settings
+  "settings.language": "Language",
+  "settings.languageAuto": "Auto (System)",
+  "settings.langThai": "ไทย",
+  "settings.langEnglish": "English",
+  "settings.langSwedish": "Svenska",
+  "settings.langKorean": "한국어",
+  "settings.langJapanese": "日本語",
+  "settings.langArabic": "العربية",
+
+  // Update check
+  "settings.updates": "Updates",
+  "settings.checkForUpdates": "Check for Updates",
+  "settings.upToDate": "You're up to date!",
+  "settings.upToDateMessage": "You have the latest version ({version}).",
+  "settings.updateAvailable": "Update Available",
+  "settings.updateAvailableMessage": "A new version ({version}) is available. Please refresh the page or reinstall the app to update.",
+  "settings.checkingForUpdates": "Checking for updates...",
+  "toast.updateCheckFailed": "Failed to check for updates",
 };
 
 export type TranslationKey = keyof typeof en;
