@@ -211,6 +211,42 @@ export default function EditorPage() {
     const footerLabelStyle = "font-weight:bold;color:#000;";
     const footerValueStyle = "font-weight:normal;color:#000;";
     
+    // Helper function to print using hidden iframe (no about:blank tab)
+    const printWithIframe = (htmlContent: string) => {
+      // Remove any existing print iframe
+      const existingIframe = document.getElementById("print-iframe");
+      if (existingIframe) existingIframe.remove();
+      
+      // Create hidden iframe
+      const iframe = document.createElement("iframe");
+      iframe.id = "print-iframe";
+      iframe.style.position = "absolute";
+      iframe.style.width = "0";
+      iframe.style.height = "0";
+      iframe.style.border = "none";
+      iframe.style.left = "-9999px";
+      document.body.appendChild(iframe);
+      
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (iframeDoc) {
+        iframeDoc.open();
+        iframeDoc.write(htmlContent);
+        iframeDoc.close();
+        
+        // Wait for content to render, then print
+        iframe.onload = () => {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        };
+        
+        // Trigger onload manually for browsers that don't fire it
+        setTimeout(() => {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        }, 100);
+      }
+    };
+    
     if (textOnly) {
       // Text-only mode with clear labeled sections and dividers
       const lines: string[] = [];
@@ -258,12 +294,8 @@ export default function EditorPage() {
       // Page footer metadata (appears on every page)
       const pageFooter = `${t("print.exportedFrom")}: ${t("app.name")} (${t("print.appType")}) · ${t("print.version")} ${APP_VERSION} · ${formatDateISO(Date.now())}`;
       
-      const w = window.open("", "_blank");
-      if (w) {
-        w.document.write(`<html><head><title>${escapeHtml(note.title || "Note")}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;max-width:800px;margin:0 auto;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
-        w.document.close();
-        w.print();
-      }
+      const htmlContent = `<html><head><title>${escapeHtml(note.title || "Note")}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;max-width:800px;margin:0 auto;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`;
+      printWithIframe(htmlContent);
     } else {
       // App layout mode - render read-only editor style
       const noteColorMap: Record<NoteColor, string> = {
@@ -329,12 +361,8 @@ export default function EditorPage() {
       // Page footer metadata (appears on every page)
       const pageFooter = `${t("print.exportedFrom")}: ${t("app.name")} (${t("print.appType")}) · ${t("print.version")} ${APP_VERSION} · ${formatDateISO(Date.now())}`;
       
-      const w = window.open("", "_blank");
-      if (w) {
-        w.document.write(`<html><head><title>${escapeHtml(note.title || "Note")}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;background:#f5f5f5;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
-        w.document.close();
-        w.print();
-      }
+      const htmlContent = `<html><head><title>${escapeHtml(note.title || "Note")}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;background:#f5f5f5;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`;
+      printWithIframe(htmlContent);
     }
   };
 
