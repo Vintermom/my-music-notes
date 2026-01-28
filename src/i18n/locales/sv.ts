@@ -99,8 +99,8 @@ export const sv: Record<TranslationKey, string> = {
 
   // PDF export metadata
   "print.exportedFrom": "Exporterad från",
-  "print.exportedFromDesktop": "Skrivbord (Webb)",
-  "print.appVersion": "Appversion",
+  "print.appType": "WebbApp",
+  "print.version": "Version",
   "print.uiLanguage": "UI-språk",
   "print.exportedAt": "Exporterad",
   "print.langEnglish": "Engelska",

@@ -99,8 +99,8 @@ export const th: Record<TranslationKey, string> = {
 
   // PDF export metadata
   "print.exportedFrom": "ส่งออกจาก",
-  "print.exportedFromDesktop": "เดสก์ท็อป (เว็บ)",
-  "print.appVersion": "เวอร์ชันแอป",
+  "print.appType": "เว็บแอป",
+  "print.version": "เวอร์ชัน",
   "print.uiLanguage": "ภาษา UI",
   "print.exportedAt": "ส่งออกเมื่อ",
   "print.langEnglish": "อังกฤษ",
