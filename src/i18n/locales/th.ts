@@ -202,4 +202,24 @@ export const th: Record<TranslationKey, string> = {
   "demo.sampleLyrics": "[อินโทร]\n\n[ท่อนที่ 1]\nแสงยามเช้าส่องผ่านหน้าต่าง...",
   "demo.sampleStyle": "อะคูสติก, ฝันหวาน, โฟล์คป็อป",
   "demo.sampleTags": "ตัวอย่าง, อะคูสติก, ฤดูร้อน",
+
+  // Language settings
+  "settings.language": "ภาษา",
+  "settings.languageAuto": "อัตโนมัติ (ระบบ)",
+  "settings.langThai": "ไทย",
+  "settings.langEnglish": "English",
+  "settings.langSwedish": "Svenska",
+  "settings.langKorean": "한국어",
+  "settings.langJapanese": "日本語",
+  "settings.langArabic": "العربية",
+
+  // Update check
+  "settings.updates": "การอัปเดต",
+  "settings.checkForUpdates": "ตรวจสอบการอัปเดต",
+  "settings.upToDate": "คุณใช้เวอร์ชันล่าสุดแล้ว!",
+  "settings.upToDateMessage": "คุณมีเวอร์ชันล่าสุด ({version})",
+  "settings.updateAvailable": "มีการอัปเดตใหม่",
+  "settings.updateAvailableMessage": "มีเวอร์ชันใหม่ ({version}) โปรดรีเฟรชหน้าหรือติดตั้งแอปใหม่เพื่ออัปเดต",
+  "settings.checkingForUpdates": "กำลังตรวจสอบการอัปเดต...",
+  "toast.updateCheckFailed": "ตรวจสอบการอัปเดตไม่สำเร็จ",
 };
