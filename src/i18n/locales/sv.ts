@@ -140,6 +140,7 @@ export const sv: Record<TranslationKey, string> = {
   "print.labelStyle": "Stil",
   "print.labelExtra": "Extra info",
   "print.labelTags": "Taggar",
+  "print.downloadPdfBeta": "Ladda ner PDF (Beta)",
 
   // Import dialog
   "import.title": "Importera anteckning",

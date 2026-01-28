@@ -155,6 +155,7 @@ export const en = {
   "print.labelStyle": "Style",
   "print.labelExtra": "Extra Info",
   "print.labelTags": "Tags",
+  "print.downloadPdfBeta": "Download PDF (Beta)",
 
   // Import dialog
   "import.title": "Import Note",

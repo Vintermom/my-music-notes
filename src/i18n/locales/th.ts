@@ -140,6 +140,7 @@ export const th: Record<TranslationKey, string> = {
   "print.labelStyle": "สไตล์",
   "print.labelExtra": "ข้อมูลเพิ่มเติม",
   "print.labelTags": "แท็ก",
+  "print.downloadPdfBeta": "ดาวน์โหลด PDF (เบต้า)",
 
   // Import dialog
   "import.title": "นำเข้าโน้ต",
