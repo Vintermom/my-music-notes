@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t, currentLang } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
+import { escapeHtml } from "@/lib/escapeHtml";
 import { getNoteById, updateNote, deleteNote, duplicateNote, downloadNoteJson } from "@/storage/notesRepo";
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
 import { useStyleHistory } from "@/hooks/useStyleHistory";
@@ -216,18 +217,18 @@ export default function EditorPage() {
       
       if (note.title) {
         lines.push(`<p style="${labelStyle}">${t("print.labelTitle")}</p>`);
-        lines.push(`<p style="font-size:1.125rem;${valueStyle}margin:0 0 0.5rem 0;">${note.title}</p>`);
+        lines.push(`<p style="font-size:1.125rem;${valueStyle}margin:0 0 0.5rem 0;">${escapeHtml(note.title)}</p>`);
       }
       if (note.composer) {
         lines.push(`<p style="${labelStyle}">${t("print.labelComposer")}</p>`);
-        lines.push(`<p style="${valueStyle}margin:0 0 0.5rem 0;">${note.composer}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0 0 0.5rem 0;">${escapeHtml(note.composer)}</p>`);
       }
       
       if (note.title || note.composer) lines.push(`<hr style="border:none;border-top:1px solid #ccc;margin:1rem 0;" />`);
       
       if (note.lyrics) {
         lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelLyrics")}</p>`);
-        lines.push(`<pre style="font-family:monospace;white-space:pre-wrap;${valueStyle}margin:0 0 0.5rem 0;line-height:1.6;">${note.lyrics}</pre>`);
+        lines.push(`<pre style="font-family:monospace;white-space:pre-wrap;${valueStyle}margin:0 0 0.5rem 0;line-height:1.6;">${escapeHtml(note.lyrics)}</pre>`);
       }
       
       // Divider between Lyrics and Style/Extra/Tags
@@ -236,15 +237,15 @@ export default function EditorPage() {
       }
       
       if (note.style) {
-        lines.push(`<p style="margin:0;"><span style="${labelStyle}">${t("print.labelStyle")}:</span> <span style="${valueStyle}">${note.style}</span></p>`);
+        lines.push(`<p style="margin:0;"><span style="${labelStyle}">${t("print.labelStyle")}:</span> <span style="${valueStyle}">${escapeHtml(note.style)}</span></p>`);
       }
       
       if (note.extraInfo) {
-        lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="${labelStyle}">${t("print.labelExtra")}:</span> <span style="${valueStyle}">${note.extraInfo}</span></p>`);
+        lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="${labelStyle}">${t("print.labelExtra")}:</span> <span style="${valueStyle}">${escapeHtml(note.extraInfo)}</span></p>`);
       }
       
       if (note.tags.length > 0) {
-        lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="${labelStyle}">${t("print.labelTags")}:</span> <span style="${valueStyle}">${note.tags.join(", ")}</span></p>`);
+        lines.push(`<p style="margin:0.5rem 0 0 0;"><span style="${labelStyle}">${t("print.labelTags")}:</span> <span style="${valueStyle}">${note.tags.map(tag => escapeHtml(tag)).join(", ")}</span></p>`);
       }
       
       lines.push(`<hr style="border:none;border-top:1px solid #ccc;margin:1.5rem 0 1rem 0;" />`);
@@ -259,7 +260,7 @@ export default function EditorPage() {
       
       const w = window.open("", "_blank");
       if (w) {
-        w.document.write(`<html><head><title>${note.title || "Note"}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;max-width:800px;margin:0 auto;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
+        w.document.write(`<html><head><title>${escapeHtml(note.title || "Note")}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;max-width:800px;margin:0 auto;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
         w.document.close();
         w.print();
       }
@@ -275,17 +276,17 @@ export default function EditorPage() {
       
       if (note.title) {
         lines.push(`<p style="${labelStyle}">${t("print.labelTitle")}</p>`);
-        lines.push(`<p style="font-size:1.125rem;${valueStyle}margin:0 0 0.5rem 0;">${note.title}</p>`);
+        lines.push(`<p style="font-size:1.125rem;${valueStyle}margin:0 0 0.5rem 0;">${escapeHtml(note.title)}</p>`);
       }
       if (note.composer) {
         lines.push(`<p style="${labelStyle}">${t("print.labelComposer")}</p>`);
-        lines.push(`<p style="${valueStyle}margin:0 0 1rem 0;">${note.composer}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0 0 1rem 0;">${escapeHtml(note.composer)}</p>`);
       }
       
       if (note.lyrics) {
         lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:0.5rem;">`);
         lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelLyrics")}</p>`);
-        lines.push(`<pre style="font-family:inherit;white-space:pre-wrap;${valueStyle}margin:0;font-size:0.875rem;">${note.lyrics}</pre>`);
+        lines.push(`<pre style="font-family:inherit;white-space:pre-wrap;${valueStyle}margin:0;font-size:0.875rem;">${escapeHtml(note.lyrics)}</pre>`);
         lines.push(`</div>`);
       }
       
@@ -297,14 +298,14 @@ export default function EditorPage() {
       if (note.style) {
         lines.push(`<div style="background:rgba(255,255,255,0.5);border-radius:0.5rem;padding:0.75rem;margin-bottom:1rem;">`);
         lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelStyle")}</p>`);
-        lines.push(`<p style="${valueStyle}margin:0;font-size:0.875rem;">${note.style}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0;font-size:0.875rem;">${escapeHtml(note.style)}</p>`);
         lines.push(`</div>`);
       }
       
       if (note.extraInfo) {
         lines.push(`<div style="background:rgba(255,255,255,0.3);border-radius:0.5rem;padding:0.5rem;margin-bottom:1rem;">`);
         lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelExtra")}</p>`);
-        lines.push(`<p style="${valueStyle}margin:0;font-size:0.75rem;">${note.extraInfo}</p>`);
+        lines.push(`<p style="${valueStyle}margin:0;font-size:0.75rem;">${escapeHtml(note.extraInfo)}</p>`);
         lines.push(`</div>`);
       }
       
@@ -313,7 +314,7 @@ export default function EditorPage() {
         lines.push(`<p style="${labelStyle}margin-bottom:0.25rem;">${t("print.labelTags")}</p>`);
         lines.push(`<div style="display:flex;flex-wrap:wrap;gap:0.25rem;">`);
         note.tags.forEach(tag => {
-          lines.push(`<span style="background:#e0e0e0;padding:0.25rem 0.5rem;border-radius:9999px;font-size:0.75rem;${valueStyle}">${tag}</span>`);
+          lines.push(`<span style="background:#e0e0e0;padding:0.25rem 0.5rem;border-radius:9999px;font-size:0.75rem;${valueStyle}">${escapeHtml(tag)}</span>`);
         });
         lines.push(`</div></div>`);
       }
@@ -330,7 +331,7 @@ export default function EditorPage() {
       
       const w = window.open("", "_blank");
       if (w) {
-        w.document.write(`<html><head><title>${note.title || "Note"}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;background:#f5f5f5;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
+        w.document.write(`<html><head><title>${escapeHtml(note.title || "Note")}</title><style>@media print { @page { margin-bottom: 2cm; } .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #000; padding: 0.5rem; background: #fff; } }</style></head><body style="font-family:system-ui;padding:2rem;padding-bottom:3rem;background:#f5f5f5;color:#000;"><div class="page-footer">${pageFooter}</div>${lines.join("")}</body></html>`);
         w.document.close();
         w.print();
       }
