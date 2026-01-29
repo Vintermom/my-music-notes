@@ -148,6 +148,7 @@ export const ja: Record<TranslationKey, string> = {
   "import.importing": "インポート中...",
   "import.success": "ノートを正常にインポートしました",
   "import.error": "ノートのインポートに失敗しました",
+  "import.invalidBackupFile": "無効なバックアップファイルです。このファイルはMy Music Notesからエクスポートされたものではありません。",
   "import.invalidFormat": "JSONファイルのみ許可されています",
   "import.fileTooLarge": "ファイルが大きすぎます（最大3MB）",
   "import.limitReached": "1日のインポート上限に達しました",

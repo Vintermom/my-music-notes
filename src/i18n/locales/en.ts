@@ -163,6 +163,7 @@ export const en = {
   "import.importing": "Importing...",
   "import.success": "Note imported successfully",
   "import.error": "Failed to import note",
+  "import.invalidBackupFile": "Invalid backup file. This file was not exported from My Music Notes.",
   "import.invalidFormat": "Only JSON files are allowed",
   "import.fileTooLarge": "File too large (max 3MB)",
   "import.limitReached": "Daily import limit reached",
