@@ -148,6 +148,7 @@ export const sv: Record<TranslationKey, string> = {
   "import.importing": "Importerar...",
   "import.success": "Anteckning importerad",
   "import.error": "Kunde inte importera anteckning",
+  "import.invalidBackupFile": "Ogiltig säkerhetskopia. Denna fil exporterades inte från My Music Notes.",
   "import.invalidFormat": "Endast JSON-filer tillåts",
   "import.fileTooLarge": "Filen är för stor (max 3MB)",
   "import.limitReached": "Daglig importgräns nådd",

@@ -17,8 +17,18 @@ import {
 import { Upload, AlertCircle, FileText, X } from "lucide-react";
 
 
+// App metadata for validation
+interface AppMetadata {
+  appId?: string;
+  appName?: string;
+  fileType?: string;
+  appVersion?: string;
+  platform?: string;
+}
+
 // Exported JSON structure types
 interface SingleNoteExport {
+  app?: AppMetadata;
   version?: number;
   storageVersion?: number;
   exportedAt?: string;
@@ -26,6 +36,7 @@ interface SingleNoteExport {
 }
 
 interface BundleExport {
+  app?: AppMetadata;
   version?: number;
   storageVersion?: number;
   exportedAt?: string;
@@ -33,6 +44,27 @@ interface BundleExport {
 }
 
 type ExportedData = SingleNoteExport | BundleExport | unknown;
+
+function hasAppMetadata(data: unknown): data is { app: AppMetadata } {
+  return (
+    data !== null &&
+    typeof data === "object" &&
+    "app" in data &&
+    typeof (data as { app: unknown }).app === "object" &&
+    (data as { app: unknown }).app !== null
+  );
+}
+
+function validateAppMetadata(app: AppMetadata): { valid: boolean; error?: string } {
+  // If app metadata exists, it must be from My Music Notes
+  if (app.appId !== "com.mymusicnotes") {
+    return { valid: false, error: "invalidAppId" };
+  }
+  if (app.fileType !== "mmnotes-backup") {
+    return { valid: false, error: "invalidFileType" };
+  }
+  return { valid: true };
+}
 
 function isBundle(data: unknown): data is BundleExport {
   return (
@@ -124,6 +156,14 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
         throw new Error("Invalid JSON format");
       }
 
+      // Validate app metadata if present
+      if (hasAppMetadata(data)) {
+        const validation = validateAppMetadata(data.app);
+        if (!validation.valid) {
+          throw new Error("invalidBackupFile");
+        }
+      }
+
       // Extract notes to import
       const notesToImport: Partial<Note>[] = [];
 
@@ -180,7 +220,12 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
         restoreFromBackup("notes");
       }
       
-      setImportError(t("import.error"));
+      // Show specific error for invalid backup file
+      const errorMessage = error instanceof Error && error.message === "invalidBackupFile"
+        ? t("import.invalidBackupFile")
+        : t("import.error");
+      
+      setImportError(errorMessage);
       setIsImporting(false);
     }
   };

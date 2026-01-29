@@ -148,6 +148,7 @@ export const ko: Record<TranslationKey, string> = {
   "import.importing": "가져오는 중...",
   "import.success": "노트를 성공적으로 가져왔습니다",
   "import.error": "노트 가져오기 실패",
+  "import.invalidBackupFile": "유효하지 않은 백업 파일입니다. 이 파일은 My Music Notes에서 내보낸 것이 아닙니다.",
   "import.invalidFormat": "JSON 파일만 허용됩니다",
   "import.fileTooLarge": "파일이 너무 큽니다 (최대 3MB)",
   "import.limitReached": "일일 가져오기 제한에 도달했습니다",

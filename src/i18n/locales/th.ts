@@ -148,6 +148,7 @@ export const th: Record<TranslationKey, string> = {
   "import.importing": "กำลังนำเข้า...",
   "import.success": "นำเข้าโน้ตสำเร็จ",
   "import.error": "นำเข้าโน้ตไม่สำเร็จ",
+  "import.invalidBackupFile": "ไฟล์สำรองไม่ถูกต้อง ไฟล์นี้ไม่ได้ส่งออกจาก My Music Notes",
   "import.invalidFormat": "อนุญาตเฉพาะไฟล์ JSON เท่านั้น",
   "import.fileTooLarge": "ไฟล์ใหญ่เกินไป (สูงสุด 3MB)",
   "import.limitReached": "ถึงขีดจำกัดการนำเข้าต่อวัน",

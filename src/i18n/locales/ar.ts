@@ -148,6 +148,7 @@ export const ar: Record<TranslationKey, string> = {
   "import.importing": "جارٍ الاستيراد...",
   "import.success": "تم استيراد الملاحظة بنجاح",
   "import.error": "فشل استيراد الملاحظة",
+  "import.invalidBackupFile": "ملف النسخ الاحتياطي غير صالح. لم يتم تصدير هذا الملف من My Music Notes.",
   "import.invalidFormat": "يُسمح فقط بملفات JSON",
   "import.fileTooLarge": "الملف كبير جداً (الحد الأقصى 3MB)",
   "import.limitReached": "تم الوصول إلى حد الاستيراد اليومي",

@@ -6,6 +6,7 @@ import {
   FIELD_LIMITS 
 } from "@/domain/types";
 import { safeGet, safeSet, createBackup, getRawStorage } from "./localStorage";
+import { APP_VERSION } from "@/lib/appVersion";
 import { 
   validateNotesArray, 
   validateNote, 
@@ -225,10 +226,17 @@ export function searchNotes(notes: Note[], query: string): Note[] {
 }
 
 /**
- * Export note as JSON with schema version (updated format)
+ * Export note as JSON with schema version and app metadata
  */
 export function exportNoteAsJson(note: Note): string {
   return JSON.stringify({
+    app: {
+      appId: "com.mymusicnotes",
+      appName: "My Music Notes",
+      fileType: "mmnotes-backup",
+      appVersion: APP_VERSION,
+      platform: "web-desktop",
+    },
     storageVersion: STORAGE_SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
     note,
