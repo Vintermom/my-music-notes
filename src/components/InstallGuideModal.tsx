@@ -23,10 +23,6 @@ export function InstallGuideModal({ open, onClose }: InstallGuideModalProps) {
         </DialogHeader>
         <ScrollArea className="max-h-[calc(85vh-80px)] px-6 pb-6">
           <div className="text-left">
-            <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-              {t("landing.installGuide.intro")}
-            </p>
-
             {/* Android */}
             <div className="mb-5">
               <h3 className="font-medium text-gray-700 mb-2">
@@ -62,6 +58,11 @@ export function InstallGuideModal({ open, onClose }: InstallGuideModalProps) {
                 <li>{t("landing.installGuide.desktopStep3")}</li>
               </ol>
             </div>
+
+            {/* Website usage note */}
+            <p className="text-gray-600 mb-5 text-sm leading-relaxed">
+              {t("landing.installGuide.intro")}
+            </p>
 
             {/* Important Note */}
             <div className="mt-6 pt-4 border-t border-gray-200">
