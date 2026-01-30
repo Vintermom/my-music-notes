@@ -212,7 +212,7 @@ export const sv: Record<TranslationKey, string> = {
   "landing.installGuide.desktopTitle": "Windows / Mac (Dator)",
   "landing.installGuide.desktopStep1": "Öppna webbplatsen i Chrome eller Edge",
   "landing.installGuide.desktopStep2": "Om en Install-knapp visas i adressfältet, klicka på den",
-  "landing.installGuide.desktopStep3": "Eller använd appen direkt i webbläsaren (installation är valfri)",
+  "landing.installGuide.desktopStep3": "Om ingen Install-knapp visas, leta efter installationsikonen i adressfältet och klicka på den",
   "landing.installGuide.noteTitle": "Viktig information",
   "landing.installGuide.note1": "All data sparas lokalt på din enhet. Ingen inloggning och ingen molnlagring.",
   "landing.installGuide.note2": "Om webbläsardata rensas, enheten återställs eller appen tas bort, kan din data försvinna.",

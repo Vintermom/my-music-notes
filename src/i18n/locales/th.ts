@@ -212,7 +212,7 @@ export const th: Record<TranslationKey, string> = {
   "landing.installGuide.desktopTitle": "Windows / Mac (คอมพิวเตอร์)",
   "landing.installGuide.desktopStep1": "เปิดเว็บด้วย Chrome หรือ Edge",
   "landing.installGuide.desktopStep2": "หากมีปุ่ม Install ที่แถบ URL ให้กดได้เลย",
-  "landing.installGuide.desktopStep3": "หรือใช้งานผ่านเว็บได้ทันที (ไม่จำเป็นต้องติดตั้ง)",
+  "landing.installGuide.desktopStep3": "หากไม่พบปุ่ม Install ให้มองหา ไอคอนติดตั้ง ที่แถบ Address bar แล้วกดได้เช่นกัน",
   "landing.installGuide.noteTitle": "หมายเหตุสำคัญ",
   "landing.installGuide.note1": "ข้อมูลทั้งหมดถูกเก็บไว้ในเครื่องของคุณ ไม่มีการล็อกอิน และไม่มีการอัปโหลดขึ้นคลาวด์",
   "landing.installGuide.note2": "หากมีการล้างแคช รีเซ็ตเครื่อง หรือถอนการติดตั้ง ข้อมูลอาจสูญหายได้",
