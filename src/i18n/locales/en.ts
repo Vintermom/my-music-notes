@@ -20,6 +20,7 @@ export const en = {
   "landing.about": "About",
   "landing.copyright": "© My Music Notes",
   "landing.contact": "Contact / Support",
+  "landing.howToInstall": "How to install",
 
   // Installation Guide
   "landing.installGuide.title": "How to install My Music Notes",

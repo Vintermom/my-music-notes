@@ -196,6 +196,7 @@ export const sv: Record<TranslationKey, string> = {
   "landing.about": "Om",
   "landing.copyright": "© My Music Notes",
   "landing.contact": "Kontakt / Support",
+  "landing.howToInstall": "Så installerar du",
 
   // Installation Guide
   "landing.installGuide.title": "Så installerar du My Music Notes",

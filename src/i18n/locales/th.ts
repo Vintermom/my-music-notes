@@ -196,6 +196,7 @@ export const th: Record<TranslationKey, string> = {
   "landing.about": "เกี่ยวกับ",
   "landing.copyright": "© My Music Notes",
   "landing.contact": "ติดต่อ / สนับสนุน",
+  "landing.howToInstall": "วิธีติดตั้ง",
 
   // Installation Guide
   "landing.installGuide.title": "วิธีติดตั้ง My Music Notes",
