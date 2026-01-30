@@ -24,7 +24,7 @@ export const en = {
 
   // Installation Guide
   "landing.installGuide.title": "How to install My Music Notes",
-  "landing.installGuide.intro": "You can use My Music Notes directly on the web. Installation is optional and only for convenience.",
+  "landing.installGuide.intro": "You can also use it via the website.",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
   "landing.installGuide.androidStep1": "Open the My Music Notes website",
   "landing.installGuide.androidStep2": "Tap the three dots (⋮) in the top-right corner",
