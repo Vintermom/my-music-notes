@@ -195,6 +195,27 @@ export const th: Record<TranslationKey, string> = {
   "landing.tryDemo": "ลองใช้เดโม",
   "landing.about": "เกี่ยวกับ",
   "landing.copyright": "© My Music Notes",
+  "landing.contact": "ติดต่อ / สนับสนุน",
+
+  // Installation Guide
+  "landing.installGuide.title": "วิธีติดตั้ง My Music Notes",
+  "landing.installGuide.intro": "คุณสามารถใช้งาน My Music Notes ผ่านเว็บได้ทันที การติดตั้งเป็นตัวเลือกเสริม เพื่อความสะดวกในการใช้งาน",
+  "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
+  "landing.installGuide.androidStep1": "เปิดเว็บ My Music Notes",
+  "landing.installGuide.androidStep2": "กด ⋮ มุมขวาบน",
+  "landing.installGuide.androidStep3": "เลือก เพิ่มไปที่หน้าจอหลัก",
+  "landing.installGuide.iphoneTitle": "iPhone / iPad (Safari เท่านั้น)",
+  "landing.installGuide.iphoneStep1": "เปิดเว็บด้วย Safari",
+  "landing.installGuide.iphoneStep2": "กดปุ่มแชร์ ⬆️",
+  "landing.installGuide.iphoneStep3": "เลือก เพิ่มไปที่หน้าจอโฮม",
+  "landing.installGuide.desktopTitle": "Windows / Mac (คอมพิวเตอร์)",
+  "landing.installGuide.desktopStep1": "เปิดเว็บด้วย Chrome หรือ Edge",
+  "landing.installGuide.desktopStep2": "หากมีปุ่ม Install ที่แถบ URL ให้กดได้เลย",
+  "landing.installGuide.desktopStep3": "หรือใช้งานผ่านเว็บได้ทันที (ไม่จำเป็นต้องติดตั้ง)",
+  "landing.installGuide.noteTitle": "หมายเหตุสำคัญ",
+  "landing.installGuide.note1": "ข้อมูลทั้งหมดถูกเก็บไว้ในเครื่องของคุณ ไม่มีการล็อกอิน และไม่มีการอัปโหลดขึ้นคลาวด์",
+  "landing.installGuide.note2": "หากมีการล้างแคช รีเซ็ตเครื่อง หรือถอนการติดตั้ง ข้อมูลอาจสูญหายได้",
+  "landing.installGuide.recommendation": "แนะนำให้ Export และบันทึกไฟล์ .json เก็บไว้เป็นระยะ",
 
   // Demo mode
   "demo.badge": "เดโม",
