@@ -196,6 +196,7 @@ export const ja: Record<TranslationKey, string> = {
   "landing.about": "情報",
   "landing.copyright": "© My Music Notes",
   "landing.contact": "Contact / Support",
+  "landing.howToInstall": "How to install",
 
   // Installation Guide
   "landing.installGuide.title": "How to install My Music Notes",

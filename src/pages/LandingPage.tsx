@@ -6,6 +6,7 @@ import { useState } from "react";
 import appIcon from "@/assets/app-icon.png";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { InstallHintDialog } from "@/components/InstallHintDialog";
+import { InstallGuideModal } from "@/components/InstallGuideModal";
 
 // Extend Window interface for gtag
 declare global {
@@ -18,6 +19,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [currentLang, setCurrentLang] = useState<SupportedLang>(getCurrentLang());
   const [showInstallHint, setShowInstallHint] = useState(false);
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
   const { canInstall, isInstalled, promptInstall } = usePWAInstall();
 
   const handleLanguageChange = (lang: SupportedLang) => {
@@ -145,67 +147,13 @@ export default function LandingPage() {
           </Button>
         </div>
 
-        {/* Installation Guide */}
-        <div className="mt-16 w-full max-w-lg text-left bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">
-            {t("landing.installGuide.title")}
-          </h2>
-          <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-            {t("landing.installGuide.intro")}
-          </p>
-
-          {/* Android */}
-          <div className="mb-5">
-            <h3 className="font-medium text-gray-700 mb-2">
-              {t("landing.installGuide.androidTitle")}
-            </h3>
-            <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-              <li>{t("landing.installGuide.androidStep1")}</li>
-              <li>{t("landing.installGuide.androidStep2")}</li>
-              <li>{t("landing.installGuide.androidStep3")}</li>
-            </ol>
-          </div>
-
-          {/* iPhone / iPad */}
-          <div className="mb-5">
-            <h3 className="font-medium text-gray-700 mb-2">
-              {t("landing.installGuide.iphoneTitle")}
-            </h3>
-            <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-              <li>{t("landing.installGuide.iphoneStep1")}</li>
-              <li>{t("landing.installGuide.iphoneStep2")}</li>
-              <li>{t("landing.installGuide.iphoneStep3")}</li>
-            </ol>
-          </div>
-
-          {/* Desktop */}
-          <div className="mb-5">
-            <h3 className="font-medium text-gray-700 mb-2">
-              {t("landing.installGuide.desktopTitle")}
-            </h3>
-            <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-              <li>{t("landing.installGuide.desktopStep1")}</li>
-              <li>{t("landing.installGuide.desktopStep2")}</li>
-              <li>{t("landing.installGuide.desktopStep3")}</li>
-            </ol>
-          </div>
-
-          {/* Important Note */}
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <h3 className="font-medium text-gray-700 mb-2">
-              {t("landing.installGuide.noteTitle")}
-            </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {t("landing.installGuide.note1")}
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed mt-2">
-              {t("landing.installGuide.note2")}
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed mt-3 font-medium">
-              {t("landing.installGuide.recommendation")}
-            </p>
-          </div>
-        </div>
+        {/* How to install link */}
+        <button
+          onClick={() => setShowInstallGuide(true)}
+          className="mt-6 text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors"
+        >
+          {t("landing.howToInstall")}
+        </button>
       </main>
 
       {/* Footer */}
@@ -231,6 +179,12 @@ export default function LandingPage() {
         open={showInstallHint}
         onClose={() => setShowInstallHint(false)}
         isInstalled={isInstalled}
+      />
+
+      {/* Install Guide Modal */}
+      <InstallGuideModal
+        open={showInstallGuide}
+        onClose={() => setShowInstallGuide(false)}
       />
     </div>
   );

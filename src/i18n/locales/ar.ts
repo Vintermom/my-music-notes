@@ -196,6 +196,7 @@ export const ar: Record<TranslationKey, string> = {
   "landing.about": "حول",
   "landing.copyright": "© My Music Notes",
   "landing.contact": "Contact / Support",
+  "landing.howToInstall": "How to install",
 
   // Installation Guide
   "landing.installGuide.title": "How to install My Music Notes",
