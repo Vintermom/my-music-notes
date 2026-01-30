@@ -200,7 +200,7 @@ export const sv: Record<TranslationKey, string> = {
 
   // Installation Guide
   "landing.installGuide.title": "Så installerar du My Music Notes",
-  "landing.installGuide.intro": "Du kan använda My Music Notes direkt i webbläsaren. Installation är valfri och endast för bekvämlighet.",
+  "landing.installGuide.intro": "Du kan även använda den via webbplatsen.",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
   "landing.installGuide.androidStep1": "Öppna My Music Notes webbplats",
   "landing.installGuide.androidStep2": "Tryck på de tre prickarna (⋮) uppe till höger",

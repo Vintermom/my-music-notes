@@ -200,7 +200,7 @@ export const th: Record<TranslationKey, string> = {
 
   // Installation Guide
   "landing.installGuide.title": "วิธีติดตั้ง My Music Notes",
-  "landing.installGuide.intro": "คุณสามารถใช้งาน My Music Notes ผ่านเว็บได้ทันที การติดตั้งเป็นตัวเลือกเสริม เพื่อความสะดวกในการใช้งาน",
+  "landing.installGuide.intro": "สามารถใช้งานผ่านเว็บไซต์ได้เช่นกัน",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
   "landing.installGuide.androidStep1": "เปิดเว็บ My Music Notes",
   "landing.installGuide.androidStep2": "กด ⋮ มุมขวาบน",
