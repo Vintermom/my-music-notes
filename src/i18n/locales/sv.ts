@@ -195,6 +195,27 @@ export const sv: Record<TranslationKey, string> = {
   "landing.tryDemo": "Prova demo",
   "landing.about": "Om",
   "landing.copyright": "© My Music Notes",
+  "landing.contact": "Kontakt / Support",
+
+  // Installation Guide
+  "landing.installGuide.title": "Så installerar du My Music Notes",
+  "landing.installGuide.intro": "Du kan använda My Music Notes direkt i webbläsaren. Installation är valfri och endast för bekvämlighet.",
+  "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
+  "landing.installGuide.androidStep1": "Öppna My Music Notes webbplats",
+  "landing.installGuide.androidStep2": "Tryck på de tre prickarna (⋮) uppe till höger",
+  "landing.installGuide.androidStep3": "Välj Lägg till på startskärmen",
+  "landing.installGuide.iphoneTitle": "iPhone / iPad (endast Safari)",
+  "landing.installGuide.iphoneStep1": "Öppna webbplatsen i Safari",
+  "landing.installGuide.iphoneStep2": "Tryck på dela-knappen (⬆️)",
+  "landing.installGuide.iphoneStep3": "Välj Lägg till på hemskärmen",
+  "landing.installGuide.desktopTitle": "Windows / Mac (Dator)",
+  "landing.installGuide.desktopStep1": "Öppna webbplatsen i Chrome eller Edge",
+  "landing.installGuide.desktopStep2": "Om en Install-knapp visas i adressfältet, klicka på den",
+  "landing.installGuide.desktopStep3": "Eller använd appen direkt i webbläsaren (installation är valfri)",
+  "landing.installGuide.noteTitle": "Viktig information",
+  "landing.installGuide.note1": "All data sparas lokalt på din enhet. Ingen inloggning och ingen molnlagring.",
+  "landing.installGuide.note2": "Om webbläsardata rensas, enheten återställs eller appen tas bort, kan din data försvinna.",
+  "landing.installGuide.recommendation": "Vi rekommenderar att du regelbundet exporterar och sparar dina .json-filer som säkerhetskopia.",
 
   // Demo mode
   "demo.badge": "Demo",

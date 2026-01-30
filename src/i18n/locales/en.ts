@@ -19,6 +19,27 @@ export const en = {
   "landing.tryDemo": "Try Demo",
   "landing.about": "About",
   "landing.copyright": "© My Music Notes",
+  "landing.contact": "Contact / Support",
+
+  // Installation Guide
+  "landing.installGuide.title": "How to install My Music Notes",
+  "landing.installGuide.intro": "You can use My Music Notes directly on the web. Installation is optional and only for convenience.",
+  "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
+  "landing.installGuide.androidStep1": "Open the My Music Notes website",
+  "landing.installGuide.androidStep2": "Tap the three dots (⋮) in the top-right corner",
+  "landing.installGuide.androidStep3": "Select \"Add to Home Screen\"",
+  "landing.installGuide.iphoneTitle": "iPhone / iPad (Safari only)",
+  "landing.installGuide.iphoneStep1": "Open the website using Safari",
+  "landing.installGuide.iphoneStep2": "Tap the Share button (⬆️)",
+  "landing.installGuide.iphoneStep3": "Select \"Add to Home Screen\"",
+  "landing.installGuide.desktopTitle": "Windows / Mac (Desktop)",
+  "landing.installGuide.desktopStep1": "Open the website using Chrome or Edge",
+  "landing.installGuide.desktopStep2": "If an Install button appears in the address bar, click it",
+  "landing.installGuide.desktopStep3": "Or continue using the app directly in the browser (installation is optional)",
+  "landing.installGuide.noteTitle": "Important note",
+  "landing.installGuide.note1": "All data is stored locally on your device. There is no login and no cloud storage.",
+  "landing.installGuide.note2": "If browser data is cleared, the device is reset, or the app is removed, your data may be lost.",
+  "landing.installGuide.recommendation": "We recommend regularly exporting and saving your .json files as a backup.",
 
   // Demo mode
   "demo.badge": "Demo",

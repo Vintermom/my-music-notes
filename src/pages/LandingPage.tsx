@@ -144,15 +144,84 @@ export default function LandingPage() {
             {t("landing.tryDemo")}
           </Button>
         </div>
+
+        {/* Installation Guide */}
+        <div className="mt-16 w-full max-w-lg text-left bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-gray-800 mb-3">
+            {t("landing.installGuide.title")}
+          </h2>
+          <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+            {t("landing.installGuide.intro")}
+          </p>
+
+          {/* Android */}
+          <div className="mb-5">
+            <h3 className="font-medium text-gray-700 mb-2">
+              {t("landing.installGuide.androidTitle")}
+            </h3>
+            <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+              <li>{t("landing.installGuide.androidStep1")}</li>
+              <li>{t("landing.installGuide.androidStep2")}</li>
+              <li>{t("landing.installGuide.androidStep3")}</li>
+            </ol>
+          </div>
+
+          {/* iPhone / iPad */}
+          <div className="mb-5">
+            <h3 className="font-medium text-gray-700 mb-2">
+              {t("landing.installGuide.iphoneTitle")}
+            </h3>
+            <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+              <li>{t("landing.installGuide.iphoneStep1")}</li>
+              <li>{t("landing.installGuide.iphoneStep2")}</li>
+              <li>{t("landing.installGuide.iphoneStep3")}</li>
+            </ol>
+          </div>
+
+          {/* Desktop */}
+          <div className="mb-5">
+            <h3 className="font-medium text-gray-700 mb-2">
+              {t("landing.installGuide.desktopTitle")}
+            </h3>
+            <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+              <li>{t("landing.installGuide.desktopStep1")}</li>
+              <li>{t("landing.installGuide.desktopStep2")}</li>
+              <li>{t("landing.installGuide.desktopStep3")}</li>
+            </ol>
+          </div>
+
+          {/* Important Note */}
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <h3 className="font-medium text-gray-700 mb-2">
+              {t("landing.installGuide.noteTitle")}
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {t("landing.installGuide.note1")}
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed mt-2">
+              {t("landing.installGuide.note2")}
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed mt-3 font-medium">
+              {t("landing.installGuide.recommendation")}
+            </p>
+          </div>
+        </div>
       </main>
 
       {/* Footer */}
       <footer className="py-6 text-center">
-        <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-gray-500">
           <span>{t("landing.copyright")}</span>
           <span className="text-gray-300">•</span>
           <a href="#/privacy" className="hover:text-gray-700 transition-colors">
             Privacy Policy
+          </a>
+          <span className="text-gray-300">•</span>
+          <a 
+            href="mailto:mmnotesapp@gmail.com" 
+            className="hover:text-gray-700 transition-colors"
+          >
+            {t("landing.contact")}
           </a>
         </div>
       </footer>
