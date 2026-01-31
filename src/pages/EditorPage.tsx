@@ -26,6 +26,7 @@ import { InsertSheet } from "@/components/InsertSheet";
 import { StylePicker } from "@/components/StylePicker";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
+import { LyricsEditor } from "@/components/LyricsEditor";
 import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
 
 const colorClasses: Record<NoteColor, string> = {
@@ -464,12 +465,13 @@ export default function EditorPage() {
               <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} className="h-6 w-6">{lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
-          <Textarea 
-            ref={lyricsRef} 
+          <LyricsEditor 
+            textareaRef={lyricsRef}
             placeholder={t("editor.lyrics")} 
             value={note.lyrics} 
-            onChange={(e) => updateField("lyrics", e.target.value)} 
-            className={`resize-none transition-all text-sm ${lyricsExpanded ? "min-h-[180px]" : "min-h-[50px] max-h-[50px]"} textarea-desktop`} 
+            onChange={(value) => updateField("lyrics", value)} 
+            expanded={lyricsExpanded}
+            className="textarea-desktop"
           />
         </div>
 

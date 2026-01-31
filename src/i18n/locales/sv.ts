@@ -246,4 +246,11 @@ export const sv: Record<TranslationKey, string> = {
   "settings.updateAvailableMessage": "En ny version ({version}) finns tillgänglig. Uppdatera sidan eller installera om appen för att uppdatera.",
   "settings.checkingForUpdates": "Söker efter uppdateringar...",
   "toast.updateCheckFailed": "Kunde inte söka efter uppdateringar",
+
+  // Lyrics Editor
+  "lyricsEditor.outline": "Översikt",
+  "lyricsEditor.toggleOutline": "Visa/dölj översikt",
+  "lyricsEditor.duplicateSection": "Duplicera sektion",
+  "lyricsEditor.sectionDuplicated": "Sektion duplicerad",
+  "lyricsEditor.expandAll": "Expandera alla",
 };

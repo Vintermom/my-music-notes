@@ -243,6 +243,13 @@ export const en = {
   "settings.updateAvailableMessage": "A new version ({version}) is available. Please refresh the page or reinstall the app to update.",
   "settings.checkingForUpdates": "Checking for updates...",
   "toast.updateCheckFailed": "Failed to check for updates",
+
+  // Lyrics Editor
+  "lyricsEditor.outline": "Outline",
+  "lyricsEditor.toggleOutline": "Toggle Outline",
+  "lyricsEditor.duplicateSection": "Duplicate Section",
+  "lyricsEditor.sectionDuplicated": "Section duplicated",
+  "lyricsEditor.expandAll": "Expand All",
 };
 
 export type TranslationKey = keyof typeof en;

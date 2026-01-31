@@ -246,4 +246,11 @@ export const th: Record<TranslationKey, string> = {
   "settings.updateAvailableMessage": "มีเวอร์ชันใหม่ ({version}) โปรดรีเฟรชหน้าหรือติดตั้งแอปใหม่เพื่ออัปเดต",
   "settings.checkingForUpdates": "กำลังตรวจสอบการอัปเดต...",
   "toast.updateCheckFailed": "ตรวจสอบการอัปเดตไม่สำเร็จ",
+
+  // Lyrics Editor
+  "lyricsEditor.outline": "โครงสร้าง",
+  "lyricsEditor.toggleOutline": "เปิด/ปิดโครงสร้าง",
+  "lyricsEditor.duplicateSection": "ทำซ้ำส่วน",
+  "lyricsEditor.sectionDuplicated": "ทำซ้ำส่วนแล้ว",
+  "lyricsEditor.expandAll": "ขยายทั้งหมด",
 };
