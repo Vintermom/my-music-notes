@@ -246,4 +246,11 @@ export const ja: Record<TranslationKey, string> = {
   "settings.updateAvailableMessage": "新しいバージョン（{version}）が利用可能です。ページを更新するか、アプリを再インストールしてください。",
   "settings.checkingForUpdates": "アップデートを確認中...",
   "toast.updateCheckFailed": "アップデートの確認に失敗しました",
+
+  // Lyrics Editor
+  "lyricsEditor.outline": "アウトライン",
+  "lyricsEditor.toggleOutline": "アウトラインを表示/非表示",
+  "lyricsEditor.duplicateSection": "セクションを複製",
+  "lyricsEditor.sectionDuplicated": "セクションを複製しました",
+  "lyricsEditor.expandAll": "すべて展開",
 };

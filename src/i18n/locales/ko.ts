@@ -246,4 +246,11 @@ export const ko: Record<TranslationKey, string> = {
   "settings.updateAvailableMessage": "새 버전 ({version})을 사용할 수 있습니다. 페이지를 새로고침하거나 앱을 다시 설치하여 업데이트하세요.",
   "settings.checkingForUpdates": "업데이트 확인 중...",
   "toast.updateCheckFailed": "업데이트 확인 실패",
+
+  // Lyrics Editor
+  "lyricsEditor.outline": "개요",
+  "lyricsEditor.toggleOutline": "개요 표시/숨기기",
+  "lyricsEditor.duplicateSection": "섹션 복제",
+  "lyricsEditor.sectionDuplicated": "섹션이 복제되었습니다",
+  "lyricsEditor.expandAll": "모두 펼치기",
 };

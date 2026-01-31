@@ -246,4 +246,11 @@ export const ar: Record<TranslationKey, string> = {
   "settings.updateAvailableMessage": "إصدار جديد ({version}) متاح. يرجى تحديث الصفحة أو إعادة تثبيت التطبيق.",
   "settings.checkingForUpdates": "جارٍ التحقق من التحديثات...",
   "toast.updateCheckFailed": "فشل التحقق من التحديثات",
+
+  // Lyrics Editor
+  "lyricsEditor.outline": "المخطط",
+  "lyricsEditor.toggleOutline": "إظهار/إخفاء المخطط",
+  "lyricsEditor.duplicateSection": "تكرار القسم",
+  "lyricsEditor.sectionDuplicated": "تم تكرار القسم",
+  "lyricsEditor.expandAll": "توسيع الكل",
 };
