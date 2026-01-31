@@ -250,6 +250,7 @@ export const en = {
   "lyricsEditor.duplicateSection": "Duplicate Section",
   "lyricsEditor.sectionDuplicated": "Section duplicated",
   "lyricsEditor.expandAll": "Expand All",
+  "lyricsEditor.addSection": "Add section",
 };
 
 export type TranslationKey = keyof typeof en;
