@@ -253,4 +253,5 @@ export const sv: Record<TranslationKey, string> = {
   "lyricsEditor.duplicateSection": "Duplicera sektion",
   "lyricsEditor.sectionDuplicated": "Sektion duplicerad",
   "lyricsEditor.expandAll": "Expandera alla",
+  "lyricsEditor.addSection": "Lägg till sektion",
 };

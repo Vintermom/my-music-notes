@@ -253,4 +253,5 @@ export const ar: Record<TranslationKey, string> = {
   "lyricsEditor.duplicateSection": "تكرار القسم",
   "lyricsEditor.sectionDuplicated": "تم تكرار القسم",
   "lyricsEditor.expandAll": "توسيع الكل",
+  "lyricsEditor.addSection": "إضافة قسم",
 };

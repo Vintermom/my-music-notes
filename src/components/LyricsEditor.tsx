@@ -1,9 +1,33 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { t } from "@/i18n";
 import { cn } from "@/lib/utils";
-import { List, ChevronRight, ChevronDown, Copy, Eye, EyeOff } from "lucide-react";
+import { List, ChevronRight, ChevronDown, Copy, Eye, EyeOff, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+
+// Detect if device should use touch mode (mobile phones + ALL iPads)
+const useTouchMode = () => {
+  const [isTouchMode, setIsTouchMode] = useState(false);
+
+  useEffect(() => {
+    const checkTouchMode = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isIPad = /ipad/.test(userAgent) || 
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isMobile = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/.test(userAgent);
+      const isSmallScreen = window.innerWidth < 768;
+      
+      // Touch mode for: mobile phones, iPads (any size), or small screens
+      setIsTouchMode(isMobile || isIPad || isSmallScreen);
+    };
+
+    checkTouchMode();
+    window.addEventListener('resize', checkTouchMode);
+    return () => window.removeEventListener('resize', checkTouchMode);
+  }, []);
+
+  return isTouchMode;
+};
 
 interface LyricsEditorProps {
   value: string;
@@ -102,6 +126,13 @@ export function LyricsEditor({
   // Styled view mode (shows collapsible preview)
   const [showStyledView, setShowStyledView] = useState(false);
 
+  // Touch mode detection
+  const isTouchMode = useTouchMode();
+
+  // Touch mode: show add section bar on empty new line
+  const [showAddSectionBar, setShowAddSectionBar] = useState(false);
+  const [addSectionPosition, setAddSectionPosition] = useState<number>(0);
+
   // Parse sections from lyrics
   const sections = useMemo(() => parseSections(value), [value]);
 
@@ -122,7 +153,8 @@ export function LyricsEditor({
     return { top: Math.min(top, 200), left };
   }, [value, textareaRef]);
 
-  // Handle keydown for "[" or "(" at start of line
+  // Handle keydown for "[" or "(" at start of line (Desktop mode only)
+  // Also handles Enter key for touch mode
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       const textarea = textareaRef.current;
@@ -135,8 +167,33 @@ export function LyricsEditor({
         return;
       }
 
-      // Check for "[" or "(" trigger
-      if (e.key === "[" || e.key === "(") {
+      // Close add section bar on Escape
+      if (e.key === "Escape" && showAddSectionBar) {
+        setShowAddSectionBar(false);
+        return;
+      }
+
+      // Touch mode: detect Enter to show add section bar on new empty line
+      if (isTouchMode && e.key === "Enter") {
+        const { selectionStart } = textarea;
+        const textBefore = value.substring(0, selectionStart);
+        const lastNewlineIndex = textBefore.lastIndexOf("\n");
+        const lineStart = lastNewlineIndex === -1 ? 0 : lastNewlineIndex + 1;
+        const currentLineText = textBefore.substring(lineStart);
+
+        // Show bar if current line is empty (new line will be created)
+        if (currentLineText.trim() === "") {
+          // Position after the Enter creates new line
+          setTimeout(() => {
+            setAddSectionPosition(selectionStart + 1);
+            setShowAddSectionBar(true);
+          }, 10);
+        }
+        return;
+      }
+
+      // Desktop mode: Check for "[" or "(" trigger
+      if (!isTouchMode && (e.key === "[" || e.key === "(")) {
         const { selectionStart } = textarea;
         const textBefore = value.substring(0, selectionStart);
         const lastNewlineIndex = textBefore.lastIndexOf("\n");
@@ -158,8 +215,51 @@ export function LyricsEditor({
         }
       }
     },
-    [value, textareaRef, showSectionDropdown, getCaretCoordinates]
+    [value, textareaRef, showSectionDropdown, showAddSectionBar, getCaretCoordinates, isTouchMode]
   );
+
+  // Handle input change - hide add section bar if user types
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange(e.target.value);
+      // Hide add section bar when user types anything
+      if (showAddSectionBar) {
+        setShowAddSectionBar(false);
+      }
+    },
+    [onChange, showAddSectionBar]
+  );
+
+  // Touch mode: insert section from bar
+  const handleTouchSectionSelect = useCallback(
+    (sectionName: string) => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+
+      const insertText = `[${sectionName}]\n`;
+      const before = value.substring(0, addSectionPosition);
+      const after = value.substring(addSectionPosition);
+      const newValue = before + insertText + after;
+
+      onChange(newValue);
+      setShowAddSectionBar(false);
+
+      // Move cursor to new line after insertion
+      setTimeout(() => {
+        const newPosition = addSectionPosition + insertText.length;
+        textarea.focus();
+        textarea.setSelectionRange(newPosition, newPosition);
+      }, 0);
+    },
+    [value, onChange, addSectionPosition, textareaRef]
+  );
+
+  // Hide add section bar on scroll
+  const handleScroll = useCallback(() => {
+    if (showAddSectionBar) {
+      setShowAddSectionBar(false);
+    }
+  }, [showAddSectionBar]);
 
   // Handle section selection from dropdown
   const handleSectionSelect = useCallback(
@@ -438,19 +538,45 @@ export function LyricsEditor({
           )}
         </div>
       ) : (
-        /* Main Textarea */
-        <textarea
-          ref={textareaRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className={cn(
-            "flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none transition-all",
-            expanded ? "min-h-[180px]" : "min-h-[50px] max-h-[50px]",
-            className
+      /* Main Textarea */
+        <div className="relative">
+          <textarea
+            ref={textareaRef}
+            value={value}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onScroll={handleScroll}
+            placeholder={placeholder}
+            className={cn(
+              "flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none transition-all",
+              expanded ? "min-h-[180px]" : "min-h-[50px] max-h-[50px]",
+              className
+            )}
+          />
+          
+          {/* Touch Mode: Add Section Bar */}
+          {showAddSectionBar && isTouchMode && (
+            <div className="absolute left-0 right-0 top-8 z-50 mx-2">
+              <div className="flex items-center gap-1 p-1 bg-popover border border-border rounded-md shadow-lg overflow-x-auto">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground px-2 flex-shrink-0">
+                  <Plus className="h-3 w-3" />
+                  <span>{t("lyricsEditor.addSection")}</span>
+                </div>
+                <div className="flex gap-1 overflow-x-auto">
+                  {SECTION_OPTIONS.map((section) => (
+                    <button
+                      key={section}
+                      className="px-2 py-1 text-xs bg-muted hover:bg-muted/80 rounded whitespace-nowrap"
+                      onClick={() => handleTouchSectionSelect(section)}
+                    >
+                      {section}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
-        />
+        </div>
       )}
 
       {/* Quick Section Dropdown */}

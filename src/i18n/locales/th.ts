@@ -253,4 +253,5 @@ export const th: Record<TranslationKey, string> = {
   "lyricsEditor.duplicateSection": "ทำซ้ำส่วน",
   "lyricsEditor.sectionDuplicated": "ทำซ้ำส่วนแล้ว",
   "lyricsEditor.expandAll": "ขยายทั้งหมด",
+  "lyricsEditor.addSection": "เพิ่มส่วน",
 };

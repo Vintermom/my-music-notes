@@ -253,4 +253,5 @@ export const ja: Record<TranslationKey, string> = {
   "lyricsEditor.duplicateSection": "セクションを複製",
   "lyricsEditor.sectionDuplicated": "セクションを複製しました",
   "lyricsEditor.expandAll": "すべて展開",
+  "lyricsEditor.addSection": "セクションを追加",
 };

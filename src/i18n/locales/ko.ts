@@ -253,4 +253,5 @@ export const ko: Record<TranslationKey, string> = {
   "lyricsEditor.duplicateSection": "섹션 복제",
   "lyricsEditor.sectionDuplicated": "섹션이 복제되었습니다",
   "lyricsEditor.expandAll": "모두 펼치기",
+  "lyricsEditor.addSection": "섹션 추가",
 };
