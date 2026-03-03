@@ -1,4 +1,4 @@
-export type PromptCategory = "Viral" | "Popular";
+export type PromptCategory = "Pop" | "Emotional" | "Dance / EDM" | "Chill / Indie" | "Rock / Metal" | "R&B" | "Hip-Hop / Rap" | "Folk";
 
 export interface PromptPreset {
   id: string;
