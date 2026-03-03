@@ -1,27 +1,30 @@
 # Privacy Policy
 
-Last updated: 9 January 2026
+Last updated: 3 March 2026
 
 My Music Notes ("the App") respects your privacy and is committed to protecting user data.
 
 ## Information Collection and Use
-The App does not collect, store, or share any personal data.
+The App uses Google Analytics (GA4) to collect basic, anonymous usage statistics such as the number of visitors, pages viewed, and button interactions. This data is used solely to understand how the App is used and to improve functionality and user experience.
 
 - No account registration or login is required
-- No analytics, tracking, or advertising
-- No third-party services or SDKs
-
-All data created within the App is stored locally on the user's device only.
+- No personal data or song content is collected
+- No advertising or marketing tracking
 
 ## Data Storage
-The App uses local device storage to save user-created content.
-The developer does not have access to this data.
+All songs, notes, and content created within the App are stored locally on the user's device only. The developer does not have access to this data.
+
+## Cookies and Analytics
+Google Analytics may use cookies or similar technologies to measure website usage. Usage data collected through analytics is processed by Google in accordance with Google's privacy policies.
 
 ## Internet Usage
-The App does not require an internet connection to function.
+The App does not require an internet connection to function. Analytics data is sent only when an internet connection is available.
 
 ## Children's Privacy
 The App does not knowingly collect any personal information from children.
+
+## Your Control
+You remain in full control of your data. You may clear your browser data at any time.
 
 ## Changes to This Policy
 This Privacy Policy may be updated in the future. Any changes will be reflected on this page.
