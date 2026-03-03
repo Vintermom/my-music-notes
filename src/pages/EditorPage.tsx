@@ -28,6 +28,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
 import { LyricsEditor } from "@/components/LyricsEditor";
 import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
+import { AllPromptSheet } from "@/components/AllPromptSheet";
 
 const colorClasses: Record<NoteColor, string> = {
   default: "note-bg-default", cream: "note-bg-cream", pink: "note-bg-pink",
@@ -53,6 +54,7 @@ export default function EditorPage() {
   const [lyricsExpanded, setLyricsExpanded] = useState(true);
   const [styleExpanded, setStyleExpanded] = useState(true);
   const [showFirstSaveNotice, setShowFirstSaveNotice] = useState(false);
+  const [allPromptOpen, setAllPromptOpen] = useState(false);
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
   const { pushToHistory: pushStyleHistory, undo: undoStyle, canUndo: canUndoStyle, reset: resetStyleHistory } = useStyleHistory(note?.style || "");
@@ -481,6 +483,7 @@ export default function EditorPage() {
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
               <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
+              <Button variant="ghost" size="sm" onClick={() => setAllPromptOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />All Prompt</Button>
             </div>
             <div className="flex items-center gap-0.5 no-print">
               <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
@@ -531,6 +534,7 @@ export default function EditorPage() {
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
+      <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
       <LocalFirstNotice open={showFirstSaveNotice} onOpenChange={setShowFirstSaveNotice} />
     </div>
   );
