@@ -11,7 +11,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown,
+  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -601,6 +601,28 @@ export default function EditorPage() {
     toast.success(t("toast.jsonExported"));
   };
 
+  const handleDownloadAudio = () => {
+    if (!note?.takes?.length) return;
+    const take = note.takes.find((item) => item.id === note.activeTakeId) || note.takes[0];
+    if (!take?.blob) {
+      toast.error(t("toast.audioNotAvailable"));
+      return;
+    }
+
+    try {
+      const link = document.createElement("a");
+      const title = note.title.trim().replace(/[\\/:*?"<>|]+/g, "").replace(/\s+/g, "-") || "audio-note";
+      const takeIndex = Math.max(1, note.takes.findIndex((item) => item.id === take.id) + 1);
+      link.href = take.blob;
+      link.download = `${title}_take-${takeIndex}.webm`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch {
+      toast.error(t("toast.audioNotAvailable"));
+    }
+  };
+
   const handleCopyAll = () => {
     if (!note) return;
     const content = [note.title && `Title: ${note.title}`, note.composer && `Composer: ${note.composer}`, note.lyrics && `\nLyrics:\n${note.lyrics}`, note.style && `\nStyle: ${note.style}`, note.extraInfo && `\nExtra Info: ${note.extraInfo}`, note.tags.length > 0 && `\nTags: ${note.tags.join(", ")}`].filter(Boolean).join("\n");
@@ -697,6 +719,11 @@ export default function EditorPage() {
                 <DropdownMenuItem onClick={handleExportJson}>
                   <FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}
                 </DropdownMenuItem>
+                {!!note.takes?.length && (
+                  <DropdownMenuItem onClick={handleDownloadAudio}>
+                    <Download className="h-4 w-4 mr-2" />{t("menu.downloadAudio")}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleCopyAll}><ClipboardCopy className="h-4 w-4 mr-2" />{t("menu.copyAll")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleCopyLyrics}><Copy className="h-4 w-4 mr-2" />{t("editor.copyLyrics")}</DropdownMenuItem>
