@@ -237,7 +237,7 @@ export default function EditorPage() {
   const handleStartRecording = async () => {
     if (!note || isRecording) return;
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
-      setMicrophoneMessage("Audio recording is not supported on this browser.");
+      setMicrophoneMessage(t("audio.notSupported"));
       return;
     }
 
@@ -297,12 +297,15 @@ export default function EditorPage() {
       recordingTimerRef.current = window.setInterval(() => {
         const elapsed = Math.min(60, Math.floor((Date.now() - recordingStartedAtRef.current) / 1000));
         setRecordingSeconds(elapsed);
-        if (elapsed >= 60) handleStopRecording();
+        if (elapsed >= 60) {
+          setMicrophoneMessage(t("audio.maxDurationReached"));
+          handleStopRecording();
+        }
       }, 250);
     } catch {
       stopRecordingResources();
       setIsRecording(false);
-      setMicrophoneMessage("Microphone access is required to record audio.");
+      setMicrophoneMessage(t("audio.microphoneRequired"));
     }
   };
 
@@ -622,7 +625,7 @@ export default function EditorPage() {
               <Button variant="ghost" size="icon" onClick={handleRecorderClose} aria-label="Close recorder">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h2 className="text-base font-semibold">Voice Note</h2>
+              <h2 className="text-base font-semibold">{t("audio.voiceNote")}</h2>
               <div className="h-10 w-10" />
             </header>
 
@@ -630,7 +633,7 @@ export default function EditorPage() {
               <div className="text-center space-y-2">
                 <p className="text-6xl font-semibold tabular-nums tracking-normal">{formatRecordingTime(recordingSeconds)}</p>
                 <p className="text-sm text-muted-foreground">
-                  {recorderState === "recording" ? "Recording..." : recorderState === "finished" ? "Recording finished" : "Ready to record"}
+                  {recorderState === "recording" ? t("audio.recordingActive") : recorderState === "finished" ? t("audio.recordingFinished") : t("audio.readyToRecord")}
                 </p>
               </div>
 
@@ -651,13 +654,13 @@ export default function EditorPage() {
 
               {recorderState === "finished" ? (
                 <div className="grid gap-3 w-full">
-                  <Button onClick={handleSaveRecording} className="h-12">Save</Button>
-                  <Button onClick={handleRecordAgain} variant="outline" className="h-12">Record Again</Button>
-                  <Button onClick={handleRecorderClose} variant="ghost" className="h-12">Discard</Button>
+                  <Button onClick={handleSaveRecording} className="h-12">{t("audio.save")}</Button>
+                  <Button onClick={handleRecordAgain} variant="outline" className="h-12">{t("audio.recordAgain")}</Button>
+                  <Button onClick={handleRecorderClose} variant="ghost" className="h-12">{t("audio.discard")}</Button>
                 </div>
               ) : (
                 <Button onClick={recorderState === "recording" ? handleStopRecording : handleStartRecording} className="h-14 w-full max-w-xs">
-                  {recorderState === "recording" ? "Stop" : "Start Recording"}
+                  {recorderState === "recording" ? t("audio.stop") : t("audio.startRecording")}
                 </Button>
               )}
             </div>
@@ -728,7 +731,7 @@ export default function EditorPage() {
         {note.hasAudio === true && (
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-muted-foreground">🎤 Voice Note</label>
+              <label className="text-xs font-medium text-muted-foreground">🎤 {t("audio.voiceNote")}</label>
             </div>
             <div className="space-y-2">
               {activeTake && (
@@ -743,7 +746,7 @@ export default function EditorPage() {
                     onEnded={() => setIsAudioPlaying(false)}
                   />
                   <div className="flex items-center gap-2 no-print">
-                    <Button variant="outline" size="sm" onClick={handleTogglePlayback} className="h-8 px-2 text-xs">{isAudioPlaying ? "Pause" : "Play"}</Button>
+                    <Button variant="outline" size="sm" onClick={handleTogglePlayback} className="h-8 px-2 text-xs">{isAudioPlaying ? t("audio.pause") : t("audio.play")}</Button>
                     <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(-10)} className="h-8 px-2 text-xs">-10s</Button>
                     <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(10)} className="h-8 px-2 text-xs">+10s</Button>
                     <span className="text-xs text-muted-foreground">{formatRecordingTime(Math.floor(audioCurrentTime))} / {formatRecordingTime(Math.floor(audioDuration || activeTake.duration))}</span>
@@ -752,18 +755,18 @@ export default function EditorPage() {
                 </div>
               )}
               <Button variant="outline" size="sm" onClick={() => { resetRecorder(); setRecorderOpen(true); }} className="h-8 text-xs no-print">
-                Start Recording
+                {t("audio.startRecording")}
               </Button>
-              <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
+              <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} ${note.takes.length === 1 ? t("audio.recordingCount") : t("audio.recordingCountPlural")}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : t("audio.noRecordingsYet")}</p>
               {microphoneMessage && <p className="text-xs text-muted-foreground">{microphoneMessage}</p>}
               {!!note.takes?.length && (
                 <div className="space-y-1">
                   {note.takes.map((take, index) => (
                     <div key={take.id} className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
                       <button type="button" onClick={() => handleSelectTake(take.id)} className="flex-1 text-left hover:text-foreground">
-                        Take {index + 1} {take.id === activeTake?.id ? "▶️" : ""}
+                        {t("audio.take")} {index + 1} {take.id === activeTake?.id ? "▶️" : ""}
                       </button>
-                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">Delete</Button>
+                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">{t("audio.deleteRecording")}</Button>
                     </div>
                   ))}
                 </div>
@@ -850,8 +853,8 @@ export default function EditorPage() {
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
-      <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title="Delete take?" description="This recording take will be removed." confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
-      <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title="Discard recording?" description="This unsaved recording will be lost." confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />
+      <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title={t("audio.deleteRecording")} description={t("audio.confirmDelete")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
+      <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title={t("audio.discard")} description={t("audio.confirmDiscard")} confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
