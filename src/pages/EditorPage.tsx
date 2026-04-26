@@ -581,6 +581,26 @@ export default function EditorPage() {
               <label className="text-xs font-medium text-muted-foreground">🎤 Voice Note</label>
             </div>
             <div className="space-y-2">
+              {activeTake && (
+                <div className="sticky top-14 z-[1] space-y-2 bg-inherit py-2">
+                  <audio
+                    ref={audioRef}
+                    src={activeTake.blob}
+                    onTimeUpdate={(e) => setAudioCurrentTime(e.currentTarget.currentTime)}
+                    onLoadedMetadata={(e) => setAudioDuration(e.currentTarget.duration || activeTake.duration)}
+                    onPlay={() => setIsAudioPlaying(true)}
+                    onPause={() => setIsAudioPlaying(false)}
+                    onEnded={() => setIsAudioPlaying(false)}
+                  />
+                  <div className="flex items-center gap-2 no-print">
+                    <Button variant="outline" size="sm" onClick={handleTogglePlayback} className="h-8 px-2 text-xs">{isAudioPlaying ? "Pause" : "Play"}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(-10)} className="h-8 px-2 text-xs">-10s</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(10)} className="h-8 px-2 text-xs">+10s</Button>
+                    <span className="text-xs text-muted-foreground">{formatRecordingTime(Math.floor(audioCurrentTime))} / {formatRecordingTime(Math.floor(audioDuration || activeTake.duration))}</span>
+                  </div>
+                  <input type="range" min="0" max={audioDuration || activeTake.duration || 0} value={audioCurrentTime} onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = Number(e.target.value); }} className="w-full no-print" />
+                </div>
+              )}
               <Button variant="outline" size="sm" onClick={isRecording ? handleStopRecording : handleStartRecording} className="h-8 text-xs no-print">
                 {isRecording ? "Stop Recording" : "Start Recording"}
               </Button>
