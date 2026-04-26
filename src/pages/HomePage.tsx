@@ -11,6 +11,18 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { safeGet, safeSet } from "@/storage/localStorage";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -31,6 +43,8 @@ export default function HomePage() {
 
   const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
   const [createSheetOpen, setCreateSheetOpen] = useState(false);
+  const [audioStorageNoticeOpen, setAudioStorageNoticeOpen] = useState(false);
+  const [hideAudioStorageNotice, setHideAudioStorageNotice] = useState(false);
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(() => 
     safeGet<1 | 2>("mobileGridCols", 1)
   );
@@ -53,6 +67,23 @@ export default function HomePage() {
     const note = createNote({ hasAudio: true });
     setCreateSheetOpen(false);
     navigate(`/edit/${note.id}?record=1`);
+  };
+
+  const handleRecordSelect = () => {
+    if (safeGet("hideAudioStorageNotice", false)) {
+      handleCreateRecordNote();
+      return;
+    }
+    setHideAudioStorageNotice(false);
+    setAudioStorageNoticeOpen(true);
+  };
+
+  const continueCreateRecordNote = () => {
+    if (hideAudioStorageNotice) {
+      safeSet("hideAudioStorageNotice", true);
+    }
+    setAudioStorageNoticeOpen(false);
+    handleCreateRecordNote();
   };
 
   const handleNoteClick = (id: string) => {
