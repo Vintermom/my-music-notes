@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { AudioTake, Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t, currentLang } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
 import { escapeHtml } from "@/lib/escapeHtml";
@@ -39,18 +39,27 @@ const colorClasses: Record<NoteColor, string> = {
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingStartedAtRef = useRef<number>(0);
   const recordingTimerRef = useRef<number | null>(null);
   const recordingStreamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserFrameRef = useRef<number | null>(null);
+  const discardRecordingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [note, setNote] = useState<Note | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [recorderOpen, setRecorderOpen] = useState(false);
+  const [recorderState, setRecorderState] = useState<"ready" | "recording" | "finished">("ready");
+  const [recordingPreviewBlob, setRecordingPreviewBlob] = useState<string>("");
+  const [recordingPreviewDuration, setRecordingPreviewDuration] = useState(0);
+  const [audioLevel, setAudioLevel] = useState(0);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioCurrentTime, setAudioCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
@@ -60,6 +69,7 @@ export default function EditorPage() {
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [discardRecorderDialogOpen, setDiscardRecorderDialogOpen] = useState(false);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [clearStyleDialogOpen, setClearStyleDialogOpen] = useState(false);
   const [printDialogOpen, setPrintDialogOpen] = useState(false);
@@ -96,10 +106,19 @@ export default function EditorPage() {
   useEffect(() => {
     return () => {
       if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+      if (analyserFrameRef.current) window.cancelAnimationFrame(analyserFrameRef.current);
+      audioContextRef.current?.close();
       recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
       audioRef.current?.pause();
     };
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("record") === "1" && note?.hasAudio === true) {
+      setRecorderOpen(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [note?.hasAudio, searchParams, setSearchParams]);
 
   const activeTake = note?.takes?.find((take) => take.id === note.activeTakeId) || note?.takes?.[0];
 
@@ -197,46 +216,83 @@ export default function EditorPage() {
       reader.readAsDataURL(blob);
     });
 
+  const stopRecordingResources = () => {
+    if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+    recordingTimerRef.current = null;
+    if (analyserFrameRef.current) window.cancelAnimationFrame(analyserFrameRef.current);
+    analyserFrameRef.current = null;
+    audioContextRef.current?.close();
+    audioContextRef.current = null;
+    recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+    recordingStreamRef.current = null;
+    setAudioLevel(0);
+  };
+
   const handleStopRecording = () => {
-    mediaRecorderRef.current?.stop();
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
   };
 
   const handleStartRecording = async () => {
     if (!note || isRecording) return;
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setMicrophoneMessage("Audio recording is not supported on this browser.");
+      return;
+    }
 
     try {
       setMicrophoneMessage("");
+      setRecordingPreviewBlob("");
+      setRecordingPreviewDuration(0);
+      discardRecordingRef.current = false;
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       recordingStreamRef.current = stream;
       audioChunksRef.current = [];
       recordingStartedAtRef.current = Date.now();
 
-      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "";
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       mediaRecorderRef.current = recorder;
+
+      const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (AudioContextClass) {
+        const audioContext = new AudioContextClass();
+        const source = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        audioContextRef.current = audioContext;
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        const updateLevel = () => {
+          analyser.getByteFrequencyData(data);
+          setAudioLevel(data.reduce((sum, value) => sum + value, 0) / data.length / 255);
+          analyserFrameRef.current = window.requestAnimationFrame(updateLevel);
+        };
+        updateLevel();
+      }
 
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
 
       recorder.onstop = async () => {
-        if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
-        recordingTimerRef.current = null;
-        recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
-        recordingStreamRef.current = null;
+        stopRecordingResources();
         setIsRecording(false);
+        if (discardRecordingRef.current) return;
 
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || "audio/webm" });
         const blob = await blobToDataUrl(audioBlob);
-        const duration = Math.min(60, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
-        const takeId = `take_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
-        const updatedTakes = [...(note.takes || []), { id: takeId, blob, duration }];
-        const updatedNote = { ...note, takes: updatedTakes, activeTakeId: takeId };
-        setNote(updatedNote);
-        debouncedSave(updatedNote);
+        const duration = Math.min(60, Math.max(1, Math.round((Date.now() - recordingStartedAtRef.current) / 1000)));
+        setRecordingPreviewBlob(blob);
+        setRecordingPreviewDuration(duration);
+        setRecordingSeconds(duration);
+        setRecorderState("finished");
       };
 
       recorder.start();
       setRecordingSeconds(0);
+      setRecorderState("recording");
       setIsRecording(true);
       recordingTimerRef.current = window.setInterval(() => {
         const elapsed = Math.min(60, Math.floor((Date.now() - recordingStartedAtRef.current) / 1000));
@@ -244,8 +300,9 @@ export default function EditorPage() {
         if (elapsed >= 60) handleStopRecording();
       }, 250);
     } catch {
-      setMicrophoneMessage("Microphone access required");
-      toast.error("Microphone access required");
+      stopRecordingResources();
+      setIsRecording(false);
+      setMicrophoneMessage("Microphone access is required to record audio.");
     }
   };
 
@@ -282,6 +339,47 @@ export default function EditorPage() {
     setNote(updatedNote);
     debouncedSave(updatedNote);
     setDeleteTakeId(null);
+  };
+
+  const resetRecorder = () => {
+    setRecorderState("ready");
+    setRecordingSeconds(0);
+    setRecordingPreviewBlob("");
+    setRecordingPreviewDuration(0);
+    setMicrophoneMessage("");
+  };
+
+  const handleSaveRecording = () => {
+    if (!note || !recordingPreviewBlob) return;
+    const takeId = `take_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+    const newTake: AudioTake = { id: takeId, createdAt: Date.now(), blob: recordingPreviewBlob, duration: recordingPreviewDuration };
+    const updatedNote = { ...note, takes: [...(note.takes || []), newTake], activeTakeId: takeId };
+    setNote(updatedNote);
+    updateNote(updatedNote.id, updatedNote);
+    setRecorderOpen(false);
+    resetRecorder();
+  };
+
+  const handleRecordAgain = () => {
+    resetRecorder();
+  };
+
+  const closeRecorderWithoutSaving = () => {
+    if (isRecording) {
+      discardRecordingRef.current = true;
+      handleStopRecording();
+    }
+    setRecorderOpen(false);
+    resetRecorder();
+    setDiscardRecorderDialogOpen(false);
+  };
+
+  const handleRecorderClose = () => {
+    if (isRecording || recordingPreviewBlob) {
+      setDiscardRecorderDialogOpen(true);
+      return;
+    }
+    closeRecorderWithoutSaving();
   };
 
   const handleToggleStyleChip = (chipLabel: string) => {
@@ -517,6 +615,55 @@ export default function EditorPage() {
 
   return (
     <div className={`min-h-screen ${colorClasses[note.color]}`}>
+      {recorderOpen && (
+        <div className="fixed inset-0 z-50 bg-background text-foreground no-print">
+          <div className="min-h-screen px-4 py-4 flex flex-col">
+            <header className="flex items-center justify-between">
+              <Button variant="ghost" size="icon" onClick={handleRecorderClose} aria-label="Close recorder">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <h2 className="text-base font-semibold">Voice Note</h2>
+              <div className="h-10 w-10" />
+            </header>
+
+            <div className="flex-1 flex flex-col items-center justify-center gap-8 max-w-sm mx-auto w-full">
+              <div className="text-center space-y-2">
+                <p className="text-6xl font-semibold tabular-nums tracking-normal">{formatRecordingTime(recordingSeconds)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {recorderState === "recording" ? "Recording..." : recorderState === "finished" ? "Recording finished" : "Ready to record"}
+                </p>
+              </div>
+
+              <div className="h-24 w-full flex items-center justify-center gap-1.5 rounded-md bg-muted/50 px-4">
+                {Array.from({ length: 24 }).map((_, index) => {
+                  const idle = 0.16 + ((index % 5) * 0.05);
+                  const active = Math.min(1, idle + audioLevel * (0.55 + ((index % 4) * 0.12)));
+                  const height = recorderState === "recording" ? active : idle;
+                  return <span key={index} className="w-1.5 rounded-full bg-primary transition-all duration-100" style={{ height: `${Math.max(10, height * 88)}%` }} />;
+                })}
+              </div>
+
+              {microphoneMessage && <p className="text-sm text-muted-foreground text-center">{microphoneMessage}</p>}
+
+              {recorderState === "finished" && recordingPreviewBlob && (
+                <audio controls src={recordingPreviewBlob} className="w-full" />
+              )}
+
+              {recorderState === "finished" ? (
+                <div className="grid gap-3 w-full">
+                  <Button onClick={handleSaveRecording} className="h-12">Save</Button>
+                  <Button onClick={handleRecordAgain} variant="outline" className="h-12">Record Again</Button>
+                  <Button onClick={handleRecorderClose} variant="ghost" className="h-12">Discard</Button>
+                </div>
+              ) : (
+                <Button onClick={recorderState === "recording" ? handleStopRecording : handleStartRecording} className="h-14 w-full max-w-xs">
+                  {recorderState === "recording" ? "Stop" : "Start Recording"}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <header className="sticky top-0 z-10 bg-inherit border-b border-border/50 no-print">
         <div className="container max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -604,14 +751,10 @@ export default function EditorPage() {
                   <input type="range" min="0" max={audioDuration || activeTake.duration || 0} value={audioCurrentTime} onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = Number(e.target.value); }} className="w-full no-print" />
                 </div>
               )}
-              <Button variant="outline" size="sm" onClick={isRecording ? handleStopRecording : handleStartRecording} className="h-8 text-xs no-print">
-                {isRecording ? "Stop Recording" : "Start Recording"}
+              <Button variant="outline" size="sm" onClick={() => { resetRecorder(); setRecorderOpen(true); }} className="h-8 text-xs no-print">
+                Start Recording
               </Button>
-              {isRecording ? (
-                <p className="text-xs text-muted-foreground">Recording... {formatRecordingTime(recordingSeconds)}</p>
-              ) : (
-                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
-              )}
+              <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
               {microphoneMessage && <p className="text-xs text-muted-foreground">{microphoneMessage}</p>}
               {!!note.takes?.length && (
                 <div className="space-y-1">
@@ -708,6 +851,7 @@ export default function EditorPage() {
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title="Delete take?" description="This recording take will be removed." confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
+      <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title="Discard recording?" description="This unsaved recording will be lost." confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />

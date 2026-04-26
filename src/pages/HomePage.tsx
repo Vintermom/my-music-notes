@@ -52,7 +52,7 @@ export default function HomePage() {
   const handleCreateRecordNote = () => {
     const note = createNote({ hasAudio: true });
     setCreateSheetOpen(false);
-    navigate(`/edit/${note.id}`);
+    navigate(`/edit/${note.id}?record=1`);
   };
 
   const handleNoteClick = (id: string) => {
