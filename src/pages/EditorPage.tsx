@@ -656,7 +656,7 @@ export default function EditorPage() {
                   <Button onClick={handleRecorderClose} variant="ghost" className="h-12">Discard</Button>
                 </div>
               ) : (
-                <Button onClick={recorderState === "recording" ? handleStopRecording : handleStartRecording} className="h-16 w-16 rounded-full p-0">
+                <Button onClick={recorderState === "recording" ? handleStopRecording : handleStartRecording} className="h-14 w-full max-w-xs">
                   {recorderState === "recording" ? "Stop" : "Start Recording"}
                 </Button>
               )}
@@ -751,14 +751,10 @@ export default function EditorPage() {
                   <input type="range" min="0" max={audioDuration || activeTake.duration || 0} value={audioCurrentTime} onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = Number(e.target.value); }} className="w-full no-print" />
                 </div>
               )}
-              <Button variant="outline" size="sm" onClick={isRecording ? handleStopRecording : handleStartRecording} className="h-8 text-xs no-print">
-                {isRecording ? "Stop Recording" : "Start Recording"}
+              <Button variant="outline" size="sm" onClick={() => { resetRecorder(); setRecorderOpen(true); }} className="h-8 text-xs no-print">
+                Start Recording
               </Button>
-              {isRecording ? (
-                <p className="text-xs text-muted-foreground">Recording... {formatRecordingTime(recordingSeconds)}</p>
-              ) : (
-                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
-              )}
+              <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
               {microphoneMessage && <p className="text-xs text-muted-foreground">{microphoneMessage}</p>}
               {!!note.takes?.length && (
                 <div className="space-y-1">
@@ -855,6 +851,7 @@ export default function EditorPage() {
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title="Delete take?" description="This recording take will be removed." confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
+      <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title="Discard recording?" description="This unsaved recording will be lost." confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
