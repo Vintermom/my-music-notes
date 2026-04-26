@@ -9,6 +9,8 @@ import { SearchBar } from "@/components/SearchBar";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { safeGet, safeSet } from "@/storage/localStorage";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ export default function HomePage() {
   } = useNotes();
 
   const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
+  const [createSheetOpen, setCreateSheetOpen] = useState(false);
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(() => 
     safeGet<1 | 2>("mobileGridCols", 1)
   );
@@ -43,6 +46,12 @@ export default function HomePage() {
 
   const handleCreateNote = () => {
     const note = createNote();
+    navigate(`/edit/${note.id}`);
+  };
+
+  const handleCreateRecordNote = () => {
+    const note = createNote({ hasAudio: true });
+    setCreateSheetOpen(false);
     navigate(`/edit/${note.id}`);
   };
 
@@ -162,9 +171,25 @@ export default function HomePage() {
       </main>
 
       {/* FAB */}
-      <button onClick={handleCreateNote} className="fab">
+      <button onClick={() => setCreateSheetOpen(true)} className="fab">
         <Plus className="h-6 w-6" />
       </button>
+
+      <Sheet open={createSheetOpen} onOpenChange={setCreateSheetOpen}>
+        <SheetContent side="bottom" className="bottom-sheet">
+          <SheetHeader>
+            <SheetTitle>Create note</SheetTitle>
+          </SheetHeader>
+          <div className="grid gap-3 pt-4">
+            <Button onClick={handleCreateNote} variant="outline" className="justify-start">
+              Text
+            </Button>
+            <Button onClick={handleCreateRecordNote} variant="outline" className="justify-start">
+              Record 🎤
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Delete Confirmation */}
       <ConfirmDialog

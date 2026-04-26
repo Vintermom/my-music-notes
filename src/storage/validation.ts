@@ -71,6 +71,7 @@ export function validateNote(data: unknown): Note | null {
     tags,
     color,
     isPinned: typeof note.isPinned === "boolean" ? note.isPinned : false,
+    hasAudio: typeof note.hasAudio === "boolean" ? note.hasAudio : false,
     createdAt: note.createdAt,
     updatedAt: note.updatedAt,
     timeline,
@@ -160,6 +161,7 @@ export function validateImportedNote(data: unknown): Partial<Note> | null {
     tags,
     color,
     isPinned: false, // Always unpinned on import
+    hasAudio: typeof note.hasAudio === "boolean" ? note.hasAudio : false,
   };
 }
 
