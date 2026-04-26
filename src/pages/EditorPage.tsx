@@ -585,7 +585,7 @@ export default function EditorPage() {
             </div>
             <div className="space-y-2">
               {activeTake && (
-                <div className="sticky top-14 z-[1] space-y-2 bg-inherit py-2">
+                <div className="space-y-2 bg-inherit py-2">
                   <audio
                     ref={audioRef}
                     src={activeTake.blob}
@@ -610,8 +610,9 @@ export default function EditorPage() {
               {isRecording ? (
                 <p className="text-xs text-muted-foreground">Recording... {formatRecordingTime(recordingSeconds)}</p>
               ) : (
-                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}` : "No recordings yet"}</p>
+                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
               )}
+              {microphoneMessage && <p className="text-xs text-muted-foreground">{microphoneMessage}</p>}
               {!!note.takes?.length && (
                 <div className="space-y-1">
                   {note.takes.map((take, index) => (
