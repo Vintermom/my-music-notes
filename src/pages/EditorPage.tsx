@@ -96,8 +96,11 @@ export default function EditorPage() {
     return () => {
       if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
       recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+      audioRef.current?.pause();
     };
   }, []);
+
+  const activeTake = note?.takes?.find((take) => take.id === note.activeTakeId) || note?.takes?.[0];
 
   const debouncedSave = useDebounce((noteToSave: Note) => {
     const wasFirstSave = !hasFirstSaveOccurred();
