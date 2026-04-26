@@ -32,6 +32,7 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+  const audioTakeCount = note.takes?.length || 0;
 
   return (
     <div
@@ -77,6 +78,10 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
               </span>
             )}
           </div>
+        )}
+
+        {audioTakeCount > 0 && (
+          <p className="text-xs text-muted-foreground mb-3">🎤 {audioTakeCount}</p>
         )}
 
         {/* Actions - visible on hover */}
