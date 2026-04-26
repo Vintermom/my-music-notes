@@ -80,8 +80,11 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
           </div>
         )}
 
-        {audioTakeCount > 0 && (
-          <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
+        {note.takes && note.takes.length > 0 && (
+          <div className="mb-3 flex items-center gap-1.5 text-xs font-light text-muted-foreground">
+            <span className="h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
+            <span>{note.takes.length}</span>
+          </div>
         )}
 
         {/* Actions - visible on hover */}
