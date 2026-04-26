@@ -81,7 +81,7 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
         )}
 
         {audioTakeCount > 0 && (
-          <p className="text-xs text-muted-foreground mb-3">🎤 {audioTakeCount}</p>
+          <span className="absolute bottom-3 left-3 h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
         )}
 
         {/* Actions - visible on hover */}
