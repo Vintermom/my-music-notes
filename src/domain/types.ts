@@ -50,6 +50,7 @@ export interface TimelineEntry {
 
 export interface AudioTake {
   id: string;
+  createdAt: number;
   blob: string;
   duration: number;
 }

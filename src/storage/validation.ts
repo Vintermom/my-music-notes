@@ -63,12 +63,19 @@ export function validateNote(data: unknown): Note | null {
 
   let takes: Note["takes"] = [];
   if (Array.isArray(note.takes)) {
-    takes = note.takes.filter((take): take is { id: string; blob: string; duration: number } =>
-      take && typeof take === "object" &&
-      typeof take.id === "string" &&
-      typeof take.blob === "string" &&
-      typeof take.duration === "number"
-    );
+    takes = note.takes
+      .filter((take): take is { id: string; createdAt?: number; blob: string; duration: number } =>
+        take && typeof take === "object" &&
+        typeof take.id === "string" &&
+        typeof take.blob === "string" &&
+        typeof take.duration === "number"
+      )
+      .map((take) => ({
+        id: take.id,
+        createdAt: typeof take.createdAt === "number" ? take.createdAt : note.updatedAt as number,
+        blob: take.blob,
+        duration: take.duration,
+      }));
   }
   
   return {
