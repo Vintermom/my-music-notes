@@ -246,6 +246,41 @@ export default function EditorPage() {
     }
   };
 
+  const handleSelectTake = (takeId: string) => {
+    if (!note) return;
+    audioRef.current?.pause();
+    setIsAudioPlaying(false);
+    setAudioCurrentTime(0);
+    updateField("activeTakeId", takeId);
+  };
+
+  const handleTogglePlayback = () => {
+    if (!audioRef.current || !activeTake) return;
+    if (isAudioPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+  };
+
+  const handleSkipAudio = (seconds: number) => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = Math.max(0, Math.min(audioRef.current.duration || 0, audioRef.current.currentTime + seconds));
+  };
+
+  const confirmDeleteTake = () => {
+    if (!note || !deleteTakeId) return;
+    const updatedTakes = (note.takes || []).filter((take) => take.id !== deleteTakeId);
+    const nextActiveTakeId = note.activeTakeId === deleteTakeId ? (updatedTakes[0]?.id || "") : (note.activeTakeId || "");
+    audioRef.current?.pause();
+    setIsAudioPlaying(false);
+    setAudioCurrentTime(0);
+    const updatedNote = { ...note, takes: updatedTakes, activeTakeId: nextActiveTakeId };
+    setNote(updatedNote);
+    debouncedSave(updatedNote);
+    setDeleteTakeId(null);
+  };
+
   const handleToggleStyleChip = (chipLabel: string) => {
     if (!note) return;
     const chips = (note.style || "").split(",").map((s) => s.trim()).filter(Boolean);
