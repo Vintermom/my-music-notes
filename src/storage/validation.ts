@@ -174,6 +174,8 @@ export function validateImportedNote(data: unknown): Partial<Note> | null {
     color,
     isPinned: false, // Always unpinned on import
     hasAudio: typeof note.hasAudio === "boolean" ? note.hasAudio : false,
+    takes: [],
+    activeTakeId: "",
   };
 }
 
