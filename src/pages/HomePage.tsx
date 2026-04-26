@@ -185,7 +185,7 @@ export default function HomePage() {
               Text
             </Button>
             <Button onClick={handleCreateRecordNote} variant="outline" className="justify-start">
-              Record 🎤
+              Record
             </Button>
           </div>
         </SheetContent>
