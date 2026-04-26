@@ -615,6 +615,55 @@ export default function EditorPage() {
 
   return (
     <div className={`min-h-screen ${colorClasses[note.color]}`}>
+      {recorderOpen && (
+        <div className="fixed inset-0 z-50 bg-background text-foreground no-print">
+          <div className="min-h-screen px-4 py-4 flex flex-col">
+            <header className="flex items-center justify-between">
+              <Button variant="ghost" size="icon" onClick={handleRecorderClose} aria-label="Close recorder">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <h2 className="text-base font-semibold">Voice Note</h2>
+              <div className="h-10 w-10" />
+            </header>
+
+            <div className="flex-1 flex flex-col items-center justify-center gap-8 max-w-sm mx-auto w-full">
+              <div className="text-center space-y-2">
+                <p className="text-6xl font-semibold tabular-nums tracking-normal">{formatRecordingTime(recordingSeconds)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {recorderState === "recording" ? "Recording..." : recorderState === "finished" ? "Recording finished" : "Ready to record"}
+                </p>
+              </div>
+
+              <div className="h-24 w-full flex items-center justify-center gap-1.5 rounded-md bg-muted/50 px-4">
+                {Array.from({ length: 24 }).map((_, index) => {
+                  const idle = 0.16 + ((index % 5) * 0.05);
+                  const active = Math.min(1, idle + audioLevel * (0.55 + ((index % 4) * 0.12)));
+                  const height = recorderState === "recording" ? active : idle;
+                  return <span key={index} className="w-1.5 rounded-full bg-primary transition-all duration-100" style={{ height: `${Math.max(10, height * 88)}%` }} />;
+                })}
+              </div>
+
+              {microphoneMessage && <p className="text-sm text-muted-foreground text-center">{microphoneMessage}</p>}
+
+              {recorderState === "finished" && recordingPreviewBlob && (
+                <audio controls src={recordingPreviewBlob} className="w-full" />
+              )}
+
+              {recorderState === "finished" ? (
+                <div className="grid gap-3 w-full">
+                  <Button onClick={handleSaveRecording} className="h-12">Save</Button>
+                  <Button onClick={handleRecordAgain} variant="outline" className="h-12">Record Again</Button>
+                  <Button onClick={handleRecorderClose} variant="ghost" className="h-12">Discard</Button>
+                </div>
+              ) : (
+                <Button onClick={recorderState === "recording" ? handleStopRecording : handleStartRecording} className="h-16 w-16 rounded-full p-0">
+                  {recorderState === "recording" ? "Stop" : "Start Recording"}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <header className="sticky top-0 z-10 bg-inherit border-b border-border/50 no-print">
         <div className="container max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
