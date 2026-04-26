@@ -719,6 +719,11 @@ export default function EditorPage() {
                 <DropdownMenuItem onClick={handleExportJson}>
                   <FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}
                 </DropdownMenuItem>
+                {!!note.takes?.length && (
+                  <DropdownMenuItem onClick={handleDownloadAudio}>
+                    <Download className="h-4 w-4 mr-2" />{t("menu.downloadAudio")}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleCopyAll}><ClipboardCopy className="h-4 w-4 mr-2" />{t("menu.copyAll")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleCopyLyrics}><Copy className="h-4 w-4 mr-2" />{t("editor.copyLyrics")}</DropdownMenuItem>
