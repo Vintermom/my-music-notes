@@ -454,6 +454,18 @@ export default function EditorPage() {
           className="text-sm h-8 px-2 text-muted-foreground input-desktop border-transparent bg-transparent"
         />
 
+        {note.hasAudio === true && (
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-muted-foreground">🎤 Voice Note</label>
+            </div>
+            <div className="space-y-2">
+              <Button variant="outline" size="sm" className="h-8 text-xs no-print">Start Recording</Button>
+              <p className="text-xs text-muted-foreground">No recordings yet</p>
+            </div>
+          </div>
+        )}
+
         {/* Lyrics Section */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
