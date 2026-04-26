@@ -766,7 +766,7 @@ export default function EditorPage() {
                       <button type="button" onClick={() => handleSelectTake(take.id)} className="flex-1 text-left hover:text-foreground">
                         {t("audio.take")} {index + 1} {take.id === activeTake?.id ? "▶️" : ""}
                       </button>
-                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">{t("dialog.confirm")}</Button>
+                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">{t("audio.deleteRecording")}</Button>
                     </div>
                   ))}
                 </div>
@@ -853,8 +853,8 @@ export default function EditorPage() {
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
-      <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title="Delete take?" description="This recording take will be removed." confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
-      <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title="Discard recording?" description="This unsaved recording will be lost." confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />
+      <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title={t("audio.deleteRecording")} description={t("audio.confirmDelete")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
+      <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title={t("audio.discard")} description={t("audio.confirmDiscard")} confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
