@@ -55,6 +55,7 @@ export default function EditorPage() {
   const [audioCurrentTime, setAudioCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const [deleteTakeId, setDeleteTakeId] = useState<string | null>(null);
+  const [microphoneMessage, setMicrophoneMessage] = useState("");
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
@@ -204,6 +205,7 @@ export default function EditorPage() {
     if (!note || isRecording) return;
 
     try {
+      setMicrophoneMessage("");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       recordingStreamRef.current = stream;
       audioChunksRef.current = [];
@@ -242,7 +244,8 @@ export default function EditorPage() {
         if (elapsed >= 60) handleStopRecording();
       }, 250);
     } catch {
-      toast.error("Microphone access failed");
+      setMicrophoneMessage("Microphone access required");
+      toast.error("Microphone access required");
     }
   };
 
@@ -582,7 +585,7 @@ export default function EditorPage() {
             </div>
             <div className="space-y-2">
               {activeTake && (
-                <div className="sticky top-14 z-[1] space-y-2 bg-inherit py-2">
+                <div className="space-y-2 bg-inherit py-2">
                   <audio
                     ref={audioRef}
                     src={activeTake.blob}
@@ -607,8 +610,9 @@ export default function EditorPage() {
               {isRecording ? (
                 <p className="text-xs text-muted-foreground">Recording... {formatRecordingTime(recordingSeconds)}</p>
               ) : (
-                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}` : "No recordings yet"}</p>
+                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
               )}
+              {microphoneMessage && <p className="text-xs text-muted-foreground">{microphoneMessage}</p>}
               {!!note.takes?.length && (
                 <div className="space-y-1">
                   {note.takes.map((take, index) => (
