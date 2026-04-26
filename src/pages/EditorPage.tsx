@@ -538,8 +538,14 @@ export default function EditorPage() {
               <label className="text-xs font-medium text-muted-foreground">🎤 Voice Note</label>
             </div>
             <div className="space-y-2">
-              <Button variant="outline" size="sm" className="h-8 text-xs no-print">Start Recording</Button>
-              <p className="text-xs text-muted-foreground">No recordings yet</p>
+              <Button variant="outline" size="sm" onClick={isRecording ? handleStopRecording : handleStartRecording} className="h-8 text-xs no-print">
+                {isRecording ? "Stop Recording" : "Start Recording"}
+              </Button>
+              {isRecording ? (
+                <p className="text-xs text-muted-foreground">Recording... {formatRecordingTime(recordingSeconds)}</p>
+              ) : (
+                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}` : "No recordings yet"}</p>
+              )}
             </div>
           </div>
         )}
