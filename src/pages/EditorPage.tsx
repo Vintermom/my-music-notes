@@ -216,46 +216,83 @@ export default function EditorPage() {
       reader.readAsDataURL(blob);
     });
 
+  const stopRecordingResources = () => {
+    if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+    recordingTimerRef.current = null;
+    if (analyserFrameRef.current) window.cancelAnimationFrame(analyserFrameRef.current);
+    analyserFrameRef.current = null;
+    audioContextRef.current?.close();
+    audioContextRef.current = null;
+    recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+    recordingStreamRef.current = null;
+    setAudioLevel(0);
+  };
+
   const handleStopRecording = () => {
-    mediaRecorderRef.current?.stop();
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
   };
 
   const handleStartRecording = async () => {
     if (!note || isRecording) return;
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setMicrophoneMessage("Audio recording is not supported on this browser.");
+      return;
+    }
 
     try {
       setMicrophoneMessage("");
+      setRecordingPreviewBlob("");
+      setRecordingPreviewDuration(0);
+      discardRecordingRef.current = false;
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       recordingStreamRef.current = stream;
       audioChunksRef.current = [];
       recordingStartedAtRef.current = Date.now();
 
-      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "";
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       mediaRecorderRef.current = recorder;
+
+      const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (AudioContextClass) {
+        const audioContext = new AudioContextClass();
+        const source = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        audioContextRef.current = audioContext;
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        const updateLevel = () => {
+          analyser.getByteFrequencyData(data);
+          setAudioLevel(data.reduce((sum, value) => sum + value, 0) / data.length / 255);
+          analyserFrameRef.current = window.requestAnimationFrame(updateLevel);
+        };
+        updateLevel();
+      }
 
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
 
       recorder.onstop = async () => {
-        if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
-        recordingTimerRef.current = null;
-        recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
-        recordingStreamRef.current = null;
+        stopRecordingResources();
         setIsRecording(false);
+        if (discardRecordingRef.current) return;
 
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || "audio/webm" });
         const blob = await blobToDataUrl(audioBlob);
-        const duration = Math.min(60, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
-        const takeId = `take_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
-        const updatedTakes = [...(note.takes || []), { id: takeId, blob, duration }];
-        const updatedNote = { ...note, takes: updatedTakes, activeTakeId: takeId };
-        setNote(updatedNote);
-        debouncedSave(updatedNote);
+        const duration = Math.min(60, Math.max(1, Math.round((Date.now() - recordingStartedAtRef.current) / 1000)));
+        setRecordingPreviewBlob(blob);
+        setRecordingPreviewDuration(duration);
+        setRecordingSeconds(duration);
+        setRecorderState("finished");
       };
 
       recorder.start();
       setRecordingSeconds(0);
+      setRecorderState("recording");
       setIsRecording(true);
       recordingTimerRef.current = window.setInterval(() => {
         const elapsed = Math.min(60, Math.floor((Date.now() - recordingStartedAtRef.current) / 1000));
@@ -263,8 +300,9 @@ export default function EditorPage() {
         if (elapsed >= 60) handleStopRecording();
       }, 250);
     } catch {
-      setMicrophoneMessage("Microphone access required");
-      toast.error("Microphone access required");
+      stopRecordingResources();
+      setIsRecording(false);
+      setMicrophoneMessage("Microphone access is required to record audio.");
     }
   };
 
