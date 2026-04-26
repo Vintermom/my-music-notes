@@ -609,6 +609,18 @@ export default function EditorPage() {
               ) : (
                 <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}` : "No recordings yet"}</p>
               )}
+              {!!note.takes?.length && (
+                <div className="space-y-1">
+                  {note.takes.map((take, index) => (
+                    <div key={take.id} className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                      <button type="button" onClick={() => handleSelectTake(take.id)} className="flex-1 text-left hover:text-foreground">
+                        Take {index + 1} {take.id === activeTake?.id ? "▶️" : ""}
+                      </button>
+                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">Delete</Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
