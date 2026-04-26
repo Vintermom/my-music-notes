@@ -341,6 +341,47 @@ export default function EditorPage() {
     setDeleteTakeId(null);
   };
 
+  const resetRecorder = () => {
+    setRecorderState("ready");
+    setRecordingSeconds(0);
+    setRecordingPreviewBlob("");
+    setRecordingPreviewDuration(0);
+    setMicrophoneMessage("");
+  };
+
+  const handleSaveRecording = () => {
+    if (!note || !recordingPreviewBlob) return;
+    const takeId = `take_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+    const newTake: AudioTake = { id: takeId, createdAt: Date.now(), blob: recordingPreviewBlob, duration: recordingPreviewDuration };
+    const updatedNote = { ...note, takes: [...(note.takes || []), newTake], activeTakeId: takeId };
+    setNote(updatedNote);
+    updateNote(updatedNote.id, updatedNote);
+    setRecorderOpen(false);
+    resetRecorder();
+  };
+
+  const handleRecordAgain = () => {
+    resetRecorder();
+  };
+
+  const closeRecorderWithoutSaving = () => {
+    if (isRecording) {
+      discardRecordingRef.current = true;
+      handleStopRecording();
+    }
+    setRecorderOpen(false);
+    resetRecorder();
+    setDiscardRecorderDialogOpen(false);
+  };
+
+  const handleRecorderClose = () => {
+    if (isRecording || recordingPreviewBlob) {
+      setDiscardRecorderDialogOpen(true);
+      return;
+    }
+    closeRecorderWithoutSaving();
+  };
+
   const handleToggleStyleChip = (chipLabel: string) => {
     if (!note) return;
     const chips = (note.style || "").split(",").map((s) => s.trim()).filter(Boolean);
