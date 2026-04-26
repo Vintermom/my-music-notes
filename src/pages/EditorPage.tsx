@@ -731,7 +731,10 @@ export default function EditorPage() {
         {note.hasAudio === true && (
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-muted-foreground">🎤 {t("audio.voiceNote")}</label>
+              <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <span className="h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
+                {t("audio.voiceNote")}
+              </label>
             </div>
             <div className="space-y-2">
               {activeTake && (
