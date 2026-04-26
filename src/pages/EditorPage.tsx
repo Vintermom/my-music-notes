@@ -220,8 +220,9 @@ export default function EditorPage() {
         const duration = Math.min(60, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
         const takeId = `take_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
         const updatedTakes = [...(note.takes || []), { id: takeId, blob, duration }];
-        updateField("takes", updatedTakes);
-        updateField("activeTakeId", takeId);
+        const updatedNote = { ...note, takes: updatedTakes, activeTakeId: takeId };
+        setNote(updatedNote);
+        debouncedSave(updatedNote);
       };
 
       recorder.start();
