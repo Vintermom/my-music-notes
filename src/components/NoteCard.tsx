@@ -54,6 +54,13 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
           </p>
         )}
 
+        {audioTakeCount > 0 && (
+          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-light text-muted-foreground">
+            <span className="h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
+            <span>{audioTakeCount}</span>
+          </div>
+        )}
+
         {/* Lyrics preview */}
         {note.lyrics && (
           <p className="text-sm text-foreground/80 mb-3 line-clamp-4 whitespace-pre-wrap">
@@ -77,13 +84,6 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
                 +{note.tags.length - 3}
               </span>
             )}
-          </div>
-        )}
-
-        {note.takes && note.takes.length > 0 && (
-          <div className="mb-3 flex items-center gap-1.5 text-xs font-light text-muted-foreground">
-            <span className="h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
-            <span>{note.takes.length}</span>
           </div>
         )}
 
