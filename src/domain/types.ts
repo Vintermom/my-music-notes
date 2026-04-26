@@ -58,6 +58,7 @@ export interface Note {
   tags: string[];
   color: NoteColor;
   isPinned: boolean;
+  hasAudio?: boolean;
   createdAt: number;
   updatedAt: number;
   timeline: TimelineEntry[];
@@ -88,6 +89,7 @@ export const DEFAULT_NOTE: Omit<Note, "id" | "createdAt" | "updatedAt" | "timeli
   tags: [],
   color: "default",
   isPinned: false,
+  hasAudio: false,
 };
 
 export const DEFAULT_SETTINGS: Settings = {
