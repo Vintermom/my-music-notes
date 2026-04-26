@@ -45,11 +45,16 @@ export default function EditorPage() {
   const recordingStartedAtRef = useRef<number>(0);
   const recordingTimerRef = useRef<number | null>(null);
   const recordingStreamRef = useRef<MediaStream | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [note, setNote] = useState<Note | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [audioCurrentTime, setAudioCurrentTime] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const [deleteTakeId, setDeleteTakeId] = useState<string | null>(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
@@ -91,8 +96,11 @@ export default function EditorPage() {
     return () => {
       if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
       recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+      audioRef.current?.pause();
     };
   }, []);
+
+  const activeTake = note?.takes?.find((take) => take.id === note.activeTakeId) || note?.takes?.[0];
 
   const debouncedSave = useDebounce((noteToSave: Note) => {
     const wasFirstSave = !hasFirstSaveOccurred();
@@ -236,6 +244,41 @@ export default function EditorPage() {
     } catch {
       toast.error("Microphone access failed");
     }
+  };
+
+  const handleSelectTake = (takeId: string) => {
+    if (!note) return;
+    audioRef.current?.pause();
+    setIsAudioPlaying(false);
+    setAudioCurrentTime(0);
+    updateField("activeTakeId", takeId);
+  };
+
+  const handleTogglePlayback = () => {
+    if (!audioRef.current || !activeTake) return;
+    if (isAudioPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+  };
+
+  const handleSkipAudio = (seconds: number) => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = Math.max(0, Math.min(audioRef.current.duration || 0, audioRef.current.currentTime + seconds));
+  };
+
+  const confirmDeleteTake = () => {
+    if (!note || !deleteTakeId) return;
+    const updatedTakes = (note.takes || []).filter((take) => take.id !== deleteTakeId);
+    const nextActiveTakeId = note.activeTakeId === deleteTakeId ? (updatedTakes[0]?.id || "") : (note.activeTakeId || "");
+    audioRef.current?.pause();
+    setIsAudioPlaying(false);
+    setAudioCurrentTime(0);
+    const updatedNote = { ...note, takes: updatedTakes, activeTakeId: nextActiveTakeId };
+    setNote(updatedNote);
+    debouncedSave(updatedNote);
+    setDeleteTakeId(null);
   };
 
   const handleToggleStyleChip = (chipLabel: string) => {
@@ -538,6 +581,26 @@ export default function EditorPage() {
               <label className="text-xs font-medium text-muted-foreground">🎤 Voice Note</label>
             </div>
             <div className="space-y-2">
+              {activeTake && (
+                <div className="sticky top-14 z-[1] space-y-2 bg-inherit py-2">
+                  <audio
+                    ref={audioRef}
+                    src={activeTake.blob}
+                    onTimeUpdate={(e) => setAudioCurrentTime(e.currentTarget.currentTime)}
+                    onLoadedMetadata={(e) => setAudioDuration(e.currentTarget.duration || activeTake.duration)}
+                    onPlay={() => setIsAudioPlaying(true)}
+                    onPause={() => setIsAudioPlaying(false)}
+                    onEnded={() => setIsAudioPlaying(false)}
+                  />
+                  <div className="flex items-center gap-2 no-print">
+                    <Button variant="outline" size="sm" onClick={handleTogglePlayback} className="h-8 px-2 text-xs">{isAudioPlaying ? "Pause" : "Play"}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(-10)} className="h-8 px-2 text-xs">-10s</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(10)} className="h-8 px-2 text-xs">+10s</Button>
+                    <span className="text-xs text-muted-foreground">{formatRecordingTime(Math.floor(audioCurrentTime))} / {formatRecordingTime(Math.floor(audioDuration || activeTake.duration))}</span>
+                  </div>
+                  <input type="range" min="0" max={audioDuration || activeTake.duration || 0} value={audioCurrentTime} onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = Number(e.target.value); }} className="w-full no-print" />
+                </div>
+              )}
               <Button variant="outline" size="sm" onClick={isRecording ? handleStopRecording : handleStartRecording} className="h-8 text-xs no-print">
                 {isRecording ? "Stop Recording" : "Start Recording"}
               </Button>
@@ -545,6 +608,18 @@ export default function EditorPage() {
                 <p className="text-xs text-muted-foreground">Recording... {formatRecordingTime(recordingSeconds)}</p>
               ) : (
                 <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}` : "No recordings yet"}</p>
+              )}
+              {!!note.takes?.length && (
+                <div className="space-y-1">
+                  {note.takes.map((take, index) => (
+                    <div key={take.id} className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                      <button type="button" onClick={() => handleSelectTake(take.id)} className="flex-1 text-left hover:text-foreground">
+                        Take {index + 1} {take.id === activeTake?.id ? "▶️" : ""}
+                      </button>
+                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">Delete</Button>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
@@ -628,6 +703,7 @@ export default function EditorPage() {
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
+      <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title="Delete take?" description="This recording take will be removed." confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
