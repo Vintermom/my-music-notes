@@ -46,7 +46,7 @@ export default function HomePage() {
 
   const handleCreateNote = () => {
     const note = createNote();
-    navigate(`/edit/${note.id}`);
+    navigate(`/edit/${note.id}?record=1`);
   };
 
   const handleCreateRecordNote = () => {
