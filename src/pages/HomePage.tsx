@@ -215,12 +215,37 @@ export default function HomePage() {
             <Button onClick={handleCreateNote} variant="outline" className="justify-start">
               Text
             </Button>
-            <Button onClick={handleCreateRecordNote} variant="outline" className="justify-start">
+            <Button onClick={handleRecordSelect} variant="outline" className="justify-start">
               Record
             </Button>
           </div>
         </SheetContent>
       </Sheet>
+
+      <AlertDialog open={audioStorageNoticeOpen} onOpenChange={setAudioStorageNoticeOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("audio.storageNoticeTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("audio.storageNoticeMessage")}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="hide-audio-storage-notice"
+              checked={hideAudioStorageNotice}
+              onCheckedChange={(checked) => setHideAudioStorageNotice(checked === true)}
+            />
+            <Label htmlFor="hide-audio-storage-notice" className="text-sm font-normal">
+              {t("audio.storageNoticeDontShowAgain")}
+            </Label>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("audio.storageNoticeCancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={continueCreateRecordNote}>
+              {t("audio.storageNoticeContinue")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Delete Confirmation */}
       <ConfirmDialog
