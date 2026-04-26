@@ -87,6 +87,13 @@ export default function EditorPage() {
     }
   }, [autoSaveStatus]);
 
+  useEffect(() => {
+    return () => {
+      if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+      recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
+
   const debouncedSave = useDebounce((noteToSave: Note) => {
     const wasFirstSave = !hasFirstSaveOccurred();
     setAutoSaveStatus("saving");
@@ -165,6 +172,69 @@ export default function EditorPage() {
     updateField("lyrics", newLyrics);
     toast.success(t("toast.insertedAt"));
     setTimeout(() => { textarea.focus(); textarea.setSelectionRange(start + text.length, start + text.length); }, 0);
+  };
+
+  const formatRecordingTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
+
+  const blobToDataUrl = (blob: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(String(reader.result));
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+
+  const handleStopRecording = () => {
+    mediaRecorderRef.current?.stop();
+  };
+
+  const handleStartRecording = async () => {
+    if (!note || isRecording) return;
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordingStreamRef.current = stream;
+      audioChunksRef.current = [];
+      recordingStartedAtRef.current = Date.now();
+
+      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+
+      recorder.onstop = async () => {
+        if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+        recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+        recordingStreamRef.current = null;
+        setIsRecording(false);
+
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const blob = await blobToDataUrl(audioBlob);
+        const duration = Math.min(60, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
+        const takeId = `take_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+        const updatedTakes = [...(note.takes || []), { id: takeId, blob, duration }];
+        updateField("takes", updatedTakes);
+        updateField("activeTakeId", takeId);
+      };
+
+      recorder.start();
+      setRecordingSeconds(0);
+      setIsRecording(true);
+      recordingTimerRef.current = window.setInterval(() => {
+        const elapsed = Math.min(60, Math.floor((Date.now() - recordingStartedAtRef.current) / 1000));
+        setRecordingSeconds(elapsed);
+        if (elapsed >= 60) handleStopRecording();
+      }, 250);
+    } catch {
+      toast.error("Microphone access failed");
+    }
   };
 
   const handleToggleStyleChip = (chipLabel: string) => {
