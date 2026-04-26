@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t, currentLang } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
@@ -39,18 +39,27 @@ const colorClasses: Record<NoteColor, string> = {
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingStartedAtRef = useRef<number>(0);
   const recordingTimerRef = useRef<number | null>(null);
   const recordingStreamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserFrameRef = useRef<number | null>(null);
+  const discardRecordingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [note, setNote] = useState<Note | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [recorderOpen, setRecorderOpen] = useState(false);
+  const [recorderState, setRecorderState] = useState<"ready" | "recording" | "finished">("ready");
+  const [recordingPreviewBlob, setRecordingPreviewBlob] = useState<string>("");
+  const [recordingPreviewDuration, setRecordingPreviewDuration] = useState(0);
+  const [audioLevel, setAudioLevel] = useState(0);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioCurrentTime, setAudioCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
@@ -60,6 +69,7 @@ export default function EditorPage() {
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [discardRecorderDialogOpen, setDiscardRecorderDialogOpen] = useState(false);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [clearStyleDialogOpen, setClearStyleDialogOpen] = useState(false);
   const [printDialogOpen, setPrintDialogOpen] = useState(false);
