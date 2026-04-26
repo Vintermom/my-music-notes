@@ -11,7 +11,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown,
+  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -599,6 +599,28 @@ export default function EditorPage() {
     if (!note) return;
     downloadNoteJson(note);
     toast.success(t("toast.jsonExported"));
+  };
+
+  const handleDownloadAudio = () => {
+    if (!note?.takes?.length) return;
+    const take = note.takes.find((item) => item.id === note.activeTakeId) || note.takes[0];
+    if (!take?.blob) {
+      toast.error(t("toast.audioNotAvailable"));
+      return;
+    }
+
+    try {
+      const link = document.createElement("a");
+      const title = note.title.trim().replace(/[\\/:*?"<>|]+/g, "").replace(/\s+/g, "-") || "audio-note";
+      const takeIndex = Math.max(1, note.takes.findIndex((item) => item.id === take.id) + 1);
+      link.href = take.blob;
+      link.download = `${title}_take-${takeIndex}.webm`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch {
+      toast.error(t("toast.audioNotAvailable"));
+    }
   };
 
   const handleCopyAll = () => {
