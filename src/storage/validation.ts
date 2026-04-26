@@ -60,6 +60,16 @@ export function validateNote(data: unknown): Note | null {
       )
       .slice(-50); // Keep last 50 entries
   }
+
+  let takes: Note["takes"] = [];
+  if (Array.isArray(note.takes)) {
+    takes = note.takes.filter((take): take is { id: string; blob: string; duration: number } =>
+      take && typeof take === "object" &&
+      typeof take.id === "string" &&
+      typeof take.blob === "string" &&
+      typeof take.duration === "number"
+    );
+  }
   
   return {
     id: note.id,
@@ -72,6 +82,8 @@ export function validateNote(data: unknown): Note | null {
     color,
     isPinned: typeof note.isPinned === "boolean" ? note.isPinned : false,
     hasAudio: typeof note.hasAudio === "boolean" ? note.hasAudio : false,
+    takes,
+    activeTakeId: typeof note.activeTakeId === "string" ? note.activeTakeId : "",
     createdAt: note.createdAt,
     updatedAt: note.updatedAt,
     timeline,
@@ -162,6 +174,8 @@ export function validateImportedNote(data: unknown): Partial<Note> | null {
     color,
     isPinned: false, // Always unpinned on import
     hasAudio: typeof note.hasAudio === "boolean" ? note.hasAudio : false,
+    takes: [],
+    activeTakeId: "",
   };
 }
 

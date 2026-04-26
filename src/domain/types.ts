@@ -48,6 +48,12 @@ export interface TimelineEntry {
   action: "created" | "updated";
 }
 
+export interface AudioTake {
+  id: string;
+  blob: string;
+  duration: number;
+}
+
 export interface Note {
   id: string;
   title: string;
@@ -59,6 +65,8 @@ export interface Note {
   color: NoteColor;
   isPinned: boolean;
   hasAudio?: boolean;
+  takes?: AudioTake[];
+  activeTakeId?: string;
   createdAt: number;
   updatedAt: number;
   timeline: TimelineEntry[];
@@ -90,6 +98,8 @@ export const DEFAULT_NOTE: Omit<Note, "id" | "createdAt" | "updatedAt" | "timeli
   color: "default",
   isPinned: false,
   hasAudio: false,
+  takes: [],
+  activeTakeId: "",
 };
 
 export const DEFAULT_SETTINGS: Settings = {

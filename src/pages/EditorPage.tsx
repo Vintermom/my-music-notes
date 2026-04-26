@@ -40,9 +40,16 @@ export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingStartedAtRef = useRef<number>(0);
+  const recordingTimerRef = useRef<number | null>(null);
+  const recordingStreamRef = useRef<MediaStream | null>(null);
 
   const [note, setNote] = useState<Note | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
@@ -79,6 +86,13 @@ export default function EditorPage() {
       return () => clearTimeout(timer);
     }
   }, [autoSaveStatus]);
+
+  useEffect(() => {
+    return () => {
+      if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+      recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
 
   const debouncedSave = useDebounce((noteToSave: Note) => {
     const wasFirstSave = !hasFirstSaveOccurred();
@@ -158,6 +172,70 @@ export default function EditorPage() {
     updateField("lyrics", newLyrics);
     toast.success(t("toast.insertedAt"));
     setTimeout(() => { textarea.focus(); textarea.setSelectionRange(start + text.length, start + text.length); }, 0);
+  };
+
+  const formatRecordingTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
+
+  const blobToDataUrl = (blob: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(String(reader.result));
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+
+  const handleStopRecording = () => {
+    mediaRecorderRef.current?.stop();
+  };
+
+  const handleStartRecording = async () => {
+    if (!note || isRecording) return;
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordingStreamRef.current = stream;
+      audioChunksRef.current = [];
+      recordingStartedAtRef.current = Date.now();
+
+      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+
+      recorder.onstop = async () => {
+        if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+        recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
+        recordingStreamRef.current = null;
+        setIsRecording(false);
+
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const blob = await blobToDataUrl(audioBlob);
+        const duration = Math.min(60, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
+        const takeId = `take_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+        const updatedTakes = [...(note.takes || []), { id: takeId, blob, duration }];
+        const updatedNote = { ...note, takes: updatedTakes, activeTakeId: takeId };
+        setNote(updatedNote);
+        debouncedSave(updatedNote);
+      };
+
+      recorder.start();
+      setRecordingSeconds(0);
+      setIsRecording(true);
+      recordingTimerRef.current = window.setInterval(() => {
+        const elapsed = Math.min(60, Math.floor((Date.now() - recordingStartedAtRef.current) / 1000));
+        setRecordingSeconds(elapsed);
+        if (elapsed >= 60) handleStopRecording();
+      }, 250);
+    } catch {
+      toast.error("Microphone access failed");
+    }
   };
 
   const handleToggleStyleChip = (chipLabel: string) => {
@@ -460,8 +538,14 @@ export default function EditorPage() {
               <label className="text-xs font-medium text-muted-foreground">🎤 Voice Note</label>
             </div>
             <div className="space-y-2">
-              <Button variant="outline" size="sm" className="h-8 text-xs no-print">Start Recording</Button>
-              <p className="text-xs text-muted-foreground">No recordings yet</p>
+              <Button variant="outline" size="sm" onClick={isRecording ? handleStopRecording : handleStartRecording} className="h-8 text-xs no-print">
+                {isRecording ? "Stop Recording" : "Start Recording"}
+              </Button>
+              {isRecording ? (
+                <p className="text-xs text-muted-foreground">Recording... {formatRecordingTime(recordingSeconds)}</p>
+              ) : (
+                <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}` : "No recordings yet"}</p>
+              )}
             </div>
           </div>
         )}
