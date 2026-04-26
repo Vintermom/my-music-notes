@@ -55,6 +55,7 @@ export default function EditorPage() {
   const [audioCurrentTime, setAudioCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const [deleteTakeId, setDeleteTakeId] = useState<string | null>(null);
+  const [microphoneMessage, setMicrophoneMessage] = useState("");
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
@@ -204,6 +205,7 @@ export default function EditorPage() {
     if (!note || isRecording) return;
 
     try {
+      setMicrophoneMessage("");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       recordingStreamRef.current = stream;
       audioChunksRef.current = [];
@@ -242,7 +244,8 @@ export default function EditorPage() {
         if (elapsed >= 60) handleStopRecording();
       }, 250);
     } catch {
-      toast.error("Microphone access failed");
+      setMicrophoneMessage("Microphone access required");
+      toast.error("Microphone access required");
     }
   };
 
