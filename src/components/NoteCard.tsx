@@ -37,7 +37,7 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
   return (
     <div
       onClick={onClick}
-      className={`masonry-item note-card cursor-pointer group ${colorClasses[note.color]}`}
+      className={`masonry-item note-card relative cursor-pointer group ${colorClasses[note.color]}`}
     >
       <div className="p-4">
         {/* Title */}
@@ -81,7 +81,7 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
         )}
 
         {audioTakeCount > 0 && (
-          <span className="absolute bottom-3 left-3 h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
+          <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
         )}
 
         {/* Actions - visible on hover */}
