@@ -80,6 +80,7 @@ export function createNote(data?: Partial<Note>): Note {
   }
   if (data?.color) sanitizedData.color = data.color;
   if (typeof data?.isPinned === "boolean") sanitizedData.isPinned = data.isPinned;
+  if (typeof data?.hasAudio === "boolean") sanitizedData.hasAudio = data.hasAudio;
 
   const note: Note = {
     ...DEFAULT_NOTE,
@@ -122,6 +123,7 @@ export function updateNote(id: string, updates: Partial<Omit<Note, "id" | "creat
   }
   if (updates.color !== undefined) sanitizedUpdates.color = updates.color;
   if (typeof updates.isPinned === "boolean") sanitizedUpdates.isPinned = updates.isPinned;
+  if (typeof updates.hasAudio === "boolean") sanitizedUpdates.hasAudio = updates.hasAudio;
 
   const updatedNote: Note = {
     ...currentNote,
