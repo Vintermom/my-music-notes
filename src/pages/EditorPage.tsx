@@ -237,7 +237,7 @@ export default function EditorPage() {
   const handleStartRecording = async () => {
     if (!note || isRecording) return;
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
-      setMicrophoneMessage("Audio recording is not supported on this browser.");
+      setMicrophoneMessage(t("audio.notSupported"));
       return;
     }
 
@@ -297,12 +297,15 @@ export default function EditorPage() {
       recordingTimerRef.current = window.setInterval(() => {
         const elapsed = Math.min(60, Math.floor((Date.now() - recordingStartedAtRef.current) / 1000));
         setRecordingSeconds(elapsed);
-        if (elapsed >= 60) handleStopRecording();
+        if (elapsed >= 60) {
+          setMicrophoneMessage(t("audio.maxDurationReached"));
+          handleStopRecording();
+        }
       }, 250);
     } catch {
       stopRecordingResources();
       setIsRecording(false);
-      setMicrophoneMessage("Microphone access is required to record audio.");
+      setMicrophoneMessage(t("audio.microphoneRequired"));
     }
   };
 
@@ -622,7 +625,7 @@ export default function EditorPage() {
               <Button variant="ghost" size="icon" onClick={handleRecorderClose} aria-label="Close recorder">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h2 className="text-base font-semibold">Voice Note</h2>
+              <h2 className="text-base font-semibold">{t("audio.voiceNote")}</h2>
               <div className="h-10 w-10" />
             </header>
 
@@ -630,7 +633,7 @@ export default function EditorPage() {
               <div className="text-center space-y-2">
                 <p className="text-6xl font-semibold tabular-nums tracking-normal">{formatRecordingTime(recordingSeconds)}</p>
                 <p className="text-sm text-muted-foreground">
-                  {recorderState === "recording" ? "Recording..." : recorderState === "finished" ? "Recording finished" : "Ready to record"}
+                  {recorderState === "recording" ? t("audio.recordingActive") : recorderState === "finished" ? t("audio.recordingFinished") : t("audio.readyToRecord")}
                 </p>
               </div>
 
@@ -651,13 +654,13 @@ export default function EditorPage() {
 
               {recorderState === "finished" ? (
                 <div className="grid gap-3 w-full">
-                  <Button onClick={handleSaveRecording} className="h-12">Save</Button>
-                  <Button onClick={handleRecordAgain} variant="outline" className="h-12">Record Again</Button>
-                  <Button onClick={handleRecorderClose} variant="ghost" className="h-12">Discard</Button>
+                  <Button onClick={handleSaveRecording} className="h-12">{t("audio.save")}</Button>
+                  <Button onClick={handleRecordAgain} variant="outline" className="h-12">{t("audio.recordAgain")}</Button>
+                  <Button onClick={handleRecorderClose} variant="ghost" className="h-12">{t("audio.discard")}</Button>
                 </div>
               ) : (
                 <Button onClick={recorderState === "recording" ? handleStopRecording : handleStartRecording} className="h-14 w-full max-w-xs">
-                  {recorderState === "recording" ? "Stop" : "Start Recording"}
+                  {recorderState === "recording" ? t("audio.stop") : t("audio.startRecording")}
                 </Button>
               )}
             </div>
