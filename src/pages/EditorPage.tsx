@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
+import { AudioTake, Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t, currentLang } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
 import { escapeHtml } from "@/lib/escapeHtml";
@@ -106,10 +106,19 @@ export default function EditorPage() {
   useEffect(() => {
     return () => {
       if (recordingTimerRef.current) window.clearInterval(recordingTimerRef.current);
+      if (analyserFrameRef.current) window.cancelAnimationFrame(analyserFrameRef.current);
+      audioContextRef.current?.close();
       recordingStreamRef.current?.getTracks().forEach((track) => track.stop());
       audioRef.current?.pause();
     };
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("record") === "1" && note?.hasAudio === true) {
+      setRecorderOpen(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [note?.hasAudio, searchParams, setSearchParams]);
 
   const activeTake = note?.takes?.find((take) => take.id === note.activeTakeId) || note?.takes?.[0];
 
