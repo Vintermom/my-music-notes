@@ -731,7 +731,7 @@ export default function EditorPage() {
         {note.hasAudio === true && (
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-muted-foreground">🎤 Voice Note</label>
+              <label className="text-xs font-medium text-muted-foreground">🎤 {t("audio.voiceNote")}</label>
             </div>
             <div className="space-y-2">
               {activeTake && (
@@ -746,7 +746,7 @@ export default function EditorPage() {
                     onEnded={() => setIsAudioPlaying(false)}
                   />
                   <div className="flex items-center gap-2 no-print">
-                    <Button variant="outline" size="sm" onClick={handleTogglePlayback} className="h-8 px-2 text-xs">{isAudioPlaying ? "Pause" : "Play"}</Button>
+                    <Button variant="outline" size="sm" onClick={handleTogglePlayback} className="h-8 px-2 text-xs">{isAudioPlaying ? t("audio.pause") : t("audio.play")}</Button>
                     <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(-10)} className="h-8 px-2 text-xs">-10s</Button>
                     <Button variant="ghost" size="sm" onClick={() => handleSkipAudio(10)} className="h-8 px-2 text-xs">+10s</Button>
                     <span className="text-xs text-muted-foreground">{formatRecordingTime(Math.floor(audioCurrentTime))} / {formatRecordingTime(Math.floor(audioDuration || activeTake.duration))}</span>
@@ -755,18 +755,18 @@ export default function EditorPage() {
                 </div>
               )}
               <Button variant="outline" size="sm" onClick={() => { resetRecorder(); setRecorderOpen(true); }} className="h-8 text-xs no-print">
-                Start Recording
+                {t("audio.startRecording")}
               </Button>
-              <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} recording${note.takes.length === 1 ? "" : "s"}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : "No recordings yet"}</p>
+              <p className="text-xs text-muted-foreground">{note.takes?.length ? `${note.takes.length} ${note.takes.length === 1 ? t("audio.recordingCount") : t("audio.recordingCountPlural")}${activeTake ? ` • ${formatRecordingTime(Math.floor(activeTake.duration))}` : ""}` : t("audio.noRecordingsYet")}</p>
               {microphoneMessage && <p className="text-xs text-muted-foreground">{microphoneMessage}</p>}
               {!!note.takes?.length && (
                 <div className="space-y-1">
                   {note.takes.map((take, index) => (
                     <div key={take.id} className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
                       <button type="button" onClick={() => handleSelectTake(take.id)} className="flex-1 text-left hover:text-foreground">
-                        Take {index + 1} {take.id === activeTake?.id ? "▶️" : ""}
+                        {t("audio.take")} {index + 1} {take.id === activeTake?.id ? "▶️" : ""}
                       </button>
-                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">Delete</Button>
+                      <Button variant="ghost" size="sm" onClick={() => setDeleteTakeId(take.id)} className="h-7 px-2 text-xs no-print">{t("dialog.confirm")}</Button>
                     </div>
                   ))}
                 </div>
