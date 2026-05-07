@@ -8,6 +8,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { getSettings } from "@/storage/settingsRepo";
 import { ThemeOption } from "@/domain/types";
 import { PrivacyAcceptanceNotice } from "@/components/PrivacyAcceptanceNotice";
+import { UpdateNotification } from "@/components/UpdateNotification";
 import { applyTextDirection } from "@/i18n";
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
