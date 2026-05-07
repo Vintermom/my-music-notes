@@ -127,6 +127,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <PrivacyAcceptanceNotice />
+        <UpdateNotification />
         <HashRouter>
           <AppRoutes />
         </HashRouter>
