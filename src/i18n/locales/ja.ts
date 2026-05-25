@@ -123,6 +123,10 @@ export const ja: Record<TranslationKey, string> = {
   "musicTools.recordingLabel": "テイク",
   "musicTools.back": "戻る",
   "musicTools.run": "メロディ検出",
+  "musicTools.analyzing": "メロディを解析中...",
+  "musicTools.noMelody": "明確な単音メロディを検出できませんでした。よりはっきりした声、ハミング、または1音ずつ録音してみてください。",
+  "musicTools.keyUnknown": "不明",
+  "musicTools.analysisError": "この録音を解析できませんでした。",
 
   // Style picker
   "stylePicker.title": "スタイル",

@@ -123,6 +123,10 @@ export const ko: Record<TranslationKey, string> = {
   "musicTools.recordingLabel": "테이크",
   "musicTools.back": "뒤로",
   "musicTools.run": "멜로디 감지",
+  "musicTools.analyzing": "멜로디 분석 중...",
+  "musicTools.noMelody": "명확한 단음 멜로디를 감지하지 못했습니다. 더 또렷한 음성, 허밍, 또는 한 번에 한 음씩 녹음해 보세요.",
+  "musicTools.keyUnknown": "알 수 없음",
+  "musicTools.analysisError": "이 녹음을 분석할 수 없습니다.",
 
   // Style picker
   "stylePicker.title": "스타일",

@@ -123,6 +123,10 @@ export const th: Record<TranslationKey, string> = {
   "musicTools.recordingLabel": "เทค",
   "musicTools.back": "ย้อนกลับ",
   "musicTools.run": "ตรวจจับเมโลดี้",
+  "musicTools.analyzing": "กำลังวิเคราะห์เมโลดี้...",
+  "musicTools.noMelody": "ไม่พบเมโลดี้แบบโน้ตเดี่ยวที่ชัดเจน ลองอัดเสียงร้อง เสียงฮัม หรือเล่นทีละโน้ตให้ชัดขึ้น",
+  "musicTools.keyUnknown": "ไม่ทราบ",
+  "musicTools.analysisError": "ไม่สามารถวิเคราะห์เสียงนี้ได้",
 
   // Style picker
   "stylePicker.title": "สไตล์",

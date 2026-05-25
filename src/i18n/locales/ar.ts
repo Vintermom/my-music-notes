@@ -123,6 +123,10 @@ export const ar: Record<TranslationKey, string> = {
   "musicTools.recordingLabel": "مقطع",
   "musicTools.back": "رجوع",
   "musicTools.run": "اكتشاف اللحن",
+  "musicTools.analyzing": "جارٍ تحليل اللحن...",
+  "musicTools.noMelody": "لم يتم اكتشاف لحن أحادي النغمة واضح. حاول تسجيل صوت أو دندنة أوضح، أو نغمة واحدة في كل مرة.",
+  "musicTools.keyUnknown": "غير معروف",
+  "musicTools.analysisError": "تعذّر تحليل هذا التسجيل.",
 
   // Style picker
   "stylePicker.title": "النمط",
