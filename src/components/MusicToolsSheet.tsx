@@ -34,6 +34,7 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
   const [view, setView] = useState<View>("menu");
   const [selectedTakeId, setSelectedTakeId] = useState<string>("");
   const [result, setResult] = useState<string>("");
+  const [analyzing, setAnalyzing] = useState(false);
 
   // Reset state when sheet closes
   useEffect(() => {
@@ -41,6 +42,7 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
       setView("menu");
       setResult("");
       setSelectedTakeId("");
+      setAnalyzing(false);
     }
   }, [open]);
 
@@ -52,10 +54,36 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
   }, [view, takes, selectedTakeId]);
 
   const hasTakes = takes.length > 0;
+  const selectedTake = takes.find((t) => t.id === selectedTakeId);
 
-  const handleRunDetect = () => {
-    // Phase 2: placeholder preview only — no real audio analysis.
-    setResult(PLACEHOLDER_RESULT);
+  const formatResult = (notes: string[], key: string | null): string => {
+    const keyLine = `[Key: ${key ?? t("musicTools.keyUnknown")}]`;
+    if (notes.length === 0) return t("musicTools.noMelody");
+    // Wrap long melodies for readability
+    const lines: string[] = [];
+    for (let i = 0; i < notes.length; i += NOTE_LINE_LIMIT) {
+      lines.push(notes.slice(i, i + NOTE_LINE_LIMIT).join(" - "));
+    }
+    return `${keyLine}\n[Melody: ${lines.join("\n         ")}]`;
+  };
+
+  const handleRunDetect = async () => {
+    if (!selectedTake?.blob) return;
+    setAnalyzing(true);
+    setResult("");
+    try {
+      const { notes, key } = await detectMelody(selectedTake.blob);
+      if (notes.length === 0) {
+        setResult(t("musicTools.noMelody"));
+      } else {
+        setResult(formatResult(notes, key));
+      }
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[MusicTools] detectMelody failed", err);
+      setResult(t("musicTools.analysisError"));
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   const handleCopy = async () => {
