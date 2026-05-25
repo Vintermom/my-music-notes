@@ -2,6 +2,8 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getCurrentLang } from "@/i18n";
+import { usePageMeta } from "@/lib/usePageMeta";
+
 
 const privacyText = {
   en: {
@@ -73,13 +75,18 @@ export default function PrivacyPolicyPage() {
   const navigate = useNavigate();
   const lang = getCurrentLang();
   const copy = lang === "th" ? privacyText.th : lang === "sv" ? privacyText.sv : privacyText.en;
+  usePageMeta(
+    "Privacy Policy — My Music Notes",
+    "How My Music Notes handles your data: local-first storage, audio recording behavior, and contact information."
+  );
+
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background border-b border-border">
         <div className="container max-w-xl mx-auto px-4 h-14 flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Go back">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-lg font-semibold">Privacy Policy</h1>

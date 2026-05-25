@@ -39,7 +39,7 @@ export function SearchBar({ value, onChange, sortOption, onSortChange }: SearchB
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="shrink-0">
+          <Button variant="outline" size="icon" className="shrink-0" aria-label="Sort notes">
             <ArrowUpDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

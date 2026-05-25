@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t, getCurrentLang } from "@/i18n";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { createNote } from "@/storage/notesRepo";
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
 import { useStyleHistory } from "@/hooks/useStyleHistory";
@@ -128,6 +129,10 @@ Melodies begin to bloom
 export default function DemoPage() {
   const navigate = useNavigate();
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
+  usePageMeta(
+    "Try the Demo — My Music Notes",
+    "Try My Music Notes right in your browser with a sample song. No signup, nothing stored."
+  );
   
   // Get initial demo content
   const demoContent = getDemoContent();
@@ -215,8 +220,9 @@ export default function DemoPage() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-inherit border-b border-border/50">
         <div className="container max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+          <h1 className="sr-only">Song Demo</h1>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")} aria-label="Back to landing page">
               <ArrowLeft className="h-5 w-5" />
             </Button>
             {/* Demo Badge */}
@@ -269,6 +275,7 @@ export default function DemoPage() {
               variant="ghost" 
               size="icon" 
               onClick={() => setLyricsExpanded(!lyricsExpanded)} 
+              aria-label={lyricsExpanded ? "Collapse lyrics" : "Expand lyrics"}
               className="h-6 w-6"
             >
               {lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
@@ -298,6 +305,7 @@ export default function DemoPage() {
                 variant="ghost" 
                 size="icon" 
                 onClick={() => setStyleExpanded(!styleExpanded)} 
+                aria-label={styleExpanded ? "Collapse style" : "Expand style"}
                 className="h-6 w-6"
               >
                 {styleExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}

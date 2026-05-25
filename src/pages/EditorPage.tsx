@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { AudioTake, Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t, currentLang } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { escapeHtml } from "@/lib/escapeHtml";
 import { getNoteById, updateNote, deleteNote, duplicateNote, downloadNoteJson } from "@/storage/notesRepo";
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
@@ -40,6 +41,7 @@ export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  usePageMeta("Edit Song — My Music Notes");
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -691,8 +693,9 @@ export default function EditorPage() {
       )}
       <header className="sticky top-0 z-10 bg-inherit border-b border-border/50 no-print">
         <div className="container max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+          <h1 className="sr-only">Edit Song</h1>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/app")}><ArrowLeft className="h-5 w-5" /></Button>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/app")} aria-label="Back to notes"><ArrowLeft className="h-5 w-5" /></Button>
             {/* Auto-save indicator */}
             {autoSaveStatus !== "idle" && (
               <span className="text-xs text-muted-foreground">
@@ -701,14 +704,14 @@ export default function EditorPage() {
             )}
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={handleTogglePin} className={note.isPinned ? "text-primary" : ""}>
+            <Button variant="ghost" size="icon" onClick={handleTogglePin} aria-label={note.isPinned ? "Unpin note" : "Pin note"} className={note.isPinned ? "text-primary" : ""}>
               <Pin className={`h-5 w-5 ${note.isPinned ? "fill-current" : ""}`} />
             </Button>
             <ColorPicker value={note.color} onChange={(color) => updateField("color", color)}>
-              <Button variant="ghost" size="icon"><Palette className="h-5 w-5" /></Button>
+              <Button variant="ghost" size="icon" aria-label="Change note color"><Palette className="h-5 w-5" /></Button>
             </ColorPicker>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-5 w-5" /></Button></DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="More actions"><MoreVertical className="h-5 w-5" /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={handlePrintAction}>
                   <Printer className="h-4 w-4 mr-2" />{t("menu.print")}
@@ -815,7 +818,7 @@ export default function EditorPage() {
             <div className="flex items-center gap-0.5 no-print">
               <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
               <Button variant="ghost" size="sm" onClick={handleCopyLyrics} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
-              <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} className="h-6 w-6">{lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
+              <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} aria-label={lyricsExpanded ? "Collapse lyrics" : "Expand lyrics"} className="h-6 w-6">{lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
           <LyricsEditor 
@@ -840,7 +843,7 @@ export default function EditorPage() {
               <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
               <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
               <Button variant="ghost" size="sm" onClick={handleCopyStyle} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
-              <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} className="h-6 w-6">{styleExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
+              <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} aria-label={styleExpanded ? "Collapse style" : "Expand style"} className="h-6 w-6">{styleExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
           <Textarea 

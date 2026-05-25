@@ -1,6 +1,7 @@
 import { Settings, ThemeOption } from "@/domain/types";
 import { t, getCurrentLang, setLanguage, hasManualLanguagePreference, clearLanguagePreference, applyTextDirection, SupportedLang } from "@/i18n";
 import { APP_VERSION } from "@/lib/appVersion";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { ArrowLeft, Check, ChevronRight, Upload, Monitor, Sun, Moon, Leaf, Shield, Globe, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -93,6 +94,11 @@ function getLanguageDisplayLabel(): string {
 export default function SettingsPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  usePageMeta(
+    "Settings — My Music Notes",
+    "Customize themes, language, and manage your local notebook data in My Music Notes."
+  );
+
   const [settings, setSettings] = useState<Settings>(getSettings);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [themePickerOpen, setThemePickerOpen] = useState(false);
@@ -190,7 +196,7 @@ export default function SettingsPage() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background border-b border-border">
         <div className="container max-w-xl mx-auto px-4 h-14 flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/")} aria-label="Go back">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-lg font-semibold">{t("settings.title")}</h1>
