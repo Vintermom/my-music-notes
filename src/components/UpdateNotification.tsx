@@ -59,7 +59,7 @@ export function UpdateNotification() {
     const promote = (worker: ServiceWorker | null) => {
       if (cancelled || !worker) return;
       setWaitingWorker(worker);
-      if (shouldShow()) setOpen(true);
+      if (AUTO_UPDATE_POPUP_ENABLED && shouldShow()) setOpen(true);
     };
 
     navigator.serviceWorker.getRegistration().then((reg) => {
