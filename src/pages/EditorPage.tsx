@@ -24,7 +24,7 @@ import {
 import { ColorPicker } from "@/components/ColorPicker";
 import { TagsInput } from "@/components/TagsInput";
 import { InsertSheet } from "@/components/InsertSheet";
-import { MusicToolsSheet } from "@/components/MusicToolsSheet";
+// MusicToolsSheet temporarily removed to restore note persistence behavior
 import { StylePicker } from "@/components/StylePicker";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
