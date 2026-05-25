@@ -145,6 +145,14 @@ export const en = {
   "insertSheet.instruments": "Instruments",
   "insertSheet.insert": "Insert",
 
+  // Music Tools
+  "editor.musicTools": "Music Tools",
+  "musicTools.title": "Music Tools",
+  "musicTools.detectMelody": "Detect Melody",
+  "musicTools.detectMelodyDesc": "Voice, humming, or single-note instruments",
+  "musicTools.detectChords": "Detect Chords",
+  "musicTools.comingSoon": "Coming Soon",
+
   // Style picker
   "stylePicker.title": "Style",
   "stylePicker.voiceType": "Voice Type",

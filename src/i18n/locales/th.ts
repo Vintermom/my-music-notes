@@ -108,6 +108,14 @@ export const th: Record<TranslationKey, string> = {
   "insertSheet.instruments": "เครื่องดนตรี",
   "insertSheet.insert": "แทรก",
 
+  // Music Tools
+  "editor.musicTools": "เครื่องมือเพลง",
+  "musicTools.title": "เครื่องมือเพลง",
+  "musicTools.detectMelody": "ตรวจจับเมโลดี้",
+  "musicTools.detectMelodyDesc": "เสียงร้อง เสียงฮัม หรือเครื่องดนตรีที่เล่นทีละโน้ต",
+  "musicTools.detectChords": "ตรวจจับคอร์ด",
+  "musicTools.comingSoon": "เร็ว ๆ นี้",
+
   // Style picker
   "stylePicker.title": "สไตล์",
   "stylePicker.voiceType": "ประเภทเสียง",
