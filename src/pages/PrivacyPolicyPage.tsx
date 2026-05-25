@@ -75,6 +75,11 @@ export default function PrivacyPolicyPage() {
   const navigate = useNavigate();
   const lang = getCurrentLang();
   const copy = lang === "th" ? privacyText.th : lang === "sv" ? privacyText.sv : privacyText.en;
+  usePageMeta(
+    "Privacy Policy — My Music Notes",
+    "How My Music Notes handles your data: local-first storage, audio recording behavior, and contact information."
+  );
+
 
   return (
     <div className="min-h-screen bg-background">

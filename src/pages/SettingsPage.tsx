@@ -94,6 +94,11 @@ function getLanguageDisplayLabel(): string {
 export default function SettingsPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  usePageMeta(
+    "Settings — My Music Notes",
+    "Customize themes, language, and manage your local notebook data in My Music Notes."
+  );
+
   const [settings, setSettings] = useState<Settings>(getSettings);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [themePickerOpen, setThemePickerOpen] = useState(false);
