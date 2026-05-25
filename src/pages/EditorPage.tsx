@@ -70,7 +70,7 @@ export default function EditorPage() {
   const [microphoneMessage, setMicrophoneMessage] = useState("");
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
-  const [musicToolsOpen, setMusicToolsOpen] = useState(false);
+  // musicToolsOpen removed
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [discardRecorderDialogOpen, setDiscardRecorderDialogOpen] = useState(false);
