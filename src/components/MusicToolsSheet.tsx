@@ -193,11 +193,11 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
             <Button
               type="button"
               onClick={handleRunDetect}
-              disabled={!hasTakes || !selectedTakeId}
+              disabled={!hasTakes || !selectedTakeId || analyzing}
               className="w-full"
             >
               <Mic className="h-4 w-4 mr-2" />
-              {t("musicTools.run")}
+              {analyzing ? t("musicTools.analyzing") : t("musicTools.run")}
             </Button>
 
             {result && (
