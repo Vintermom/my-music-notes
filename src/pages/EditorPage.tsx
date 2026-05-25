@@ -12,7 +12,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download, Music,
+  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ import {
 import { ColorPicker } from "@/components/ColorPicker";
 import { TagsInput } from "@/components/TagsInput";
 import { InsertSheet } from "@/components/InsertSheet";
-import { MusicToolsSheet } from "@/components/MusicToolsSheet";
+// MusicToolsSheet temporarily removed to restore note persistence behavior
 import { StylePicker } from "@/components/StylePicker";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
@@ -70,7 +70,7 @@ export default function EditorPage() {
   const [microphoneMessage, setMicrophoneMessage] = useState("");
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
-  const [musicToolsOpen, setMusicToolsOpen] = useState(false);
+  // musicToolsOpen removed
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [discardRecorderDialogOpen, setDiscardRecorderDialogOpen] = useState(false);
@@ -816,7 +816,6 @@ export default function EditorPage() {
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-muted-foreground">{t("editor.lyrics")}</label>
               <Button variant="ghost" size="sm" onClick={() => setInsertSheetOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("editor.insertSheet")}</Button>
-              <Button variant="ghost" size="sm" onClick={() => setMusicToolsOpen(true)} className="h-6 px-1.5 text-xs no-print" title={t("editor.musicTools")}><Music className="h-3 w-3 mr-0.5" />{t("editor.musicTools")}</Button>
             </div>
             <div className="flex items-center gap-0.5 no-print">
               <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
@@ -886,7 +885,7 @@ export default function EditorPage() {
       </div>
 
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
-      <MusicToolsSheet open={musicToolsOpen} onOpenChange={setMusicToolsOpen} takes={note?.takes ?? []} onInsert={handleInsert} />
+      
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
