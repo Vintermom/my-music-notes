@@ -123,6 +123,10 @@ export const sv: Record<TranslationKey, string> = {
   "musicTools.recordingLabel": "Tagning",
   "musicTools.back": "Tillbaka",
   "musicTools.run": "Identifiera melodi",
+  "musicTools.analyzing": "Analyserar melodi...",
+  "musicTools.noMelody": "Ingen tydlig entonsmelodi hittades. Försök spela in tydligare röst, humming eller en ton i taget.",
+  "musicTools.keyUnknown": "Okänd",
+  "musicTools.analysisError": "Kunde inte analysera den här inspelningen.",
 
   // Style picker
   "stylePicker.title": "Stil",

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { AudioTake } from "@/domain/types";
+import { detectMelody } from "@/lib/melodyDetection";
 
 interface MusicToolsSheetProps {
   open: boolean;
@@ -27,13 +28,13 @@ interface MusicToolsSheetProps {
 
 type View = "menu" | "detectMelody";
 
-const PLACEHOLDER_RESULT = `[Key: C major]
-[Melody: C4 - D4 - E4 - G4 - E4 - D4 - C4]`;
+const NOTE_LINE_LIMIT = 16; // wrap melody into readable line
 
 export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSheetProps) {
   const [view, setView] = useState<View>("menu");
   const [selectedTakeId, setSelectedTakeId] = useState<string>("");
   const [result, setResult] = useState<string>("");
+  const [analyzing, setAnalyzing] = useState(false);
 
   // Reset state when sheet closes
   useEffect(() => {
@@ -41,6 +42,7 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
       setView("menu");
       setResult("");
       setSelectedTakeId("");
+      setAnalyzing(false);
     }
   }, [open]);
 
@@ -52,10 +54,36 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
   }, [view, takes, selectedTakeId]);
 
   const hasTakes = takes.length > 0;
+  const selectedTake = takes.find((t) => t.id === selectedTakeId);
 
-  const handleRunDetect = () => {
-    // Phase 2: placeholder preview only — no real audio analysis.
-    setResult(PLACEHOLDER_RESULT);
+  const formatResult = (notes: string[], key: string | null): string => {
+    const keyLine = `[Key: ${key ?? t("musicTools.keyUnknown")}]`;
+    if (notes.length === 0) return t("musicTools.noMelody");
+    // Wrap long melodies for readability
+    const lines: string[] = [];
+    for (let i = 0; i < notes.length; i += NOTE_LINE_LIMIT) {
+      lines.push(notes.slice(i, i + NOTE_LINE_LIMIT).join(" - "));
+    }
+    return `${keyLine}\n[Melody: ${lines.join("\n         ")}]`;
+  };
+
+  const handleRunDetect = async () => {
+    if (!selectedTake?.blob) return;
+    setAnalyzing(true);
+    setResult("");
+    try {
+      const { notes, key } = await detectMelody(selectedTake.blob);
+      if (notes.length === 0) {
+        setResult(t("musicTools.noMelody"));
+      } else {
+        setResult(formatResult(notes, key));
+      }
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[MusicTools] detectMelody failed", err);
+      setResult(t("musicTools.analysisError"));
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   const handleCopy = async () => {
@@ -165,11 +193,11 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
             <Button
               type="button"
               onClick={handleRunDetect}
-              disabled={!hasTakes || !selectedTakeId}
+              disabled={!hasTakes || !selectedTakeId || analyzing}
               className="w-full"
             >
               <Mic className="h-4 w-4 mr-2" />
-              {t("musicTools.run")}
+              {analyzing ? t("musicTools.analyzing") : t("musicTools.run")}
             </Button>
 
             {result && (

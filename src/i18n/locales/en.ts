@@ -160,6 +160,10 @@ export const en = {
   "musicTools.recordingLabel": "Take",
   "musicTools.back": "Back",
   "musicTools.run": "Detect Melody",
+  "musicTools.analyzing": "Analyzing melody...",
+  "musicTools.noMelody": "No clear single-note melody detected. Try recording a clearer voice, humming, or one note at a time.",
+  "musicTools.keyUnknown": "Unknown",
+  "musicTools.analysisError": "Could not analyze this recording.",
 
   // Style picker
   "stylePicker.title": "Style",
