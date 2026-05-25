@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { AudioTake } from "@/domain/types";
+import { detectMelody } from "@/lib/melodyDetection";
 
 interface MusicToolsSheetProps {
   open: boolean;
@@ -27,8 +28,7 @@ interface MusicToolsSheetProps {
 
 type View = "menu" | "detectMelody";
 
-const PLACEHOLDER_RESULT = `[Key: C major]
-[Melody: C4 - D4 - E4 - G4 - E4 - D4 - C4]`;
+const NOTE_LINE_LIMIT = 16; // wrap melody into readable line
 
 export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSheetProps) {
   const [view, setView] = useState<View>("menu");
