@@ -97,10 +97,9 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [], onInsert }: Mu
     }
   };
 
+  // Insert to Lyrics intentionally disabled (reverted pending fix)
   const handleInsertToLyrics = () => {
-    if (!result) return;
-    onInsert?.(result);
-    onOpenChange(false);
+    // no-op
   };
 
   return (
@@ -219,8 +218,7 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [], onInsert }: Mu
                     type="button"
                     variant="secondary"
                     size="sm"
-                    disabled={!result}
-                    onClick={handleInsertToLyrics}
+                    disabled
                     title={t("musicTools.insertToLyrics")}
                     className="flex-1"
                   >
