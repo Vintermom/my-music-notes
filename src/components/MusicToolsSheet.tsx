@@ -24,6 +24,7 @@ interface MusicToolsSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   takes?: AudioTake[];
+  onInsert?: (text: string) => void;
 }
 
 type View = "menu" | "detectMelody";
