@@ -24,13 +24,14 @@ interface MusicToolsSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   takes?: AudioTake[];
+  onInsert?: (text: string) => void;
 }
 
 type View = "menu" | "detectMelody";
 
 const NOTE_LINE_LIMIT = 16; // wrap melody into readable line
 
-export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSheetProps) {
+export function MusicToolsSheet({ open, onOpenChange, takes = [], onInsert }: MusicToolsSheetProps) {
   const [view, setView] = useState<View>("menu");
   const [selectedTakeId, setSelectedTakeId] = useState<string>("");
   const [result, setResult] = useState<string>("");
@@ -94,6 +95,12 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
     } catch {
       // ignore
     }
+  };
+
+  const handleInsertToLyrics = () => {
+    if (!result) return;
+    onInsert?.(result);
+    onOpenChange(false);
   };
 
   return (
@@ -212,7 +219,8 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSh
                     type="button"
                     variant="secondary"
                     size="sm"
-                    disabled
+                    disabled={!result}
+                    onClick={handleInsertToLyrics}
                     title={t("musicTools.insertToLyrics")}
                     className="flex-1"
                   >
