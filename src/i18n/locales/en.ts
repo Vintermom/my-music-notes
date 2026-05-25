@@ -145,26 +145,6 @@ export const en = {
   "insertSheet.instruments": "Instruments",
   "insertSheet.insert": "Insert",
 
-  // Music Tools
-  "editor.musicTools": "Music Tools",
-  "musicTools.title": "Music Tools",
-  "musicTools.detectMelody": "Detect Melody",
-  "musicTools.detectMelodyDesc": "Voice, humming, or single-note instruments",
-  "musicTools.detectChords": "Detect Chords",
-  "musicTools.comingSoon": "Coming Soon",
-  "musicTools.detectMelodyLongDesc": "Works best with voice, humming, or single-note instruments. Not AI. Results are approximate and editable.",
-  "musicTools.selectRecording": "Select recording",
-  "musicTools.noRecordings": "No recordings available",
-  "musicTools.insertToLyrics": "Insert to Lyrics",
-  "musicTools.copy": "Copy",
-  "musicTools.recordingLabel": "Take",
-  "musicTools.back": "Back",
-  "musicTools.run": "Detect Melody",
-  "musicTools.analyzing": "Analyzing melody...",
-  "musicTools.noMelody": "No clear single-note melody detected. Try recording a clearer voice, humming, or one note at a time.",
-  "musicTools.keyUnknown": "Unknown",
-  "musicTools.analysisError": "Could not analyze this recording.",
-
   // Style picker
   "stylePicker.title": "Style",
   "stylePicker.voiceType": "Voice Type",

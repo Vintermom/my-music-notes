@@ -3,8 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { t, getCurrentLang } from "@/i18n";
 
-const AUTO_UPDATE_POPUP_ENABLED = false;
-
 const DISMISS_KEY = "mmn:update-dismissed-session";
 const DISMISS_TIME_KEY = "mmn:update-dismissed-at";
 const DISMISS_HOURS = 6;
@@ -59,7 +57,7 @@ export function UpdateNotification() {
     const promote = (worker: ServiceWorker | null) => {
       if (cancelled || !worker) return;
       setWaitingWorker(worker);
-      if (AUTO_UPDATE_POPUP_ENABLED && shouldShow()) setOpen(true);
+      if (shouldShow()) setOpen(true);
     };
 
     navigator.serviceWorker.getRegistration().then((reg) => {

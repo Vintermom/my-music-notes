@@ -108,26 +108,6 @@ export const ja: Record<TranslationKey, string> = {
   "insertSheet.instruments": "楽器",
   "insertSheet.insert": "挿入",
 
-  // Music Tools
-  "editor.musicTools": "音楽ツール",
-  "musicTools.title": "音楽ツール",
-  "musicTools.detectMelody": "メロディ検出",
-  "musicTools.detectMelodyDesc": "声、ハミング、または単音楽器",
-  "musicTools.detectChords": "コード検出",
-  "musicTools.comingSoon": "近日公開",
-  "musicTools.detectMelodyLongDesc": "声、ハミング、または単音楽器に最適です。AIではありません。結果はおおよそで、編集可能です。",
-  "musicTools.selectRecording": "録音を選択",
-  "musicTools.noRecordings": "利用可能な録音はありません",
-  "musicTools.insertToLyrics": "歌詞に挿入",
-  "musicTools.copy": "コピー",
-  "musicTools.recordingLabel": "テイク",
-  "musicTools.back": "戻る",
-  "musicTools.run": "メロディ検出",
-  "musicTools.analyzing": "メロディを解析中...",
-  "musicTools.noMelody": "明確な単音メロディを検出できませんでした。よりはっきりした声、ハミング、または1音ずつ録音してみてください。",
-  "musicTools.keyUnknown": "不明",
-  "musicTools.analysisError": "この録音を解析できませんでした。",
-
   // Style picker
   "stylePicker.title": "スタイル",
   "stylePicker.voiceType": "ボイスタイプ",

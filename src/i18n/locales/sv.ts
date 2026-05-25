@@ -108,26 +108,6 @@ export const sv: Record<TranslationKey, string> = {
   "insertSheet.instruments": "Instrument",
   "insertSheet.insert": "Infoga",
 
-  // Music Tools
-  "editor.musicTools": "Musikverktyg",
-  "musicTools.title": "Musikverktyg",
-  "musicTools.detectMelody": "Identifiera melodi",
-  "musicTools.detectMelodyDesc": "Röst, humming eller instrument som spelas en ton i taget",
-  "musicTools.detectChords": "Identifiera ackord",
-  "musicTools.comingSoon": "Kommer snart",
-  "musicTools.detectMelodyLongDesc": "Fungerar bäst med röst, humming eller instrument som spelas en ton i taget. Inte AI. Resultatet är ungefärligt och kan redigeras.",
-  "musicTools.selectRecording": "Välj inspelning",
-  "musicTools.noRecordings": "Inga inspelningar tillgängliga",
-  "musicTools.insertToLyrics": "Infoga i text",
-  "musicTools.copy": "Kopiera",
-  "musicTools.recordingLabel": "Tagning",
-  "musicTools.back": "Tillbaka",
-  "musicTools.run": "Identifiera melodi",
-  "musicTools.analyzing": "Analyserar melodi...",
-  "musicTools.noMelody": "Ingen tydlig entonsmelodi hittades. Försök spela in tydligare röst, humming eller en ton i taget.",
-  "musicTools.keyUnknown": "Okänd",
-  "musicTools.analysisError": "Kunde inte analysera den här inspelningen.",
-
   // Style picker
   "stylePicker.title": "Stil",
   "stylePicker.voiceType": "Rösttyp",

@@ -24,7 +24,6 @@ import {
 import { ColorPicker } from "@/components/ColorPicker";
 import { TagsInput } from "@/components/TagsInput";
 import { InsertSheet } from "@/components/InsertSheet";
-// MusicToolsSheet temporarily removed to restore note persistence behavior
 import { StylePicker } from "@/components/StylePicker";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PrintDialog } from "@/components/PrintDialog";
@@ -70,7 +69,6 @@ export default function EditorPage() {
   const [microphoneMessage, setMicrophoneMessage] = useState("");
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
-  // musicToolsOpen removed
   const [stylePickerOpen, setStylePickerOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [discardRecorderDialogOpen, setDiscardRecorderDialogOpen] = useState(false);
@@ -885,7 +883,6 @@ export default function EditorPage() {
       </div>
 
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
-      
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />

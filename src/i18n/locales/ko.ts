@@ -108,26 +108,6 @@ export const ko: Record<TranslationKey, string> = {
   "insertSheet.instruments": "악기",
   "insertSheet.insert": "삽입",
 
-  // Music Tools
-  "editor.musicTools": "음악 도구",
-  "musicTools.title": "음악 도구",
-  "musicTools.detectMelody": "멜로디 감지",
-  "musicTools.detectMelodyDesc": "음성, 허밍 또는 단음 악기",
-  "musicTools.detectChords": "코드 감지",
-  "musicTools.comingSoon": "곧 출시",
-  "musicTools.detectMelodyLongDesc": "음성, 허밍 또는 단음 악기에 가장 적합합니다. AI가 아닙니다. 결과는 근사치이며 편집할 수 있습니다.",
-  "musicTools.selectRecording": "녹음 선택",
-  "musicTools.noRecordings": "사용 가능한 녹음 없음",
-  "musicTools.insertToLyrics": "가사에 삽입",
-  "musicTools.copy": "복사",
-  "musicTools.recordingLabel": "테이크",
-  "musicTools.back": "뒤로",
-  "musicTools.run": "멜로디 감지",
-  "musicTools.analyzing": "멜로디 분석 중...",
-  "musicTools.noMelody": "명확한 단음 멜로디를 감지하지 못했습니다. 더 또렷한 음성, 허밍, 또는 한 번에 한 음씩 녹음해 보세요.",
-  "musicTools.keyUnknown": "알 수 없음",
-  "musicTools.analysisError": "이 녹음을 분석할 수 없습니다.",
-
   // Style picker
   "stylePicker.title": "스타일",
   "stylePicker.voiceType": "보이스 타입",

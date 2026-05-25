@@ -108,26 +108,6 @@ export const ar: Record<TranslationKey, string> = {
   "insertSheet.instruments": "الآلات",
   "insertSheet.insert": "إدراج",
 
-  // Music Tools
-  "editor.musicTools": "أدوات الموسيقى",
-  "musicTools.title": "أدوات الموسيقى",
-  "musicTools.detectMelody": "اكتشاف اللحن",
-  "musicTools.detectMelodyDesc": "الصوت أو الدندنة أو الآلات أحادية النغمة",
-  "musicTools.detectChords": "اكتشاف الأوتار",
-  "musicTools.comingSoon": "قريباً",
-  "musicTools.detectMelodyLongDesc": "يعمل بشكل أفضل مع الصوت أو الدندنة أو الآلات أحادية النغمة. ليس ذكاءً اصطناعياً. النتائج تقريبية وقابلة للتعديل.",
-  "musicTools.selectRecording": "اختر التسجيل",
-  "musicTools.noRecordings": "لا توجد تسجيلات متاحة",
-  "musicTools.insertToLyrics": "إدراج في الكلمات",
-  "musicTools.copy": "نسخ",
-  "musicTools.recordingLabel": "مقطع",
-  "musicTools.back": "رجوع",
-  "musicTools.run": "اكتشاف اللحن",
-  "musicTools.analyzing": "جارٍ تحليل اللحن...",
-  "musicTools.noMelody": "لم يتم اكتشاف لحن أحادي النغمة واضح. حاول تسجيل صوت أو دندنة أوضح، أو نغمة واحدة في كل مرة.",
-  "musicTools.keyUnknown": "غير معروف",
-  "musicTools.analysisError": "تعذّر تحليل هذا التسجيل.",
-
   // Style picker
   "stylePicker.title": "النمط",
   "stylePicker.voiceType": "نوع الصوت",

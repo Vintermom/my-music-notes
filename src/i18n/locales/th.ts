@@ -108,26 +108,6 @@ export const th: Record<TranslationKey, string> = {
   "insertSheet.instruments": "เครื่องดนตรี",
   "insertSheet.insert": "แทรก",
 
-  // Music Tools
-  "editor.musicTools": "เครื่องมือเพลง",
-  "musicTools.title": "เครื่องมือเพลง",
-  "musicTools.detectMelody": "ตรวจจับเมโลดี้",
-  "musicTools.detectMelodyDesc": "เสียงร้อง เสียงฮัม หรือเครื่องดนตรีที่เล่นทีละโน้ต",
-  "musicTools.detectChords": "ตรวจจับคอร์ด",
-  "musicTools.comingSoon": "เร็ว ๆ นี้",
-  "musicTools.detectMelodyLongDesc": "เหมาะกับเสียงร้อง เสียงฮัม หรือเครื่องดนตรีที่เล่นทีละโน้ต ไม่ใช่ AI ผลลัพธ์เป็นค่าประมาณและสามารถแก้ไขได้",
-  "musicTools.selectRecording": "เลือกเสียงที่บันทึกไว้",
-  "musicTools.noRecordings": "ยังไม่มีเสียงที่บันทึกไว้",
-  "musicTools.insertToLyrics": "ใส่ลงเนื้อเพลง",
-  "musicTools.copy": "คัดลอก",
-  "musicTools.recordingLabel": "เทค",
-  "musicTools.back": "ย้อนกลับ",
-  "musicTools.run": "ตรวจจับเมโลดี้",
-  "musicTools.analyzing": "กำลังวิเคราะห์เมโลดี้...",
-  "musicTools.noMelody": "ไม่พบเมโลดี้แบบโน้ตเดี่ยวที่ชัดเจน ลองอัดเสียงร้อง เสียงฮัม หรือเล่นทีละโน้ตให้ชัดขึ้น",
-  "musicTools.keyUnknown": "ไม่ทราบ",
-  "musicTools.analysisError": "ไม่สามารถวิเคราะห์เสียงนี้ได้",
-
   // Style picker
   "stylePicker.title": "สไตล์",
   "stylePicker.voiceType": "ประเภทเสียง",
