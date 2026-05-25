@@ -1,0 +1,15 @@
+# My Music Notes
+
+> A local-first songwriting notebook for capturing lyrics, song ideas, style notes and short voice memos. Runs in the browser or as an installable PWA. No accounts. All data stays on the user's device.
+
+My Music Notes is a free Progressive Web App for songwriters. Notes are stored locally in the browser; nothing is uploaded to any server. The app supports English, Swedish, Thai, Korean, Japanese and Arabic.
+
+## Pages
+
+- [Home / Landing](/): Overview of the app with Install and Try Demo buttons.
+- [Demo](/#/demo): Interactive demo note that anyone can try without installing.
+- [Privacy Policy](/#/privacy): Explains local-first storage, audio recording behavior and contact info.
+
+## Optional
+
+- [App](/#/app): Main notebook screen (intended for installed/returning users).
