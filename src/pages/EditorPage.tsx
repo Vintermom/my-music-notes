@@ -816,7 +816,7 @@ export default function EditorPage() {
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-muted-foreground">{t("editor.lyrics")}</label>
               <Button variant="ghost" size="sm" onClick={() => setInsertSheetOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("editor.insertSheet")}</Button>
-              <Button variant="ghost" size="sm" onClick={() => setMusicToolsOpen(true)} className="h-6 px-1.5 text-xs no-print" title={t("editor.musicTools")}><Music className="h-3 w-3 mr-0.5" />{t("editor.musicTools")}</Button>
+              </div>
             </div>
             <div className="flex items-center gap-0.5 no-print">
               <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
