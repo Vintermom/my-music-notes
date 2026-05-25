@@ -31,7 +31,7 @@ type View = "menu" | "detectMelody";
 
 const NOTE_LINE_LIMIT = 16; // wrap melody into readable line
 
-export function MusicToolsSheet({ open, onOpenChange, takes = [] }: MusicToolsSheetProps) {
+export function MusicToolsSheet({ open, onOpenChange, takes = [], onInsert }: MusicToolsSheetProps) {
   const [view, setView] = useState<View>("menu");
   const [selectedTakeId, setSelectedTakeId] = useState<string>("");
   const [result, setResult] = useState<string>("");
