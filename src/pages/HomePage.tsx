@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { t } from "@/i18n";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { useNotes } from "@/hooks/useNotes";
 import { toast } from "sonner";
 import { Plus, Settings, LayoutGrid, List } from "lucide-react";
@@ -27,6 +28,10 @@ import { Label } from "@/components/ui/label";
 export default function HomePage() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  usePageMeta(
+    "My Music Notes — Your Songwriting Notebook",
+    "Your private songwriting notebook. Capture lyrics, ideas, and voice memos — stored locally on your device."
+  );
   const {
     pinnedNotes,
     otherNotes,
@@ -149,7 +154,10 @@ export default function HomePage() {
       <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border">
         <div className="container max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="text-xl font-bold text-foreground">{t("app.name")}</h1>
+            <h1 className="text-xl font-bold text-foreground">
+              {t("app.name")}
+              <span className="sr-only"> — Songwriting & Lyrics Notebook</span>
+            </h1>
             <div className="flex items-center gap-1">
               {/* Mobile grid toggle - only on mobile */}
               {isMobile && (
@@ -168,6 +176,7 @@ export default function HomePage() {
               <button
                 onClick={() => navigate("/settings")}
                 className="p-2 hover:bg-muted rounded-full transition-colors"
+                aria-label="Open settings"
               >
                 <Settings className="h-5 w-5 text-muted-foreground" />
               </button>
@@ -202,7 +211,7 @@ export default function HomePage() {
       </main>
 
       {/* FAB */}
-      <button onClick={() => setCreateSheetOpen(true)} className="fab">
+      <button onClick={() => setCreateSheetOpen(true)} className="fab" aria-label="Create new note">
         <Plus className="h-6 w-6" />
       </button>
 

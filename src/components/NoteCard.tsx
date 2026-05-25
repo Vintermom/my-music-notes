@@ -96,6 +96,7 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
             variant="ghost"
             size="icon"
             className="h-8 w-8 hover:bg-background/50"
+            aria-label={note.isPinned ? "Unpin note" : "Pin note"}
             onClick={(e) => {
               e.stopPropagation();
               onPin();
@@ -112,6 +113,7 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 hover:bg-background/50"
+                aria-label="Note actions"
               >
                 <MoreVertical className="h-4 w-4" />
               </Button>
