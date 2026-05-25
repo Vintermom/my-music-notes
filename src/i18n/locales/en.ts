@@ -152,6 +152,14 @@ export const en = {
   "musicTools.detectMelodyDesc": "Voice, humming, or single-note instruments",
   "musicTools.detectChords": "Detect Chords",
   "musicTools.comingSoon": "Coming Soon",
+  "musicTools.detectMelodyLongDesc": "Works best with voice, humming, or single-note instruments. Not AI. Results are approximate and editable.",
+  "musicTools.selectRecording": "Select recording",
+  "musicTools.noRecordings": "No recordings available",
+  "musicTools.insertToLyrics": "Insert to Lyrics",
+  "musicTools.copy": "Copy",
+  "musicTools.recordingLabel": "Take",
+  "musicTools.back": "Back",
+  "musicTools.run": "Detect Melody",
 
   // Style picker
   "stylePicker.title": "Style",

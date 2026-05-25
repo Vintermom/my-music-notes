@@ -115,6 +115,14 @@ export const ko: Record<TranslationKey, string> = {
   "musicTools.detectMelodyDesc": "음성, 허밍 또는 단음 악기",
   "musicTools.detectChords": "코드 감지",
   "musicTools.comingSoon": "곧 출시",
+  "musicTools.detectMelodyLongDesc": "음성, 허밍 또는 단음 악기에 가장 적합합니다. AI가 아닙니다. 결과는 근사치이며 편집할 수 있습니다.",
+  "musicTools.selectRecording": "녹음 선택",
+  "musicTools.noRecordings": "사용 가능한 녹음 없음",
+  "musicTools.insertToLyrics": "가사에 삽입",
+  "musicTools.copy": "복사",
+  "musicTools.recordingLabel": "테이크",
+  "musicTools.back": "뒤로",
+  "musicTools.run": "멜로디 감지",
 
   // Style picker
   "stylePicker.title": "스타일",

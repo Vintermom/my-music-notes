@@ -115,6 +115,14 @@ export const th: Record<TranslationKey, string> = {
   "musicTools.detectMelodyDesc": "เสียงร้อง เสียงฮัม หรือเครื่องดนตรีที่เล่นทีละโน้ต",
   "musicTools.detectChords": "ตรวจจับคอร์ด",
   "musicTools.comingSoon": "เร็ว ๆ นี้",
+  "musicTools.detectMelodyLongDesc": "เหมาะกับเสียงร้อง เสียงฮัม หรือเครื่องดนตรีที่เล่นทีละโน้ต ไม่ใช่ AI ผลลัพธ์เป็นค่าประมาณและสามารถแก้ไขได้",
+  "musicTools.selectRecording": "เลือกเสียงที่บันทึกไว้",
+  "musicTools.noRecordings": "ยังไม่มีเสียงที่บันทึกไว้",
+  "musicTools.insertToLyrics": "ใส่ลงเนื้อเพลง",
+  "musicTools.copy": "คัดลอก",
+  "musicTools.recordingLabel": "เทค",
+  "musicTools.back": "ย้อนกลับ",
+  "musicTools.run": "ตรวจจับเมโลดี้",
 
   // Style picker
   "stylePicker.title": "สไตล์",

@@ -115,6 +115,14 @@ export const sv: Record<TranslationKey, string> = {
   "musicTools.detectMelodyDesc": "Röst, humming eller instrument som spelas en ton i taget",
   "musicTools.detectChords": "Identifiera ackord",
   "musicTools.comingSoon": "Kommer snart",
+  "musicTools.detectMelodyLongDesc": "Fungerar bäst med röst, humming eller instrument som spelas en ton i taget. Inte AI. Resultatet är ungefärligt och kan redigeras.",
+  "musicTools.selectRecording": "Välj inspelning",
+  "musicTools.noRecordings": "Inga inspelningar tillgängliga",
+  "musicTools.insertToLyrics": "Infoga i text",
+  "musicTools.copy": "Kopiera",
+  "musicTools.recordingLabel": "Tagning",
+  "musicTools.back": "Tillbaka",
+  "musicTools.run": "Identifiera melodi",
 
   // Style picker
   "stylePicker.title": "Stil",
