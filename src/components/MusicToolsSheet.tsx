@@ -218,8 +218,7 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [], onInsert }: Mu
                     type="button"
                     variant="secondary"
                     size="sm"
-                    disabled={!result}
-                    onClick={handleInsertToLyrics}
+                    disabled
                     title={t("musicTools.insertToLyrics")}
                     className="flex-1"
                   >
