@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Note, NoteColor, STYLE_CHAR_LIMIT_FREE } from "@/domain/types";
 import { t, getCurrentLang } from "@/i18n";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { createNote } from "@/storage/notesRepo";
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
 import { useStyleHistory } from "@/hooks/useStyleHistory";
