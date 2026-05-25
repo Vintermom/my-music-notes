@@ -115,6 +115,14 @@ export const ar: Record<TranslationKey, string> = {
   "musicTools.detectMelodyDesc": "الصوت أو الدندنة أو الآلات أحادية النغمة",
   "musicTools.detectChords": "اكتشاف الأوتار",
   "musicTools.comingSoon": "قريباً",
+  "musicTools.detectMelodyLongDesc": "يعمل بشكل أفضل مع الصوت أو الدندنة أو الآلات أحادية النغمة. ليس ذكاءً اصطناعياً. النتائج تقريبية وقابلة للتعديل.",
+  "musicTools.selectRecording": "اختر التسجيل",
+  "musicTools.noRecordings": "لا توجد تسجيلات متاحة",
+  "musicTools.insertToLyrics": "إدراج في الكلمات",
+  "musicTools.copy": "نسخ",
+  "musicTools.recordingLabel": "مقطع",
+  "musicTools.back": "رجوع",
+  "musicTools.run": "اكتشاف اللحن",
 
   // Style picker
   "stylePicker.title": "النمط",
