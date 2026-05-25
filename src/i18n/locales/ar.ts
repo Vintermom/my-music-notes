@@ -108,6 +108,14 @@ export const ar: Record<TranslationKey, string> = {
   "insertSheet.instruments": "الآلات",
   "insertSheet.insert": "إدراج",
 
+  // Music Tools
+  "editor.musicTools": "أدوات الموسيقى",
+  "musicTools.title": "أدوات الموسيقى",
+  "musicTools.detectMelody": "اكتشاف اللحن",
+  "musicTools.detectMelodyDesc": "الصوت أو الدندنة أو الآلات أحادية النغمة",
+  "musicTools.detectChords": "اكتشاف الأوتار",
+  "musicTools.comingSoon": "قريباً",
+
   // Style picker
   "stylePicker.title": "النمط",
   "stylePicker.voiceType": "نوع الصوت",

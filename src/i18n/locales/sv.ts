@@ -108,6 +108,14 @@ export const sv: Record<TranslationKey, string> = {
   "insertSheet.instruments": "Instrument",
   "insertSheet.insert": "Infoga",
 
+  // Music Tools
+  "editor.musicTools": "Musikverktyg",
+  "musicTools.title": "Musikverktyg",
+  "musicTools.detectMelody": "Identifiera melodi",
+  "musicTools.detectMelodyDesc": "Röst, humming eller instrument som spelas en ton i taget",
+  "musicTools.detectChords": "Identifiera ackord",
+  "musicTools.comingSoon": "Kommer snart",
+
   // Style picker
   "stylePicker.title": "Stil",
   "stylePicker.voiceType": "Rösttyp",

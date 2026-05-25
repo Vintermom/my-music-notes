@@ -108,6 +108,14 @@ export const ja: Record<TranslationKey, string> = {
   "insertSheet.instruments": "楽器",
   "insertSheet.insert": "挿入",
 
+  // Music Tools
+  "editor.musicTools": "音楽ツール",
+  "musicTools.title": "音楽ツール",
+  "musicTools.detectMelody": "メロディ検出",
+  "musicTools.detectMelodyDesc": "声、ハミング、または単音楽器",
+  "musicTools.detectChords": "コード検出",
+  "musicTools.comingSoon": "近日公開",
+
   // Style picker
   "stylePicker.title": "スタイル",
   "stylePicker.voiceType": "ボイスタイプ",

@@ -108,6 +108,14 @@ export const ko: Record<TranslationKey, string> = {
   "insertSheet.instruments": "악기",
   "insertSheet.insert": "삽입",
 
+  // Music Tools
+  "editor.musicTools": "음악 도구",
+  "musicTools.title": "음악 도구",
+  "musicTools.detectMelody": "멜로디 감지",
+  "musicTools.detectMelodyDesc": "음성, 허밍 또는 단음 악기",
+  "musicTools.detectChords": "코드 감지",
+  "musicTools.comingSoon": "곧 출시",
+
   // Style picker
   "stylePicker.title": "스타일",
   "stylePicker.voiceType": "보이스 타입",
