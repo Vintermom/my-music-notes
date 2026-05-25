@@ -97,6 +97,12 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [], onInsert }: Mu
     }
   };
 
+  const handleInsertToLyrics = () => {
+    if (!result) return;
+    onInsert?.(result);
+    onOpenChange(false);
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
