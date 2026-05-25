@@ -97,10 +97,9 @@ export function MusicToolsSheet({ open, onOpenChange, takes = [], onInsert }: Mu
     }
   };
 
+  // Insert to Lyrics intentionally disabled (reverted pending fix)
   const handleInsertToLyrics = () => {
-    if (!result) return;
-    onInsert?.(result);
-    onOpenChange(false);
+    // no-op
   };
 
   return (
