@@ -285,4 +285,17 @@ export const ja: Record<TranslationKey, string> = {
   "lyricsEditor.sectionDuplicated": "セクションを複製しました",
   "lyricsEditor.expandAll": "すべて展開",
   "lyricsEditor.addSection": "セクションを追加",
+
+  // Voice (prompt assistant)
+  "voice.title": "ボイス",
+  "voice.button": "Voice",
+  "voice.searchPlaceholder": "検索...",
+  "voice.optionsHeader": "ボイスオプション",
+  "voice.environmentHeader": "環境",
+  "voice.selected": "選択中",
+  "voice.nothingSelected": "ボイスオプションを選んでスタイルに挿入します。",
+  "voice.clear": "クリア",
+  "voice.insert": "スタイルに挿入",
+  "voice.noResults": "ボイスオプションが見つかりません",
+  "voice.styleLimitReached": "スタイルが長すぎるため、このテキストを追加できません。",
 };

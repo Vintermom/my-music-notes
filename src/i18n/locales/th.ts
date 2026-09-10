@@ -285,4 +285,17 @@ export const th: Record<TranslationKey, string> = {
   "lyricsEditor.sectionDuplicated": "ทำซ้ำส่วนแล้ว",
   "lyricsEditor.expandAll": "ขยายทั้งหมด",
   "lyricsEditor.addSection": "เพิ่มส่วน",
+
+  // Voice (prompt assistant)
+  "voice.title": "เสียงร้อง",
+  "voice.button": "Voice",
+  "voice.searchPlaceholder": "ค้นหา...",
+  "voice.optionsHeader": "ตัวเลือกเสียงร้อง",
+  "voice.environmentHeader": "สภาพแวดล้อม",
+  "voice.selected": "เลือกแล้ว",
+  "voice.nothingSelected": "เลือกตัวเลือกเสียงร้อง แล้วแทรกลงในสไตล์",
+  "voice.clear": "ล้าง",
+  "voice.insert": "แทรกลงในสไตล์",
+  "voice.noResults": "ไม่พบตัวเลือกเสียงร้อง",
+  "voice.styleLimitReached": "สไตล์ยาวเกินไปที่จะเพิ่มข้อความนี้",
 };

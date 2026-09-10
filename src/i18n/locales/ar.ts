@@ -285,4 +285,17 @@ export const ar: Record<TranslationKey, string> = {
   "lyricsEditor.sectionDuplicated": "تم تكرار القسم",
   "lyricsEditor.expandAll": "توسيع الكل",
   "lyricsEditor.addSection": "إضافة قسم",
+
+  // Voice (prompt assistant)
+  "voice.title": "الصوت",
+  "voice.button": "Voice",
+  "voice.searchPlaceholder": "بحث...",
+  "voice.optionsHeader": "خيارات الصوت",
+  "voice.environmentHeader": "البيئة",
+  "voice.selected": "المحدد",
+  "voice.nothingSelected": "اختر خيارات الصوت ثم أدرجها في النمط.",
+  "voice.clear": "مسح",
+  "voice.insert": "إدراج في النمط",
+  "voice.noResults": "لم يتم العثور على خيارات صوت",
+  "voice.styleLimitReached": "النمط طويل جدًا لإضافة هذا النص.",
 };

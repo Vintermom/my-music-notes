@@ -285,4 +285,17 @@ export const sv: Record<TranslationKey, string> = {
   "lyricsEditor.sectionDuplicated": "Sektion duplicerad",
   "lyricsEditor.expandAll": "Expandera alla",
   "lyricsEditor.addSection": "Lägg till sektion",
+
+  // Voice (prompt assistant)
+  "voice.title": "Röst",
+  "voice.button": "Voice",
+  "voice.searchPlaceholder": "Sök...",
+  "voice.optionsHeader": "Röstalternativ",
+  "voice.environmentHeader": "Miljö",
+  "voice.selected": "Valda",
+  "voice.nothingSelected": "Välj röstalternativ och infoga sedan i Stil.",
+  "voice.clear": "Rensa",
+  "voice.insert": "Infoga i Stil",
+  "voice.noResults": "Inga röstalternativ hittades",
+  "voice.styleLimitReached": "Stilen är för lång för att lägga till den här texten.",
 };

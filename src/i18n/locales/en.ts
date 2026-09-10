@@ -282,6 +282,19 @@ export const en = {
   "lyricsEditor.sectionDuplicated": "Section duplicated",
   "lyricsEditor.expandAll": "Expand All",
   "lyricsEditor.addSection": "Add section",
+
+  // Voice (prompt assistant)
+  "voice.title": "Voice",
+  "voice.button": "Voice",
+  "voice.searchPlaceholder": "Search...",
+  "voice.optionsHeader": "Voice options",
+  "voice.environmentHeader": "Environment",
+  "voice.selected": "Selected",
+  "voice.nothingSelected": "Select voice options, then insert into Style.",
+  "voice.clear": "Clear",
+  "voice.insert": "Insert to Style",
+  "voice.noResults": "No voice options found",
+  "voice.styleLimitReached": "Style is too long to add this text.",
 };
 
 export type TranslationKey = keyof typeof en;
