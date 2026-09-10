@@ -285,4 +285,17 @@ export const ko: Record<TranslationKey, string> = {
   "lyricsEditor.sectionDuplicated": "섹션이 복제되었습니다",
   "lyricsEditor.expandAll": "모두 펼치기",
   "lyricsEditor.addSection": "섹션 추가",
+
+  // Voice (prompt assistant)
+  "voice.title": "보이스",
+  "voice.button": "Voice",
+  "voice.searchPlaceholder": "검색...",
+  "voice.optionsHeader": "보이스 옵션",
+  "voice.environmentHeader": "환경",
+  "voice.selected": "선택됨",
+  "voice.nothingSelected": "보이스 옵션을 선택한 후 스타일에 삽입하세요.",
+  "voice.clear": "지우기",
+  "voice.insert": "스타일에 삽입",
+  "voice.noResults": "보이스 옵션을 찾을 수 없습니다",
+  "voice.styleLimitReached": "스타일이 너무 길어 이 텍스트를 추가할 수 없습니다.",
 };
