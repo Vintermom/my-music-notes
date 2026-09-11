@@ -5,10 +5,12 @@ import type { EnvironmentOption, QuickVoiceControl, VoiceOption } from "@/types/
 export function buildVoicePrompt(
   selected: VoiceOption[],
   environment: EnvironmentOption | null,
-  quick: QuickVoiceControl[] = []
+  quick: QuickVoiceControl[] = [],
+  extra = ""
 ): string {
   const raw = [...quick.map((q) => q.prompt), ...selected.map((o) => o.prompt)];
   if (environment) raw.push(environment.prompt);
+  if (extra) raw.push(extra);
 
   // Split combined prompts on commas, trim, and drop duplicates.
   const seen = new Set<string>();

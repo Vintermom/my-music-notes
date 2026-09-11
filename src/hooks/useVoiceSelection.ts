@@ -7,6 +7,7 @@ export function useVoiceSelection() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [environmentId, setEnvironmentId] = useState<string | null>(null);
   const [selectedQuickIds, setSelectedQuickIds] = useState<string[]>([]);
+  const [cafeInstrumentIds, setCafeInstrumentIds] = useState<string[]>([]);
 
   const toggleVoice = useCallback((id: string) => {
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -18,12 +19,18 @@ export function useVoiceSelection() {
 
   const selectEnvironment = useCallback((id: string) => {
     setEnvironmentId((prev) => (prev === id ? null : id));
+    setCafeInstrumentIds([]);
+  }, []);
+
+  const toggleCafeInstrument = useCallback((id: string) => {
+    setCafeInstrumentIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
 
   const clear = useCallback(() => {
     setSelectedIds([]);
     setEnvironmentId(null);
     setSelectedQuickIds([]);
+    setCafeInstrumentIds([]);
   }, []);
 
   const selectedOptions: VoiceOption[] = useMemo(
@@ -51,6 +58,9 @@ export function useVoiceSelection() {
     selectedIds,
     environmentId,
     selectedQuickIds,
+    cafeInstrumentIds,
+    toggleCafeInstrument,
+    isCafeInstrumentSelected: (id: string) => cafeInstrumentIds.includes(id),
     selectedOptions,
     selectedQuickControls,
     selectedEnvironment,
