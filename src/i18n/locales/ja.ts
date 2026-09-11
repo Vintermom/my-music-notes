@@ -115,6 +115,8 @@ export const ja: Record<TranslationKey, string> = {
   "stylePicker.mood": "ムード",
   "stylePicker.instruments": "楽器",
   "stylePicker.musicGenres": "音楽ジャンル",
+  "presets.title": "Presets",
+  "presets.intro": "Choose a ready-made style as a quick starting point, then refine it with Style, Voice, and Environment.",
 
   // Settings
   "settings.title": "設定",

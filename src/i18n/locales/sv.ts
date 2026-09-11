@@ -115,6 +115,8 @@ export const sv: Record<TranslationKey, string> = {
   "stylePicker.mood": "Stämning",
   "stylePicker.instruments": "Instrument",
   "stylePicker.musicGenres": "Musikgenrer",
+  "presets.title": "Presets",
+  "presets.intro": "Välj en färdig stil som en snabb startpunkt och finjustera sedan med Style, Voice och Environment.",
 
   // Settings
   "settings.title": "Inställningar",

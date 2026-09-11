@@ -115,6 +115,8 @@ export const ar: Record<TranslationKey, string> = {
   "stylePicker.mood": "المزاج",
   "stylePicker.instruments": "الآلات",
   "stylePicker.musicGenres": "أنواع الموسيقى",
+  "presets.title": "Presets",
+  "presets.intro": "Choose a ready-made style as a quick starting point, then refine it with Style, Voice, and Environment.",
 
   // Settings
   "settings.title": "الإعدادات",

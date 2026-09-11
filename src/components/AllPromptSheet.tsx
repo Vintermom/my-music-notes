@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { allPrompts } from "@/data/allPrompts";
 import type { PromptCategory } from "@/types/promptPreset";
+import { getCurrentLang, t } from "@/i18n";
 
 const CATEGORIES: PromptCategory[] = [
   "Pop", "Emotional", "Dance / EDM", "Chill / Indie",
@@ -22,12 +23,17 @@ export function AllPromptSheet({ open, onClose, onInsert }: AllPromptSheetProps)
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+  const language = getCurrentLang();
+  const hintLanguage = language === "th" || language === "sv" ? language : "en";
 
   const filtered = allPrompts.filter(
     (p) =>
       search === "" ||
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.meta.toLowerCase().includes(search.toLowerCase())
+      p.meta.toLowerCase().includes(search.toLowerCase()) ||
+      p.prompt.toLowerCase().includes(search.toLowerCase()) ||
+      Object.values(p.hint).some((hint) => hint.toLowerCase().includes(search.toLowerCase())) ||
+      p.searchKeywords.some((keyword) => keyword.toLowerCase().includes(search.toLowerCase()))
   );
 
   const handleInsert = (prompt: string) => {
@@ -51,8 +57,10 @@ export function AllPromptSheet({ open, onClose, onInsert }: AllPromptSheetProps)
     <Sheet open={open} onOpenChange={(v) => { if (!v) { setExpandedId(null); onClose(); } }}>
       <SheetContent side="bottom" className="h-[75vh] rounded-t-2xl px-4 pb-4">
         <SheetHeader className="pb-2">
-          <SheetTitle>Presets</SheetTitle>
+          <SheetTitle>{t("presets.title")}</SheetTitle>
         </SheetHeader>
+
+        <p className="text-xs text-muted-foreground leading-relaxed mb-2">{t("presets.intro")}</p>
 
         {/* Search */}
         <Input
@@ -100,6 +108,7 @@ export function AllPromptSheet({ open, onClose, onInsert }: AllPromptSheetProps)
                               <span className="text-sm font-medium text-foreground">{preset.name}</span>
                             </div>
                             <p className="text-xs text-muted-foreground">{preset.meta}</p>
+                            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{preset.hint[hintLanguage]}</p>
                           </button>
                           {isExpanded && (
                             <div className="px-3 pb-3 border-t border-border pt-2">

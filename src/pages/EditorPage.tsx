@@ -408,6 +408,18 @@ export default function EditorPage() {
     updateField("style", merged);
   };
 
+  // Presets: append the starting prompt without replacing user-written Style text
+  const handleInsertPreset = (prompt: string) => {
+    if (!note) return;
+    const merged = mergeIntoStyle(note.style || "", prompt);
+    if (merged === (note.style || "")) return;
+    if (merged.length > STYLE_CHAR_LIMIT_FREE) {
+      toast.error(t("voice.styleLimitReached"));
+      return;
+    }
+    updateField("style", merged);
+  };
+
   // Voice: append prompt text to existing Style as ordinary editable text (never replaces user content)
   const handleInsertVoice = (prompt: string) => {
     if (!note) return;
@@ -862,8 +874,8 @@ export default function EditorPage() {
           <div className="flex items-start justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
               <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
+              <Button variant="ghost" size="sm" onClick={() => setAllPromptOpen(true)} className="h-6 px-1.5 text-xs no-print">{t("presets.title")}</Button>
               <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
-              <Button variant="ghost" size="sm" onClick={() => setAllPromptOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />Presets</Button>
               <Button variant="ghost" size="sm" onClick={() => setVoiceOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("voice.button")}</Button>
               <Button variant="ghost" size="sm" onClick={() => setEnvironmentOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("environment.button")}</Button>
             </div>
@@ -954,7 +966,7 @@ export default function EditorPage() {
       <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title={t("audio.discard")} description={t("audio.confirmDiscard")} confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
-      <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
+      <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={handleInsertPreset} />
       <VoiceSheet open={voiceOpen} onClose={() => setVoiceOpen(false)} onInsert={handleInsertVoice} />
       <EnvironmentSheet open={environmentOpen} onClose={() => setEnvironmentOpen(false)} onInsert={handleInsertVoice} />
 

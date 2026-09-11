@@ -115,6 +115,8 @@ export const th: Record<TranslationKey, string> = {
   "stylePicker.mood": "อารมณ์",
   "stylePicker.instruments": "เครื่องดนตรี",
   "stylePicker.musicGenres": "แนวเพลง",
+  "presets.title": "Presets",
+  "presets.intro": "เลือกชุดสไตล์สำเร็จรูปเพื่อเริ่มต้นเพลงอย่างรวดเร็ว แล้วปรับแต่งต่อได้ใน Style, Voice และ Environment",
 
   // Settings
   "settings.title": "การตั้งค่า",
