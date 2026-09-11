@@ -42,12 +42,19 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
 
   // Build the formatted preview string based on grammar rules
   const buildPreview = (): string => {
-    // Grammar 1: Vocal-only (no section, no instruments)
-    if (!selectedSection && selectedVocalEffect && selectedInstruments.length === 0) {
-      return `(${selectedVocalEffect})`;
+    // No section: instruments and/or vocal effect on separate lines
+    if (!selectedSection) {
+      const lines: string[] = [];
+      if (selectedInstruments.length > 0) {
+        lines.push(`[${selectedInstruments.join(", ")}]`);
+      }
+      if (selectedVocalEffect) {
+        lines.push(`[${selectedVocalEffect}]`);
+      }
+      return lines.join("\n");
     }
-    
-    // Grammar 2, 3, 4: Section-based
+
+    // Section-based (existing syntax unchanged)
     if (selectedSection) {
       let result = `[${selectedSection}`;
       
