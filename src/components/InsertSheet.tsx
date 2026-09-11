@@ -114,7 +114,7 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
           </div>
           {/* Preview of structured insert */}
           {canInsert && previewText && (
-            <div className="mt-2 p-2 bg-muted rounded-lg text-sm font-mono">
+            <div className="mt-2 p-2 bg-muted rounded-lg text-sm font-mono whitespace-pre-line">
               {previewText}
             </div>
           )}
