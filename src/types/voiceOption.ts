@@ -34,3 +34,12 @@ export interface EnvironmentOption {
   hint: VoiceHint;
   searchKeywords?: Partial<Record<string, string[]>>;
 }
+
+// Quick Voice Controls — shortcut chips that insert a combined prompt phrase.
+export interface QuickVoiceControl {
+  id: string;
+  label: string;
+  prompt: string;
+  hint: VoiceHint;
+  searchKeywords?: Partial<Record<string, string[]>>;
+}

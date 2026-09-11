@@ -1,10 +1,29 @@
-import type { EnvironmentOption, VoiceOption } from "@/types/voiceOption";
+import type { EnvironmentOption, QuickVoiceControl, VoiceOption } from "@/types/voiceOption";
 
 // Build the plain-text prompt fragment from the current selection (English output).
-export function buildVoicePrompt(selected: VoiceOption[], environment: EnvironmentOption | null): string {
-  const parts = selected.map((o) => o.prompt.trim()).filter(Boolean);
-  if (environment) parts.push(environment.prompt.trim());
-  return parts.join(", ");
+// Quick Voice Controls come first, then individual Voice options, then Environment.
+export function buildVoicePrompt(
+  selected: VoiceOption[],
+  environment: EnvironmentOption | null,
+  quick: QuickVoiceControl[] = []
+): string {
+  const raw = [...quick.map((q) => q.prompt), ...selected.map((o) => o.prompt)];
+  if (environment) raw.push(environment.prompt);
+
+  // Split combined prompts on commas, trim, and drop duplicates.
+  const seen = new Set<string>();
+  const segments: string[] = [];
+  for (const entry of raw) {
+    for (const part of entry.split(",")) {
+      const seg = part.trim();
+      if (!seg) continue;
+      const key = seg.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      segments.push(seg);
+    }
+  }
+  return segments.join(", ");
 }
 
 // Merge the Voice prompt into the existing Style text WITHOUT replacing anything the user wrote.

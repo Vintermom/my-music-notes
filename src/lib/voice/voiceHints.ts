@@ -16,3 +16,14 @@ const oftenUsedInLabels: Record<string, string> = {
 export function getOftenUsedInLabel(lang: string = getCurrentLang()): string {
   return oftenUsedInLabels[lang] || oftenUsedInLabels.en;
 }
+
+// Localized header for the Quick Voice Controls section.
+const quickControlsLabels: Record<string, string> = {
+  en: "Quick Voice Controls",
+  th: "ตัวช่วยด่วน",
+  sv: "Snabbval för röst",
+};
+
+export function getQuickControlsLabel(lang: string = getCurrentLang()): string {
+  return quickControlsLabels[lang] || quickControlsLabels.en;
+}
