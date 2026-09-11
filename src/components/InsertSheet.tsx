@@ -42,12 +42,19 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
 
   // Build the formatted preview string based on grammar rules
   const buildPreview = (): string => {
-    // Grammar 1: Vocal-only (no section, no instruments)
-    if (!selectedSection && selectedVocalEffect && selectedInstruments.length === 0) {
-      return `(${selectedVocalEffect})`;
+    // No section: instruments and/or vocal effect on separate lines
+    if (!selectedSection) {
+      const lines: string[] = [];
+      if (selectedInstruments.length > 0) {
+        lines.push(`[${selectedInstruments.join(", ")}]`);
+      }
+      if (selectedVocalEffect) {
+        lines.push(`[${selectedVocalEffect}]`);
+      }
+      return lines.join("\n");
     }
-    
-    // Grammar 2, 3, 4: Section-based
+
+    // Section-based (existing syntax unchanged)
     if (selectedSection) {
       let result = `[${selectedSection}`;
       
@@ -70,9 +77,11 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
 
   const previewText = buildPreview();
   
-  // Can insert if: section selected OR vocal-only (no instruments)
-  const canInsert = selectedSection !== null || 
-    (selectedVocalEffect !== null && selectedInstruments.length === 0);
+  // Can insert if at least one item is selected (Section is optional)
+  const canInsert =
+    selectedSection !== null ||
+    selectedInstruments.length > 0 ||
+    selectedVocalEffect !== null;
 
   const handleInsert = () => {
     if (!canInsert || !previewText) return;
@@ -105,7 +114,7 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
           </div>
           {/* Preview of structured insert */}
           {canInsert && previewText && (
-            <div className="mt-2 p-2 bg-muted rounded-lg text-sm font-mono">
+            <div className="mt-2 p-2 bg-muted rounded-lg text-sm font-mono whitespace-pre-line">
               {previewText}
             </div>
           )}

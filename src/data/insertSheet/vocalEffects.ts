@@ -8,4 +8,8 @@ export const vocalEffects: InsertItem[] = [
   { id: "breath-sound", label: "Breath sound", insertText: "(Breath sound)" },
   { id: "ad-libs", label: "Ad-libs", insertText: "(Ad-libs)" },
   { id: "vocal-chop", label: "Vocal chop", insertText: "(Vocal chop)" },
+  { id: "harmony", label: "Harmony", insertText: "(Harmony)" },
+  { id: "backing-vocals", label: "Backing vocals", insertText: "(Backing vocals)" },
+  { id: "call-and-response", label: "Call and response", insertText: "(Call and response)" },
+  { id: "chant", label: "Chant", insertText: "(Chant)" },
 ];

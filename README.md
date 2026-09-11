@@ -13,6 +13,29 @@ A beautiful songwriting note app for capturing your musical ideas, lyrics, and c
 - 🌐 Multi-language support (EN, SV, TH)
 - 📱 PWA installable on mobile
 
+## V1.4.0 — Voice Update (internal notes)
+
+Included in V1.4.0:
+
+- Advanced Voice controls
+- Environment separated from Voice
+- Presets moved before `+ Style`
+- Preset hints added (EN / TH / SV)
+- Preset prompt output upgraded to concise producer-style prompts
+- Lyrics → Insert improved
+  - Section is now optional
+  - Instrument or Vocal Effect can be inserted without selecting a Section
+  - No-Section output keeps instruments and vocal effect on separate lines, e.g. `[Piano, Violin]` + `[Backing vocals]`
+  - Section-based syntax unchanged, e.g. `[Intro Piano, Synth lead (Whisper)]`
+- Added Sections: Post-Chorus, Hook, Refrain, Build, Drop, Breakdown, Interlude
+- Added Vocal Effects: Harmony, Backing vocals, Call and response, Chant
+
+Explicitly not included:
+
+- No SFX system was added
+- No Symbols toolbar was added
+- No user-facing What's New / update popup is enabled yet
+
 ## Technology Stack
 
 - Vite + React + TypeScript
