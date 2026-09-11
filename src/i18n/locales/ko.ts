@@ -298,4 +298,10 @@ export const ko: Record<TranslationKey, string> = {
   "voice.insert": "스타일에 삽입",
   "voice.noResults": "보이스 옵션을 찾을 수 없습니다",
   "voice.styleLimitReached": "스타일이 너무 길어 이 텍스트를 추가할 수 없습니다.",
+  "environment.button": "환경",
+  "environment.title": "환경",
+  "environment.nothingSelected": "환경을 선택한 후 스타일에 삽입하세요.",
+  "environment.noResults": "환경을 찾을 수 없습니다",
+  "editor.expandLyrics": "가사 전체 화면",
+  "editor.closeFullScreen": "완료",
 };

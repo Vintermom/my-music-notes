@@ -298,4 +298,10 @@ export const th: Record<TranslationKey, string> = {
   "voice.insert": "แทรกลงในสไตล์",
   "voice.noResults": "ไม่พบตัวเลือกเสียงร้อง",
   "voice.styleLimitReached": "สไตล์ยาวเกินไปที่จะเพิ่มข้อความนี้",
+  "environment.button": "สภาพแวดล้อม",
+  "environment.title": "สภาพแวดล้อม",
+  "environment.nothingSelected": "เลือกสภาพแวดล้อม แล้วแทรกลงในสไตล์",
+  "environment.noResults": "ไม่พบสภาพแวดล้อม",
+  "editor.expandLyrics": "ขยายเนื้อเพลงเต็มจอ",
+  "editor.closeFullScreen": "เสร็จสิ้น",
 };

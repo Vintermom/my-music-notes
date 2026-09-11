@@ -4,15 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { t } from "@/i18n";
-import { voiceCategories, voiceOptions, environmentOptions, quickVoiceControls } from "@/data/voice";
-import {
-  OUTDOOR_CAFE_ID,
-  outdoorCafeInstruments,
-  buildOutdoorCafeAccompaniment,
-  getOutdoorCafeInstrumentsLabel,
-} from "@/data/voice";
-import { getCurrentLang } from "@/i18n";
-import { filterVoiceOptions, filterEnvironments, filterQuickControls } from "@/lib/voice/voiceSearch";
+import { voiceCategories, voiceOptions, quickVoiceControls } from "@/data/voice";
+import { filterVoiceOptions, filterQuickControls } from "@/lib/voice/voiceSearch";
 import { buildVoicePrompt } from "@/lib/voice/voicePrompt";
 import { getVoiceHint, getOftenUsedInLabel, getQuickControlsLabel } from "@/lib/voice/voiceHints";
 import { useVoiceSelection } from "@/hooks/useVoiceSelection";
@@ -31,18 +24,12 @@ export function VoiceSheet({ open, onClose, onInsert }: VoiceSheetProps) {
   const selection = useVoiceSelection();
 
   const visibleVoices = filterVoiceOptions(voiceOptions, search, category);
-  const showEnvironments = category === "All" || category === "Environment";
-  const visibleEnvironments = showEnvironments ? filterEnvironments(environmentOptions, search) : [];
   const visibleQuickControls = category === "All" ? filterQuickControls(quickVoiceControls, search) : [];
-  const isOutdoorCafe = selection.environmentId === OUTDOOR_CAFE_ID;
-  const accompaniment = isOutdoorCafe
-    ? buildOutdoorCafeAccompaniment(selection.cafeInstrumentIds)
-    : "";
   const previewPrompt = buildVoicePrompt(
     selection.selectedOptions,
-    selection.selectedEnvironment,
+    null,
     selection.selectedQuickControls,
-    accompaniment
+    ""
   );
 
   const handleClose = useCallback(() => {
@@ -153,59 +140,7 @@ export function VoiceSheet({ open, onClose, onInsert }: VoiceSheetProps) {
               </div>
             )}
 
-            {visibleEnvironments.length > 0 && (
-              <div>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">{t("voice.environmentHeader")}</h3>
-                <div className="space-y-2">
-                  {visibleEnvironments.map((env) => {
-                    const selected = selection.environmentId === env.id;
-                    return (
-                      <div key={env.id} className="space-y-2">
-                        <button
-                          onClick={() => selection.selectEnvironment(env.id)}
-                          aria-pressed={selected}
-                          className={`w-full text-left rounded-lg border p-3 transition-colors ${
-                            selected ? "border-primary bg-accent" : "border-border bg-background hover:bg-accent"
-                          }`}
-                        >
-                          <span className="text-sm font-medium text-foreground">{env.label}</span>
-                          <p className="text-xs text-muted-foreground mt-1">{getVoiceHint(env.hint)}</p>
-                        </button>
-
-                        {env.id === OUTDOOR_CAFE_ID && selected && (
-                          <div className="rounded-lg border border-border bg-background p-3">
-                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                              {getOutdoorCafeInstrumentsLabel(getCurrentLang())}
-                            </h4>
-                            <div className="flex flex-wrap gap-1.5">
-                              {outdoorCafeInstruments.map((inst) => {
-                                const instSelected = selection.isCafeInstrumentSelected(inst.id);
-                                return (
-                                  <button
-                                    key={inst.id}
-                                    onClick={() => selection.toggleCafeInstrument(inst.id)}
-                                    aria-pressed={instSelected}
-                                    className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-                                      instSelected
-                                        ? "border-primary bg-primary text-primary-foreground"
-                                        : "border-border bg-secondary text-secondary-foreground hover:bg-accent"
-                                    }`}
-                                  >
-                                    {inst.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {visibleVoices.length === 0 && visibleEnvironments.length === 0 && visibleQuickControls.length === 0 && (
+            {visibleVoices.length === 0 && visibleQuickControls.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-8">{t("voice.noResults")}</p>
             )}
           </div>

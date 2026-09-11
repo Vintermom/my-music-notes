@@ -12,8 +12,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download,
+  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download, Maximize2, X,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,6 +32,8 @@ import { LyricsEditor } from "@/components/LyricsEditor";
 import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
 import { AllPromptSheet } from "@/components/AllPromptSheet";
 import { VoiceSheet } from "@/components/VoiceSheet";
+import { EnvironmentSheet } from "@/components/EnvironmentSheet";
+
 import { mergeIntoStyle } from "@/lib/voice/voicePrompt";
 
 const colorClasses: Record<NoteColor, string> = {
@@ -83,6 +86,9 @@ export default function EditorPage() {
   const [showFirstSaveNotice, setShowFirstSaveNotice] = useState(false);
   const [allPromptOpen, setAllPromptOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [environmentOpen, setEnvironmentOpen] = useState(false);
+  const [lyricsFullScreen, setLyricsFullScreen] = useState(false);
+
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
   const { pushToHistory: pushStyleHistory, undo: undoStyle, canUndo: canUndoStyle, reset: resetStyleHistory } = useStyleHistory(note?.style || "");
@@ -836,6 +842,8 @@ export default function EditorPage() {
             <div className="flex items-center gap-0.5 no-print">
               <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
               <Button variant="ghost" size="sm" onClick={handleCopyLyrics} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={() => setLyricsFullScreen(true)} className="h-6 px-1.5 text-xs" title={t("editor.expandLyrics")} aria-label={t("editor.expandLyrics")}><Maximize2 className="h-3 w-3" /></Button>
+
               <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} aria-label={lyricsExpanded ? "Collapse lyrics" : "Expand lyrics"} className="h-6 w-6">{lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
           </div>
@@ -851,13 +859,15 @@ export default function EditorPage() {
 
         {/* Style Section */}
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="flex items-start justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
               <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
               <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
               <Button variant="ghost" size="sm" onClick={() => setAllPromptOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />Presets</Button>
               <Button variant="ghost" size="sm" onClick={() => setVoiceOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("voice.button")}</Button>
+              <Button variant="ghost" size="sm" onClick={() => setEnvironmentOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("environment.button")}</Button>
             </div>
+
             <div className="flex items-center gap-0.5 no-print">
               <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
               <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
@@ -901,7 +911,42 @@ export default function EditorPage() {
         <Button onClick={handleSave} disabled={isSaving} className="px-8">{isSaving ? t("editor.saving") : t("editor.save")}</Button>
       </div>
 
+      {/* Full-screen Lyrics editing — same lyrics state, no separate copy */}
+      {lyricsFullScreen && (
+        <div
+          className="fixed inset-0 z-40 bg-background flex flex-col no-print"
+          style={{
+            height: "100dvh",
+            paddingTop: "env(safe-area-inset-top)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
+        >
+          <div className="flex items-center justify-between gap-2 px-4 h-12 border-b border-border/50 shrink-0">
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-medium text-muted-foreground">{t("editor.lyrics")}</label>
+              <Button variant="ghost" size="sm" onClick={() => setInsertSheetOpen(true)} className="h-6 px-1.5 text-xs"><Plus className="h-3 w-3 mr-0.5" />{t("editor.insertSheet")}</Button>
+            </div>
+            <div className="flex items-center gap-0.5">
+              <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={handleCopyLyrics} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={() => setLyricsFullScreen(false)} className="h-6 px-2 text-xs" aria-label={t("editor.closeFullScreen")}><X className="h-3 w-3 mr-0.5" />{t("editor.closeFullScreen")}</Button>
+            </div>
+          </div>
+          <div className="flex-1 min-h-0 p-3">
+            <LyricsEditor
+              textareaRef={lyricsRef}
+              placeholder={t("editor.lyrics")}
+              value={note.lyrics}
+              onChange={(value) => updateField("lyrics", value)}
+              expanded
+              className="h-[calc(100dvh-6rem)] overflow-y-auto"
+            />
+          </div>
+        </div>
+      )}
+
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
+
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} onInsertChips={handleInsertStyleChips} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
@@ -911,6 +956,8 @@ export default function EditorPage() {
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
       <VoiceSheet open={voiceOpen} onClose={() => setVoiceOpen(false)} onInsert={handleInsertVoice} />
+      <EnvironmentSheet open={environmentOpen} onClose={() => setEnvironmentOpen(false)} onInsert={handleInsertVoice} />
+
       <LocalFirstNotice open={showFirstSaveNotice} onOpenChange={setShowFirstSaveNotice} />
     </div>
   );

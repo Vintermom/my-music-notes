@@ -298,4 +298,10 @@ export const sv: Record<TranslationKey, string> = {
   "voice.insert": "Infoga i Stil",
   "voice.noResults": "Inga röstalternativ hittades",
   "voice.styleLimitReached": "Stilen är för lång för att lägga till den här texten.",
+  "environment.button": "Miljö",
+  "environment.title": "Miljö",
+  "environment.nothingSelected": "Välj en miljö och infoga sedan i Stil.",
+  "environment.noResults": "Inga miljöer hittades",
+  "editor.expandLyrics": "Expandera sångtext",
+  "editor.closeFullScreen": "Klar",
 };

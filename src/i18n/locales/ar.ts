@@ -298,4 +298,10 @@ export const ar: Record<TranslationKey, string> = {
   "voice.insert": "إدراج في النمط",
   "voice.noResults": "لم يتم العثور على خيارات صوت",
   "voice.styleLimitReached": "النمط طويل جدًا لإضافة هذا النص.",
+  "environment.button": "البيئة",
+  "environment.title": "البيئة",
+  "environment.nothingSelected": "اختر بيئة ثم أدرجها في النمط.",
+  "environment.noResults": "لا توجد بيئات",
+  "editor.expandLyrics": "تكبير الكلمات",
+  "editor.closeFullScreen": "تم",
 };
