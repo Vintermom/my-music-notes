@@ -30,6 +30,8 @@ import { PrintDialog } from "@/components/PrintDialog";
 import { LyricsEditor } from "@/components/LyricsEditor";
 import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
 import { AllPromptSheet } from "@/components/AllPromptSheet";
+import { VoiceSheet } from "@/components/VoiceSheet";
+import { mergeIntoStyle } from "@/lib/voice/voicePrompt";
 
 const colorClasses: Record<NoteColor, string> = {
   default: "note-bg-default", cream: "note-bg-cream", pink: "note-bg-pink",
@@ -80,6 +82,7 @@ export default function EditorPage() {
   const [styleExpanded, setStyleExpanded] = useState(true);
   const [showFirstSaveNotice, setShowFirstSaveNotice] = useState(false);
   const [allPromptOpen, setAllPromptOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
   const { pushToHistory: pushStyleHistory, undo: undoStyle, canUndo: canUndoStyle, reset: resetStyleHistory } = useStyleHistory(note?.style || "");
@@ -395,6 +398,18 @@ export default function EditorPage() {
   };
 
   const getSelectedStyleChips = (): string[] => note?.style ? note.style.split(",").map((s) => s.trim()).filter(Boolean) : [];
+
+  // Voice: append prompt text to existing Style as ordinary editable text (never replaces user content)
+  const handleInsertVoice = (prompt: string) => {
+    if (!note) return;
+    const merged = mergeIntoStyle(note.style || "", prompt);
+    if (merged === (note.style || "")) return;
+    if (merged.length > STYLE_CHAR_LIMIT_FREE) {
+      toast.error(t("voice.styleLimitReached"));
+      return;
+    }
+    updateField("style", merged);
+  };
 
   // ISO 8601 format: YYYY-MM-DD HH:mm (UTC±X)
   const formatDateISO = (ts: number) => {
@@ -838,6 +853,7 @@ export default function EditorPage() {
               <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
               <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
               <Button variant="ghost" size="sm" onClick={() => setAllPromptOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />Presets</Button>
+              <Button variant="ghost" size="sm" onClick={() => setVoiceOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("voice.button")}</Button>
             </div>
             <div className="flex items-center gap-0.5 no-print">
               <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
@@ -891,6 +907,7 @@ export default function EditorPage() {
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
+      <VoiceSheet open={voiceOpen} onClose={() => setVoiceOpen(false)} onInsert={handleInsertVoice} />
       <LocalFirstNotice open={showFirstSaveNotice} onOpenChange={setShowFirstSaveNotice} />
     </div>
   );
