@@ -303,6 +303,29 @@ export const en = {
   "environment.noResults": "No environments found",
   "editor.expandLyrics": "Expand Lyrics",
   "editor.closeFullScreen": "Done",
-};
 
+  // V1.4.0 — Style tools & My Styles
+  "editor.expandStyle": "Expand Style",
+  "editor.removeAll": "Remove all",
+  "editor.textRange": "Text",
+  "editor.textRangeHint": "Select this text range",
+  "editor.copyRange": "Copy",
+  "editor.copyAll": "Copy all",
+  "myStyles.button": "My Styles",
+  "myStyles.title": "My Styles",
+  "myStyles.intro": "Save your own Style prompts and reuse them in any song.",
+  "myStyles.saveCurrent": "Save current Style",
+  "myStyles.namePlaceholder": "Style name",
+  "myStyles.save": "Save",
+  "myStyles.rename": "Rename",
+  "myStyles.delete": "Delete",
+  "myStyles.empty": "No saved styles yet.",
+  "myStyles.emptyStyle": "Style is empty. Write or insert a Style first.",
+  "myStyles.nameRequired": "Please enter a name.",
+  "myStyles.saved": "Style saved",
+  "myStyles.renamed": "Style renamed",
+  "myStyles.deleted": "Style deleted",
+  "myStyles.deleteTitle": "Delete saved style",
+  "myStyles.deleteMessage": "Delete this saved style? Your notes are not affected.",
+};
 export type TranslationKey = keyof typeof en;
