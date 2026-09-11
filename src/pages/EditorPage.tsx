@@ -911,7 +911,42 @@ export default function EditorPage() {
         <Button onClick={handleSave} disabled={isSaving} className="px-8">{isSaving ? t("editor.saving") : t("editor.save")}</Button>
       </div>
 
+      {/* Full-screen Lyrics editing — same lyrics state, no separate copy */}
+      {lyricsFullScreen && (
+        <div
+          className="fixed inset-0 z-40 bg-background flex flex-col no-print"
+          style={{
+            height: "100dvh",
+            paddingTop: "env(safe-area-inset-top)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
+        >
+          <div className="flex items-center justify-between gap-2 px-4 h-12 border-b border-border/50 shrink-0">
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-medium text-muted-foreground">{t("editor.lyrics")}</label>
+              <Button variant="ghost" size="sm" onClick={() => setInsertSheetOpen(true)} className="h-6 px-1.5 text-xs"><Plus className="h-3 w-3 mr-0.5" />{t("editor.insertSheet")}</Button>
+            </div>
+            <div className="flex items-center gap-0.5">
+              <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={handleCopyLyrics} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={() => setLyricsFullScreen(false)} className="h-6 px-2 text-xs" aria-label={t("editor.closeFullScreen")}><X className="h-3 w-3 mr-0.5" />{t("editor.closeFullScreen")}</Button>
+            </div>
+          </div>
+          <div className="flex-1 min-h-0 p-3">
+            <LyricsEditor
+              textareaRef={lyricsRef}
+              placeholder={t("editor.lyrics")}
+              value={note.lyrics}
+              onChange={(value) => updateField("lyrics", value)}
+              expanded
+              className="h-[calc(100dvh-6rem)] overflow-y-auto"
+            />
+          </div>
+        </div>
+      )}
+
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
+
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} onInsertChips={handleInsertStyleChips} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
@@ -921,6 +956,8 @@ export default function EditorPage() {
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={(p) => updateField("style", p)} />
       <VoiceSheet open={voiceOpen} onClose={() => setVoiceOpen(false)} onInsert={handleInsertVoice} />
+      <EnvironmentSheet open={environmentOpen} onClose={() => setEnvironmentOpen(false)} onInsert={handleInsertVoice} />
+
       <LocalFirstNotice open={showFirstSaveNotice} onOpenChange={setShowFirstSaveNotice} />
     </div>
   );
