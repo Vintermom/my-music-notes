@@ -341,7 +341,7 @@ export default function DemoPage() {
       </main>
 
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
-      <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
+      <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} onInsertChips={handleInsertStyleChips} />
     </div>
   );
 }
