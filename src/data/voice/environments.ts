@@ -1,4 +1,5 @@
 import type { EnvironmentOption } from "@/types/voiceOption";
+import { outdoorCafeEnvironment } from "./outdoorCafe";
 
 // Environment options — single selection only.
 export const environmentOptions: EnvironmentOption[] = [
@@ -36,4 +37,5 @@ export const environmentOptions: EnvironmentOption[] = [
     },
     searchKeywords: { en: ["outdoor", "open air", "outside"], th: ["กลางแจ้ง", "ข้างนอก"], sv: ["utomhus", "ute"] },
   },
+  outdoorCafeEnvironment,
 ];
