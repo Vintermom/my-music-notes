@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { t } from "@/i18n";
-import { voiceCategories, voiceOptions, environmentOptions } from "@/data/voice";
-import { filterVoiceOptions, filterEnvironments } from "@/lib/voice/voiceSearch";
+import { voiceCategories, voiceOptions, environmentOptions, quickVoiceControls } from "@/data/voice";
+import { filterVoiceOptions, filterEnvironments, filterQuickControls } from "@/lib/voice/voiceSearch";
 import { buildVoicePrompt } from "@/lib/voice/voicePrompt";
-import { getVoiceHint, getOftenUsedInLabel } from "@/lib/voice/voiceHints";
+import { getVoiceHint, getOftenUsedInLabel, getQuickControlsLabel } from "@/lib/voice/voiceHints";
 import { useVoiceSelection } from "@/hooks/useVoiceSelection";
 import type { VoiceCategoryFilter } from "@/types/voiceOption";
 
@@ -26,7 +26,12 @@ export function VoiceSheet({ open, onClose, onInsert }: VoiceSheetProps) {
   const visibleVoices = filterVoiceOptions(voiceOptions, search, category);
   const showEnvironments = category === "All" || category === "Environment";
   const visibleEnvironments = showEnvironments ? filterEnvironments(environmentOptions, search) : [];
-  const previewPrompt = buildVoicePrompt(selection.selectedOptions, selection.selectedEnvironment);
+  const visibleQuickControls = category === "All" ? filterQuickControls(quickVoiceControls, search) : [];
+  const previewPrompt = buildVoicePrompt(
+    selection.selectedOptions,
+    selection.selectedEnvironment,
+    selection.selectedQuickControls
+  );
 
   const handleClose = useCallback(() => {
     setSearch("");
@@ -76,6 +81,34 @@ export function VoiceSheet({ open, onClose, onInsert }: VoiceSheetProps) {
         {/* Option list */}
         <ScrollArea className="flex-1 h-[calc(75vh-260px)]" ref={scrollAreaRef}>
           <div className="space-y-4 pr-2">
+            {visibleQuickControls.length > 0 && (
+              <div>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                  {getQuickControlsLabel()}
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {visibleQuickControls.map((q) => {
+                    const selected = selection.isQuickSelected(q.id);
+                    return (
+                      <button
+                        key={q.id}
+                        onClick={() => selection.toggleQuick(q.id)}
+                        aria-pressed={selected}
+                        title={getVoiceHint(q.hint)}
+                        className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                          selected
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border bg-secondary text-secondary-foreground hover:bg-accent"
+                        }`}
+                      >
+                        {q.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {visibleVoices.length > 0 && (
               <div>
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">{t("voice.optionsHeader")}</h3>
