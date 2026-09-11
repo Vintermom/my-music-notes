@@ -12,8 +12,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import {
   ArrowLeft, Pin, Palette, MoreVertical, Undo2, Plus, Printer, FileJson,
-  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download,
+  ClipboardCopy, Copy, Trash2, ChevronDown, ChevronUp, FileDown, Download, Maximize2, X,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,6 +32,8 @@ import { LyricsEditor } from "@/components/LyricsEditor";
 import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
 import { AllPromptSheet } from "@/components/AllPromptSheet";
 import { VoiceSheet } from "@/components/VoiceSheet";
+import { EnvironmentSheet } from "@/components/EnvironmentSheet";
+
 import { mergeIntoStyle } from "@/lib/voice/voicePrompt";
 
 const colorClasses: Record<NoteColor, string> = {
@@ -83,6 +86,9 @@ export default function EditorPage() {
   const [showFirstSaveNotice, setShowFirstSaveNotice] = useState(false);
   const [allPromptOpen, setAllPromptOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [environmentOpen, setEnvironmentOpen] = useState(false);
+  const [lyricsFullScreen, setLyricsFullScreen] = useState(false);
+
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
   const { pushToHistory: pushStyleHistory, undo: undoStyle, canUndo: canUndoStyle, reset: resetStyleHistory } = useStyleHistory(note?.style || "");
