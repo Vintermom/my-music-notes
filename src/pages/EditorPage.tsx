@@ -33,6 +33,7 @@ import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstS
 import { AllPromptSheet } from "@/components/AllPromptSheet";
 import { VoiceSheet } from "@/components/VoiceSheet";
 import { EnvironmentSheet } from "@/components/EnvironmentSheet";
+import { MyStylesSheet } from "@/components/MyStylesSheet";
 
 import { mergeIntoStyle } from "@/lib/voice/voicePrompt";
 
@@ -42,12 +43,17 @@ const colorClasses: Record<NoteColor, string> = {
   purple: "note-bg-purple", orange: "note-bg-orange",
 };
 
+// Style range helpers split at 1000 characters (hard limit stays at STYLE_CHAR_LIMIT_FREE = 2000)
+const STYLE_TAIL_START = 1000;
+
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   usePageMeta("Edit Song — My Music Notes");
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
+  const styleRef = useRef<HTMLTextAreaElement>(null);
+  const styleFullRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingStartedAtRef = useRef<number>(0);
@@ -88,6 +94,8 @@ export default function EditorPage() {
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [environmentOpen, setEnvironmentOpen] = useState(false);
   const [lyricsFullScreen, setLyricsFullScreen] = useState(false);
+  const [styleFullScreen, setStyleFullScreen] = useState(false);
+  const [myStylesOpen, setMyStylesOpen] = useState(false);
 
 
   const { pushToHistory: pushLyricsHistory, undo: undoLyrics, canUndo: canUndoLyrics, reset: resetLyricsHistory } = useLyricsHistory(note?.lyrics || "");
@@ -199,6 +207,22 @@ export default function EditorPage() {
 
   const handleCopyLyrics = () => { if (note?.lyrics) { navigator.clipboard.writeText(note.lyrics); toast.success(t("toast.lyricsCopied")); } };
   const handleCopyStyle = () => { if (note?.style) { navigator.clipboard.writeText(note.style); toast.success(t("toast.styleCopied")); } };
+  // Copy a character range of Style (0-based start, exclusive end) — same length logic as the counter
+  const handleCopyStyleRange = (start: number, end: number) => {
+    const text = (note?.style || "").slice(start, end);
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    toast.success(t("toast.styleCopied"));
+  };
+  // Select characters 1001–N inside the existing Style textarea (no content change)
+  const handleSelectStyleTail = (fullscreen: boolean) => {
+    const textarea = fullscreen ? styleFullRef.current : styleRef.current;
+    const len = note?.style?.length || 0;
+    if (!textarea || len <= STYLE_TAIL_START) return;
+    textarea.focus();
+    textarea.setSelectionRange(STYLE_TAIL_START, len);
+    textarea.scrollTop = textarea.scrollHeight;
+  };
   const confirmClearLyrics = () => { updateField("lyrics", ""); toast.success(t("toast.lyricsCleared")); setClearDialogOpen(false); };
   const confirmClearStyle = () => { updateField("style", ""); toast.success(t("toast.styleCleared")); setClearStyleDialogOpen(false); };
 
@@ -673,6 +697,56 @@ export default function EditorPage() {
 
   const styleCharCount = note?.style?.length || 0;
   const styleCharLimit = STYLE_CHAR_LIMIT_FREE;
+  // Text 1001–N helper / split-copy menu appear only when Style exceeds 1000 characters.
+  const hasStyleTail = styleCharCount > STYLE_TAIL_START;
+
+  // Style action controls: Presets · My Styles · + Style · + Voice · + Environment (shared by normal + full-screen)
+  const renderStyleActions = () => (
+    <div className="flex items-center gap-2 flex-wrap">
+      <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
+      <Button variant="ghost" size="sm" onClick={() => setAllPromptOpen(true)} className="h-6 px-1.5 text-xs no-print">{t("presets.title")}</Button>
+      <Button variant="ghost" size="sm" onClick={() => setMyStylesOpen(true)} className="h-6 px-1.5 text-xs no-print">{t("myStyles.button")}</Button>
+      <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
+      <Button variant="ghost" size="sm" onClick={() => setVoiceOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("voice.button")}</Button>
+      <Button variant="ghost" size="sm" onClick={() => setEnvironmentOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("environment.button")}</Button>
+    </div>
+  );
+
+  // Style utility controls: counter · Text 1001–N · Undo · Copy · Remove all · Expand/Done (shared by normal + full-screen)
+  const renderStyleUtilities = (fullscreen: boolean) => (
+    <div className="flex items-center gap-0.5 no-print flex-wrap justify-end">
+      <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
+      {hasStyleTail && (
+        <Button variant="ghost" size="sm" onClick={() => handleSelectStyleTail(fullscreen)} className="h-6 px-1.5 text-xs" title={t("editor.textRangeHint")}>
+          {t("editor.textRange")} {STYLE_TAIL_START + 1}–{styleCharCount}
+        </Button>
+      )}
+      <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
+      {hasStyleTail ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-6 px-1.5 text-xs" title={t("editor.copy")} aria-label={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handleCopyStyleRange(0, STYLE_TAIL_START)}>{t("editor.copyRange")} 1–{STYLE_TAIL_START}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleCopyStyleRange(STYLE_TAIL_START, styleCharCount)}>{t("editor.copyRange")} {STYLE_TAIL_START + 1}–{styleCharCount}</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleCopyStyle}>{t("editor.copyAll")}</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Button variant="ghost" size="sm" onClick={handleCopyStyle} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
+      )}
+      <Button variant="ghost" size="sm" onClick={() => setClearStyleDialogOpen(true)} disabled={styleCharCount === 0} className="h-6 px-1.5 text-xs" title={t("editor.removeAll")} aria-label={t("editor.clearStyle")}><Trash2 className="h-3 w-3" /></Button>
+      {fullscreen ? (
+        <Button variant="ghost" size="sm" onClick={() => setStyleFullScreen(false)} className="h-6 px-2 text-xs" aria-label={t("editor.closeFullScreen")}><X className="h-3 w-3 mr-0.5" />{t("editor.closeFullScreen")}</Button>
+      ) : (
+        <>
+          <Button variant="ghost" size="sm" onClick={() => setStyleFullScreen(true)} className="h-6 px-1.5 text-xs" title={t("editor.expandStyle")} aria-label={t("editor.expandStyle")}><Maximize2 className="h-3 w-3" /></Button>
+          <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} aria-label={styleExpanded ? "Collapse style" : "Expand style"} className="h-6 w-6">{styleExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
+        </>
+      )}
+    </div>
+  );
 
   if (!note) return null;
 
@@ -855,6 +929,8 @@ export default function EditorPage() {
               <Button variant="ghost" size="sm" onClick={handleUndoLyrics} disabled={!canUndoLyrics} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
               <Button variant="ghost" size="sm" onClick={handleCopyLyrics} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
               <Button variant="ghost" size="sm" onClick={() => setLyricsFullScreen(true)} className="h-6 px-1.5 text-xs" title={t("editor.expandLyrics")} aria-label={t("editor.expandLyrics")}><Maximize2 className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="sm" onClick={() => setClearDialogOpen(true)} disabled={!note.lyrics} className="h-6 px-1.5 text-xs" title={t("editor.removeAll")} aria-label={t("editor.clearLyrics")}><Trash2 className="h-3 w-3" /></Button>
+
 
               <Button variant="ghost" size="icon" onClick={() => setLyricsExpanded(!lyricsExpanded)} aria-label={lyricsExpanded ? "Collapse lyrics" : "Expand lyrics"} className="h-6 w-6">{lyricsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
             </div>
@@ -872,22 +948,11 @@ export default function EditorPage() {
         {/* Style Section */}
         <div className="space-y-1.5">
           <div className="flex items-start justify-between gap-2 flex-wrap">
-            <div className="flex items-center gap-2 flex-wrap">
-              <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
-              <Button variant="ghost" size="sm" onClick={() => setAllPromptOpen(true)} className="h-6 px-1.5 text-xs no-print">{t("presets.title")}</Button>
-              <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
-              <Button variant="ghost" size="sm" onClick={() => setVoiceOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("voice.button")}</Button>
-              <Button variant="ghost" size="sm" onClick={() => setEnvironmentOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("environment.button")}</Button>
-            </div>
-
-            <div className="flex items-center gap-0.5 no-print">
-              <span className="text-xs text-muted-foreground mr-1">{styleCharCount}/{styleCharLimit}</span>
-              <Button variant="ghost" size="sm" onClick={handleUndoStyle} disabled={!canUndoStyle} className="h-6 px-1.5 text-xs" title={t("editor.undo")}><Undo2 className="h-3 w-3" /></Button>
-              <Button variant="ghost" size="sm" onClick={handleCopyStyle} className="h-6 px-1.5 text-xs" title={t("editor.copy")}><Copy className="h-3 w-3" /></Button>
-              <Button variant="ghost" size="icon" onClick={() => setStyleExpanded(!styleExpanded)} aria-label={styleExpanded ? "Collapse style" : "Expand style"} className="h-6 w-6">{styleExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}</Button>
-            </div>
+            {renderStyleActions()}
+            {renderStyleUtilities(false)}
           </div>
           <Textarea 
+            ref={styleRef}
             placeholder={t("editor.style")} 
             value={note.style} 
             onChange={(e) => {
@@ -957,6 +1022,36 @@ export default function EditorPage() {
         </div>
       )}
 
+      {/* Full-screen Style editing — same style state, no separate copy */}
+      {styleFullScreen && (
+        <div
+          className="fixed inset-0 z-40 bg-background flex flex-col no-print"
+          style={{
+            height: "100dvh",
+            paddingTop: "env(safe-area-inset-top)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
+        >
+          <div className="flex items-start justify-between gap-2 px-4 py-2 border-b border-border/50 shrink-0 flex-wrap">
+            {renderStyleActions()}
+            {renderStyleUtilities(true)}
+          </div>
+          <div className="flex-1 min-h-0 p-3 flex">
+            <Textarea
+              ref={styleFullRef}
+              placeholder={t("editor.style")}
+              value={note.style}
+              onChange={(e) => {
+                if (e.target.value.length <= styleCharLimit) {
+                  updateField("style", e.target.value);
+                }
+              }}
+              className="flex-1 h-full resize-none text-sm"
+            />
+          </div>
+        </div>
+      )}
+
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
 
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} onInsertChips={handleInsertStyleChips} />
@@ -967,6 +1062,7 @@ export default function EditorPage() {
       <ConfirmDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen} title={t("dialog.clearTitle")} description={t("dialog.clearMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearLyrics} variant="destructive" />
       <ConfirmDialog open={clearStyleDialogOpen} onOpenChange={setClearStyleDialogOpen} title={t("dialog.clearStyleTitle")} description={t("dialog.clearStyleMessage")} confirmLabel={t("dialog.clearConfirm")} onConfirm={confirmClearStyle} variant="destructive" />
       <AllPromptSheet open={allPromptOpen} onClose={() => setAllPromptOpen(false)} onInsert={handleInsertPreset} />
+      <MyStylesSheet open={myStylesOpen} onClose={() => setMyStylesOpen(false)} currentStyle={note.style || ""} onInsert={handleInsertPreset} />
       <VoiceSheet open={voiceOpen} onClose={() => setVoiceOpen(false)} onInsert={handleInsertVoice} />
       <EnvironmentSheet open={environmentOpen} onClose={() => setEnvironmentOpen(false)} onInsert={handleInsertVoice} />
 
