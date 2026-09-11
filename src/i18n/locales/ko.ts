@@ -115,6 +115,8 @@ export const ko: Record<TranslationKey, string> = {
   "stylePicker.mood": "분위기",
   "stylePicker.instruments": "악기",
   "stylePicker.musicGenres": "음악 장르",
+  "presets.title": "Presets",
+  "presets.intro": "Choose a ready-made style as a quick starting point, then refine it with Style, Voice, and Environment.",
 
   // Settings
   "settings.title": "설정",

@@ -152,6 +152,8 @@ export const en = {
   "stylePicker.mood": "Mood",
   "stylePicker.instruments": "Instruments",
   "stylePicker.musicGenres": "Music Genres",
+  "presets.title": "Presets",
+  "presets.intro": "Choose a ready-made style as a quick starting point, then refine it with Style, Voice, and Environment.",
 
   // Settings
   "settings.title": "Settings",

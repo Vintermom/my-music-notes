@@ -7,4 +7,10 @@ export interface PromptPreset {
   bpm: number;
   meta: string;
   prompt: string;
+  hint: {
+    en: string;
+    th: string;
+    sv: string;
+  };
+  searchKeywords: string[];
 }
