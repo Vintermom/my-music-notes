@@ -77,9 +77,11 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
 
   const previewText = buildPreview();
   
-  // Can insert if: section selected OR vocal-only (no instruments)
-  const canInsert = selectedSection !== null || 
-    (selectedVocalEffect !== null && selectedInstruments.length === 0);
+  // Can insert if at least one item is selected (Section is optional)
+  const canInsert =
+    selectedSection !== null ||
+    selectedInstruments.length > 0 ||
+    selectedVocalEffect !== null;
 
   const handleInsert = () => {
     if (!canInsert || !previewText) return;
