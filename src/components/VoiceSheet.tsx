@@ -160,17 +160,45 @@ export function VoiceSheet({ open, onClose, onInsert }: VoiceSheetProps) {
                   {visibleEnvironments.map((env) => {
                     const selected = selection.environmentId === env.id;
                     return (
-                      <button
-                        key={env.id}
-                        onClick={() => selection.selectEnvironment(env.id)}
-                        aria-pressed={selected}
-                        className={`w-full text-left rounded-lg border p-3 transition-colors ${
-                          selected ? "border-primary bg-accent" : "border-border bg-background hover:bg-accent"
-                        }`}
-                      >
-                        <span className="text-sm font-medium text-foreground">{env.label}</span>
-                        <p className="text-xs text-muted-foreground mt-1">{getVoiceHint(env.hint)}</p>
-                      </button>
+                      <div key={env.id} className="space-y-2">
+                        <button
+                          onClick={() => selection.selectEnvironment(env.id)}
+                          aria-pressed={selected}
+                          className={`w-full text-left rounded-lg border p-3 transition-colors ${
+                            selected ? "border-primary bg-accent" : "border-border bg-background hover:bg-accent"
+                          }`}
+                        >
+                          <span className="text-sm font-medium text-foreground">{env.label}</span>
+                          <p className="text-xs text-muted-foreground mt-1">{getVoiceHint(env.hint)}</p>
+                        </button>
+
+                        {env.id === OUTDOOR_CAFE_ID && selected && (
+                          <div className="rounded-lg border border-border bg-background p-3">
+                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                              {getOutdoorCafeInstrumentsLabel(getCurrentLang())}
+                            </h4>
+                            <div className="flex flex-wrap gap-1.5">
+                              {outdoorCafeInstruments.map((inst) => {
+                                const instSelected = selection.isCafeInstrumentSelected(inst.id);
+                                return (
+                                  <button
+                                    key={inst.id}
+                                    onClick={() => selection.toggleCafeInstrument(inst.id)}
+                                    aria-pressed={instSelected}
+                                    className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                                      instSelected
+                                        ? "border-primary bg-primary text-primary-foreground"
+                                        : "border-border bg-secondary text-secondary-foreground hover:bg-accent"
+                                    }`}
+                                  >
+                                    {inst.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
