@@ -295,6 +295,12 @@ export const en = {
   "voice.insert": "Insert to Style",
   "voice.noResults": "No voice options found",
   "voice.styleLimitReached": "Style is too long to add this text.",
+  "environment.button": "Environment",
+  "environment.title": "Environment",
+  "environment.nothingSelected": "Select an environment, then insert into Style.",
+  "environment.noResults": "No environments found",
+  "editor.expandLyrics": "Expand Lyrics",
+  "editor.closeFullScreen": "Done",
 };
 
 export type TranslationKey = keyof typeof en;

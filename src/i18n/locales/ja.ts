@@ -298,4 +298,10 @@ export const ja: Record<TranslationKey, string> = {
   "voice.insert": "スタイルに挿入",
   "voice.noResults": "ボイスオプションが見つかりません",
   "voice.styleLimitReached": "スタイルが長すぎるため、このテキストを追加できません。",
+  "environment.button": "環境",
+  "environment.title": "環境",
+  "environment.nothingSelected": "環境を選択してスタイルに挿入してください。",
+  "environment.noResults": "環境が見つかりません",
+  "editor.expandLyrics": "歌詞を全画面表示",
+  "editor.closeFullScreen": "完了",
 };
