@@ -390,14 +390,17 @@ export default function EditorPage() {
     closeRecorderWithoutSaving();
   };
 
-  const handleToggleStyleChip = (chipLabel: string) => {
-    if (!note) return;
-    const chips = (note.style || "").split(",").map((s) => s.trim()).filter(Boolean);
-    const newChips = chips.includes(chipLabel) ? chips.filter((c) => c !== chipLabel) : [...chips, chipLabel];
-    updateField("style", newChips.join(", "));
+  // Style picker: insert the temporary selection into existing Style as ordinary editable text
+  const handleInsertStyleChips = (chipLabels: string[]) => {
+    if (!note || chipLabels.length === 0) return;
+    const merged = mergeIntoStyle(note.style || "", chipLabels.join(", "));
+    if (merged === (note.style || "")) return;
+    if (merged.length > STYLE_CHAR_LIMIT_FREE) {
+      toast.error(t("voice.styleLimitReached"));
+      return;
+    }
+    updateField("style", merged);
   };
-
-  const getSelectedStyleChips = (): string[] => note?.style ? note.style.split(",").map((s) => s.trim()).filter(Boolean) : [];
 
   // Voice: append prompt text to existing Style as ordinary editable text (never replaces user content)
   const handleInsertVoice = (prompt: string) => {
@@ -899,7 +902,7 @@ export default function EditorPage() {
       </div>
 
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
-      <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} selectedChips={getSelectedStyleChips()} onToggleChip={handleToggleStyleChip} />
+      <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} onInsertChips={handleInsertStyleChips} />
       <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title={t("audio.deleteRecording")} description={t("audio.confirmDelete")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
