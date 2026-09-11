@@ -164,7 +164,7 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
             </div>
           </section>
 
-          {/* Vocal Effects - Optional, single select */}
+          {/* Vocal Effects - Optional, multi-select */}
           <section>
             <h3 className="text-sm font-semibold text-muted-foreground mb-3">
               {t("insertSheet.vocalEffects")}
@@ -173,10 +173,8 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
               {vocalEffects.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setSelectedVocalEffect(
-                    selectedVocalEffect === item.label ? null : item.label
-                  )}
-                  className={`chip ${selectedVocalEffect === item.label ? "chip-selected" : ""}`}
+                  onClick={() => toggleVocalEffect(item.label)}
+                  className={`chip ${selectedVocalEffects.includes(item.label) ? "chip-selected" : ""}`}
                 >
                   {item.label}
                 </button>

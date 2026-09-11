@@ -6,11 +6,12 @@ export const environmentOptions: EnvironmentOption[] = [
   {
     id: "studio",
     label: "Studio",
-    prompt: "studio-recorded vocal, close-miked, controlled room acoustics",
+    // Recording-room environment only — does not imply acoustic/minimal arrangement or genre.
+    prompt: "studio-recorded vocal, close-miked, controlled studio ambience",
     hint: {
-      en: "Studio vocal, close-miked with controlled room acoustics.",
-      th: "เสียงร้องในสตูดิโอ ใกล้ไมค์ และควบคุมสภาพเสียง",
-      sv: "Studioinspelad sång, närmickad med kontrollerad rumsakustik",
+      en: "Studio-recorded vocal with close-miked presence and controlled studio ambience.",
+      th: "เสียงร้องแบบบันทึกในห้องอัด ไมค์ใกล้ และควบคุมบรรยากาศของห้อง",
+      sv: "Studioinspelad sång med närmickad närvaro och kontrollerad studiomiljö.",
     },
     searchKeywords: { en: ["studio", "clean"], th: ["สตูดิโอ", "ห้องอัด"], sv: ["studio"] },
   },
