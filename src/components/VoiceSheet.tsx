@@ -5,6 +5,13 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { t } from "@/i18n";
 import { voiceCategories, voiceOptions, environmentOptions, quickVoiceControls } from "@/data/voice";
+import {
+  OUTDOOR_CAFE_ID,
+  outdoorCafeInstruments,
+  buildOutdoorCafeAccompaniment,
+  getOutdoorCafeInstrumentsLabel,
+} from "@/data/voice";
+import { getCurrentLang } from "@/i18n";
 import { filterVoiceOptions, filterEnvironments, filterQuickControls } from "@/lib/voice/voiceSearch";
 import { buildVoicePrompt } from "@/lib/voice/voicePrompt";
 import { getVoiceHint, getOftenUsedInLabel, getQuickControlsLabel } from "@/lib/voice/voiceHints";
@@ -27,10 +34,15 @@ export function VoiceSheet({ open, onClose, onInsert }: VoiceSheetProps) {
   const showEnvironments = category === "All" || category === "Environment";
   const visibleEnvironments = showEnvironments ? filterEnvironments(environmentOptions, search) : [];
   const visibleQuickControls = category === "All" ? filterQuickControls(quickVoiceControls, search) : [];
+  const isOutdoorCafe = selection.environmentId === OUTDOOR_CAFE_ID;
+  const accompaniment = isOutdoorCafe
+    ? buildOutdoorCafeAccompaniment(selection.cafeInstrumentIds)
+    : "";
   const previewPrompt = buildVoicePrompt(
     selection.selectedOptions,
     selection.selectedEnvironment,
-    selection.selectedQuickControls
+    selection.selectedQuickControls,
+    accompaniment
   );
 
   const handleClose = useCallback(() => {
