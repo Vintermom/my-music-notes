@@ -19,12 +19,13 @@ interface InsertSheetProps {
 export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) {
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [selectedInstruments, setSelectedInstruments] = useState<string[]>([]);
-  const [selectedVocalEffect, setSelectedVocalEffect] = useState<string | null>(null);
+  // Vocal Effects are multi-select (V1.4.0)
+  const [selectedVocalEffects, setSelectedVocalEffects] = useState<string[]>([]);
 
   const resetSelections = () => {
     setSelectedSection(null);
     setSelectedInstruments([]);
-    setSelectedVocalEffect(null);
+    setSelectedVocalEffects([]);
   };
 
   const handleClose = () => {
@@ -40,39 +41,43 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
     );
   };
 
+  const toggleVocalEffect = (effect: string) => {
+    setSelectedVocalEffects((prev) =>
+      prev.includes(effect)
+        ? prev.filter((e) => e !== effect)
+        : [...prev, effect]
+    );
+  };
+
   // Build the formatted preview string based on grammar rules
   const buildPreview = (): string => {
-    // No section: instruments and/or vocal effect on separate lines
+    // No section: instruments and/or vocal effects on separate lines
     if (!selectedSection) {
       const lines: string[] = [];
       if (selectedInstruments.length > 0) {
         lines.push(`[${selectedInstruments.join(", ")}]`);
       }
-      if (selectedVocalEffect) {
-        lines.push(`[${selectedVocalEffect}]`);
+      if (selectedVocalEffects.length > 0) {
+        lines.push(`[${selectedVocalEffects.join(", ")}]`);
       }
       return lines.join("\n");
     }
 
     // Section-based (existing syntax unchanged)
-    if (selectedSection) {
-      let result = `[${selectedSection}`;
-      
-      // Add instruments if any
-      if (selectedInstruments.length > 0) {
-        result += ` ${selectedInstruments.join(", ")}`;
-      }
-      
-      // Add vocal effect if any
-      if (selectedVocalEffect) {
-        result += ` (${selectedVocalEffect})`;
-      }
-      
-      result += "]";
-      return result;
+    let result = `[${selectedSection}`;
+
+    // Add instruments if any
+    if (selectedInstruments.length > 0) {
+      result += ` ${selectedInstruments.join(", ")}`;
     }
-    
-    return "";
+
+    // Add vocal effects if any: (Effect A, Effect B)
+    if (selectedVocalEffects.length > 0) {
+      result += ` (${selectedVocalEffects.join(", ")})`;
+    }
+
+    result += "]";
+    return result;
   };
 
   const previewText = buildPreview();
@@ -81,7 +86,7 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
   const canInsert =
     selectedSection !== null ||
     selectedInstruments.length > 0 ||
-    selectedVocalEffect !== null;
+    selectedVocalEffects.length > 0;
 
   const handleInsert = () => {
     if (!canInsert || !previewText) return;
@@ -159,7 +164,7 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
             </div>
           </section>
 
-          {/* Vocal Effects - Optional, single select */}
+          {/* Vocal Effects - Optional, multi-select */}
           <section>
             <h3 className="text-sm font-semibold text-muted-foreground mb-3">
               {t("insertSheet.vocalEffects")}
@@ -168,10 +173,8 @@ export function InsertSheet({ open, onOpenChange, onInsert }: InsertSheetProps) 
               {vocalEffects.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setSelectedVocalEffect(
-                    selectedVocalEffect === item.label ? null : item.label
-                  )}
-                  className={`chip ${selectedVocalEffect === item.label ? "chip-selected" : ""}`}
+                  onClick={() => toggleVocalEffect(item.label)}
+                  className={`chip ${selectedVocalEffects.includes(item.label) ? "chip-selected" : ""}`}
                 >
                   {item.label}
                 </button>

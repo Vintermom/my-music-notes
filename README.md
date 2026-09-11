@@ -17,24 +17,32 @@ A beautiful songwriting note app for capturing your musical ideas, lyrics, and c
 
 Included in V1.4.0:
 
-- Advanced Voice controls
-- Environment separated from Voice
+- Advanced Voice controls (`+ Voice`, multi-select, functional categories, EN/TH/SV hints & search)
+- Environment separated from Voice (`+ Environment`, single-select: Studio, Concert, Outdoor, Outdoor Café)
+- Studio environment wording clarified — describes a studio recording room only; does not imply acoustic/minimal arrangement or genre
 - Presets moved before `+ Style`
 - Preset hints added (EN / TH / SV)
 - Preset prompt output upgraded to concise producer-style prompts
 - Lyrics → Insert improved
   - Section is now optional
   - Instrument or Vocal Effect can be inserted without selecting a Section
-  - No-Section output keeps instruments and vocal effect on separate lines, e.g. `[Piano, Violin]` + `[Backing vocals]`
+  - Vocal Effects are multi-select, e.g. `[Chorus (Backing vocals, Harmony)]`
+  - No-Section output keeps instruments and vocal effects on separate lines, e.g. `[Piano, Violin]` + `[Backing vocals, Harmony]`
   - Section-based syntax unchanged, e.g. `[Intro Piano, Synth lead (Whisper)]`
 - Added Sections: Post-Chorus, Hook, Refrain, Build, Drop, Breakdown, Interlude
 - Added Vocal Effects: Harmony, Backing vocals, Call and response, Chant
+- Style Full Screen (expand icon; same Style state as the normal field, no extra save step)
+- Remove All via trash icon for Lyrics and Style (confirmation dialog, per-field only, disabled when empty)
+- My Styles / Saved Styles — user-saved reusable Style prompts (save with name, insert, rename, delete; stored locally under `mymusicnotes_myStyles`, shared across notes, never auto-saved)
+- Style remains up to 2000 characters (counter format `825/2000`)
+- Text 1001–N selection helper (appears when Style > 1000 chars; selects that range in the existing textarea)
+- Copy menu when Style > 1000 chars: Copy 1–1000 / Copy 1001–N / Copy all (single Copy icon; ≤1000 copies immediately)
 
 Explicitly not included:
 
 - No SFX system was added
 - No Symbols toolbar was added
-- No user-facing What's New / update popup is enabled yet
+- No user-facing What's New / update popup is enabled
 
 ## Technology Stack
 
