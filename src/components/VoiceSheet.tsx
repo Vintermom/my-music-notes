@@ -165,7 +165,7 @@ export function VoiceSheet({ open, onClose, onInsert }: VoiceSheetProps) {
               </div>
             )}
 
-            {visibleVoices.length === 0 && visibleEnvironments.length === 0 && (
+            {visibleVoices.length === 0 && visibleEnvironments.length === 0 && visibleQuickControls.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-8">{t("voice.noResults")}</p>
             )}
           </div>
