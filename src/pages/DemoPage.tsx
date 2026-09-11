@@ -7,6 +7,7 @@ import { createNote } from "@/storage/notesRepo";
 import { useLyricsHistory } from "@/hooks/useLyricsHistory";
 import { useStyleHistory } from "@/hooks/useStyleHistory";
 import { toast } from "sonner";
+import { mergeIntoStyle } from "@/lib/voice/voicePrompt";
 import {
   ArrowLeft, Plus, ChevronDown, ChevronUp, Save,
 } from "lucide-react";
@@ -201,16 +202,17 @@ export default function DemoPage() {
     }, 0);
   };
 
-  const handleToggleStyleChip = (chipLabel: string) => {
-    const chips = note.style.split(",").map((s) => s.trim()).filter(Boolean);
-    const newChips = chips.includes(chipLabel) 
-      ? chips.filter((c) => c !== chipLabel) 
-      : [...chips, chipLabel];
-    updateField("style", newChips.join(", "));
+  // Style picker: insert the temporary selection into existing Style as ordinary editable text
+  const handleInsertStyleChips = (chipLabels: string[]) => {
+    if (chipLabels.length === 0) return;
+    const merged = mergeIntoStyle(note.style, chipLabels.join(", "));
+    if (merged === note.style) return;
+    if (merged.length > STYLE_CHAR_LIMIT_FREE) {
+      toast.error(t("voice.styleLimitReached"));
+      return;
+    }
+    updateField("style", merged);
   };
-
-  const getSelectedStyleChips = (): string[] => 
-    note.style ? note.style.split(",").map((s) => s.trim()).filter(Boolean) : [];
 
   const styleCharCount = note.style.length;
   const styleCharLimit = STYLE_CHAR_LIMIT_FREE;
