@@ -74,7 +74,7 @@ export function buildSharePdfBlob(note: ShareNote): Blob {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.text(
-      `My Music Notes (Web App) · Version ${APP_VERSION} · ${formatDateISO(Date.now())}`,
+      `MyMuNotes (Web App) · Version ${APP_VERSION} · ${formatDateISO(Date.now())}`,
       doc.internal.pageSize.getWidth() / 2,
       doc.internal.pageSize.getHeight() - 24,
       { align: "center" }

@@ -2,7 +2,7 @@
 
 Last updated: 3 March 2026
 
-My Music Notes ("the App") respects your privacy and is committed to protecting user data.
+MyMuNotes ("the App") respects your privacy and is committed to protecting user data.
 
 ## Information Collection and Use
 The App uses Google Analytics (GA4) to collect basic, anonymous usage statistics such as the number of visitors, pages viewed, and button interactions. This data is used solely to understand how the App is used and to improve functionality and user experience.

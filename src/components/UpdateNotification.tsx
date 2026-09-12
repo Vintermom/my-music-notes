@@ -10,19 +10,19 @@ const DISMISS_HOURS = 6;
 const TEXT = {
   en: {
     title: "New update available",
-    message: "A new version of My Music Notes is ready. Please update, then close and reopen the app to use the latest version.",
+    message: "A new version of MyMuNotes is ready. Please update, then close and reopen the app to use the latest version.",
     update: "Update now",
     later: "Later",
   },
   th: {
     title: "มีอัปเดตใหม่",
-    message: "My Music Notes เวอร์ชันใหม่พร้อมใช้งานแล้ว กรุณากดอัปเดต จากนั้นปิดแอพแล้วเปิดใหม่เพื่อใช้เวอร์ชันล่าสุด",
+    message: "MyMuNotes เวอร์ชันใหม่พร้อมใช้งานแล้ว กรุณากดอัปเดต จากนั้นปิดแอพแล้วเปิดใหม่เพื่อใช้เวอร์ชันล่าสุด",
     update: "อัปเดตตอนนี้",
     later: "ภายหลัง",
   },
   sv: {
     title: "Ny uppdatering finns",
-    message: "En ny version av My Music Notes är klar. Uppdatera och stäng sedan appen och öppna den igen för att använda den senaste versionen.",
+    message: "En ny version av MyMuNotes är klar. Uppdatera och stäng sedan appen och öppna den igen för att använda den senaste versionen.",
     update: "Uppdatera nu",
     later: "Senare",
   },

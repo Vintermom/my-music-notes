@@ -12,7 +12,7 @@ export const ja: Record<TranslationKey, string> = {
   "settings.helpBackup": "データ損失を防ぐため、ブラウザデータをクリアする前にノートを定期的にエクスポートしてください。",
 
   // App
-  "app.name": "My Music Notes",
+  "app.name": "MyMuNotes",
 
   // Home
   "home.pinnedNotes": "ピン留め",
@@ -180,7 +180,7 @@ export const ja: Record<TranslationKey, string> = {
   "import.importing": "インポート中...",
   "import.success": "ノートを正常にインポートしました",
   "import.error": "ノートのインポートに失敗しました",
-  "import.invalidBackupFile": "無効なバックアップファイルです。このファイルはMy Music Notesからエクスポートされたものではありません。",
+  "import.invalidBackupFile": "無効なバックアップファイルです。このファイルはMyMuNotesからエクスポートされたものではありません。",
   "import.invalidFormat": "JSONファイルのみ許可されています",
   "import.fileTooLarge": "ファイルが大きすぎます（最大3MB）",
   "import.limitReached": "1日のインポート上限に達しました",
@@ -227,15 +227,15 @@ export const ja: Record<TranslationKey, string> = {
   "landing.openApp": "アプリを開く",
   "landing.tryDemo": "デモを試す",
   "landing.about": "情報",
-  "landing.copyright": "© My Music Notes",
+  "landing.copyright": "© MyMuNotes",
   "landing.contact": "Contact / Support",
   "landing.howToInstall": "How to install",
 
   // Installation Guide
-  "landing.installGuide.title": "How to install My Music Notes",
-  "landing.installGuide.intro": "You can use My Music Notes directly on the web. Installation is optional and only for convenience.",
+  "landing.installGuide.title": "How to install MyMuNotes",
+  "landing.installGuide.intro": "You can use MyMuNotes directly on the web. Installation is optional and only for convenience.",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
-  "landing.installGuide.androidStep1": "Open the My Music Notes website",
+  "landing.installGuide.androidStep1": "Open the MyMuNotes website",
   "landing.installGuide.androidStep2": "Tap the three dots (⋮) in the top-right corner",
   "landing.installGuide.androidStep3": "Select \"Add to Home Screen\"",
   "landing.installGuide.iphoneTitle": "iPhone / iPad (Safari only)",

@@ -56,7 +56,7 @@ function hasAppMetadata(data: unknown): data is { app: AppMetadata } {
 }
 
 function validateAppMetadata(app: AppMetadata): { valid: boolean; error?: string } {
-  // If app metadata exists, it must be from My Music Notes
+  // If app metadata exists, it must be from MyMuNotes
   if (app.appId !== "com.mymusicnotes") {
     return { valid: false, error: "invalidAppId" };
   }

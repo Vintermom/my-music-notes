@@ -12,7 +12,7 @@ export const ar: Record<TranslationKey, string> = {
   "settings.helpBackup": "لتجنب فقدان البيانات، قم بتصدير ملاحظاتك بانتظام، خاصة قبل مسح بيانات المتصفح.",
 
   // App
-  "app.name": "My Music Notes",
+  "app.name": "MyMuNotes",
 
   // Home
   "home.pinnedNotes": "مثبتة",
@@ -180,7 +180,7 @@ export const ar: Record<TranslationKey, string> = {
   "import.importing": "جارٍ الاستيراد...",
   "import.success": "تم استيراد الملاحظة بنجاح",
   "import.error": "فشل استيراد الملاحظة",
-  "import.invalidBackupFile": "ملف النسخ الاحتياطي غير صالح. لم يتم تصدير هذا الملف من My Music Notes.",
+  "import.invalidBackupFile": "ملف النسخ الاحتياطي غير صالح. لم يتم تصدير هذا الملف من MyMuNotes.",
   "import.invalidFormat": "يُسمح فقط بملفات JSON",
   "import.fileTooLarge": "الملف كبير جداً (الحد الأقصى 3MB)",
   "import.limitReached": "تم الوصول إلى حد الاستيراد اليومي",
@@ -227,15 +227,15 @@ export const ar: Record<TranslationKey, string> = {
   "landing.openApp": "فتح التطبيق",
   "landing.tryDemo": "جرب العرض التوضيحي",
   "landing.about": "حول",
-  "landing.copyright": "© My Music Notes",
+  "landing.copyright": "© MyMuNotes",
   "landing.contact": "Contact / Support",
   "landing.howToInstall": "How to install",
 
   // Installation Guide
-  "landing.installGuide.title": "How to install My Music Notes",
-  "landing.installGuide.intro": "You can use My Music Notes directly on the web. Installation is optional and only for convenience.",
+  "landing.installGuide.title": "How to install MyMuNotes",
+  "landing.installGuide.intro": "You can use MyMuNotes directly on the web. Installation is optional and only for convenience.",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
-  "landing.installGuide.androidStep1": "Open the My Music Notes website",
+  "landing.installGuide.androidStep1": "Open the MyMuNotes website",
   "landing.installGuide.androidStep2": "Tap the three dots (⋮) in the top-right corner",
   "landing.installGuide.androidStep3": "Select \"Add to Home Screen\"",
   "landing.installGuide.iphoneTitle": "iPhone / iPad (Safari only)",

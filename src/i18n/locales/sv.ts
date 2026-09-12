@@ -12,7 +12,7 @@ export const sv: Record<TranslationKey, string> = {
   "settings.helpBackup": "För att undvika dataförlust, exportera dina anteckningar regelbundet, särskilt innan du rensar webbläsardata.",
 
   // App
-  "app.name": "My Music Notes",
+  "app.name": "MyMuNotes",
 
   // Home
   "home.pinnedNotes": "Fästa",
@@ -180,7 +180,7 @@ export const sv: Record<TranslationKey, string> = {
   "import.importing": "Importerar...",
   "import.success": "Anteckning importerad",
   "import.error": "Kunde inte importera anteckning",
-  "import.invalidBackupFile": "Ogiltig säkerhetskopia. Denna fil exporterades inte från My Music Notes.",
+  "import.invalidBackupFile": "Ogiltig säkerhetskopia. Denna fil exporterades inte från MyMuNotes.",
   "import.invalidFormat": "Endast JSON-filer tillåts",
   "import.fileTooLarge": "Filen är för stor (max 3MB)",
   "import.limitReached": "Daglig importgräns nådd",
@@ -227,15 +227,15 @@ export const sv: Record<TranslationKey, string> = {
   "landing.openApp": "Öppna appen",
   "landing.tryDemo": "Prova demo",
   "landing.about": "Om",
-  "landing.copyright": "© My Music Notes",
+  "landing.copyright": "© MyMuNotes",
   "landing.contact": "Kontakt / Support",
   "landing.howToInstall": "Så installerar du",
 
   // Installation Guide
-  "landing.installGuide.title": "Så installerar du My Music Notes",
+  "landing.installGuide.title": "Så installerar du MyMuNotes",
   "landing.installGuide.intro": "Du kan även använda den via webbplatsen.",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
-  "landing.installGuide.androidStep1": "Öppna My Music Notes webbplats",
+  "landing.installGuide.androidStep1": "Öppna MyMuNotes webbplats",
   "landing.installGuide.androidStep2": "Tryck på de tre prickarna (⋮) uppe till höger",
   "landing.installGuide.androidStep3": "Välj Lägg till på startskärmen",
   "landing.installGuide.iphoneTitle": "iPhone / iPad (endast Safari)",

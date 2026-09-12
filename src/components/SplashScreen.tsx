@@ -7,7 +7,7 @@ export function SplashScreen() {
         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
           <Music className="h-8 w-8 text-primary" />
         </div>
-        <span className="text-lg font-medium text-foreground">My Music Notes</span>
+        <span className="text-lg font-medium text-foreground">MyMuNotes</span>
       </div>
     </div>
   );

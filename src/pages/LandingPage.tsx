@@ -106,7 +106,7 @@ export default function LandingPage() {
         <div className="mb-6">
           <img 
             src={appIcon} 
-            alt="My Music Notes" 
+            alt="MyMuNotes" 
             className="w-[100px] h-[100px] md:w-[130px] md:h-[130px] rounded-3xl shadow-2xl shadow-orange-500/30"
           />
         </div>

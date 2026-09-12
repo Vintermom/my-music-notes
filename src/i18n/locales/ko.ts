@@ -12,7 +12,7 @@ export const ko: Record<TranslationKey, string> = {
   "settings.helpBackup": "데이터 손실을 방지하려면 브라우저 데이터를 지우기 전에 노트를 정기적으로 내보내세요.",
 
   // App
-  "app.name": "My Music Notes",
+  "app.name": "MyMuNotes",
 
   // Home
   "home.pinnedNotes": "고정됨",
@@ -180,7 +180,7 @@ export const ko: Record<TranslationKey, string> = {
   "import.importing": "가져오는 중...",
   "import.success": "노트를 성공적으로 가져왔습니다",
   "import.error": "노트 가져오기 실패",
-  "import.invalidBackupFile": "유효하지 않은 백업 파일입니다. 이 파일은 My Music Notes에서 내보낸 것이 아닙니다.",
+  "import.invalidBackupFile": "유효하지 않은 백업 파일입니다. 이 파일은 MyMuNotes에서 내보낸 것이 아닙니다.",
   "import.invalidFormat": "JSON 파일만 허용됩니다",
   "import.fileTooLarge": "파일이 너무 큽니다 (최대 3MB)",
   "import.limitReached": "일일 가져오기 제한에 도달했습니다",
@@ -227,15 +227,15 @@ export const ko: Record<TranslationKey, string> = {
   "landing.openApp": "앱 열기",
   "landing.tryDemo": "데모 사용해보기",
   "landing.about": "정보",
-  "landing.copyright": "© My Music Notes",
+  "landing.copyright": "© MyMuNotes",
   "landing.contact": "Contact / Support",
   "landing.howToInstall": "How to install",
 
   // Installation Guide
-  "landing.installGuide.title": "How to install My Music Notes",
-  "landing.installGuide.intro": "You can use My Music Notes directly on the web. Installation is optional and only for convenience.",
+  "landing.installGuide.title": "How to install MyMuNotes",
+  "landing.installGuide.intro": "You can use MyMuNotes directly on the web. Installation is optional and only for convenience.",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
-  "landing.installGuide.androidStep1": "Open the My Music Notes website",
+  "landing.installGuide.androidStep1": "Open the MyMuNotes website",
   "landing.installGuide.androidStep2": "Tap the three dots (⋮) in the top-right corner",
   "landing.installGuide.androidStep3": "Select \"Add to Home Screen\"",
   "landing.installGuide.iphoneTitle": "iPhone / iPad (Safari only)",

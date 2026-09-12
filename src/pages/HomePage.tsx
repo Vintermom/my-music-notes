@@ -29,7 +29,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   usePageMeta(
-    "My Music Notes — Your Songwriting Notebook",
+    "MyMuNotes — Your Songwriting Notebook",
     "Your private songwriting notebook. Capture lyrics, ideas, and voice memos — stored locally on your device."
   );
   const {

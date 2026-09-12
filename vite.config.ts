@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "favicon.png", "icons/icon-192.png", "icons/icon-512.png"],
       manifest: {
-        name: "My Music Notes",
-        short_name: "My Music Notes",
+        name: "MyMuNotes",
+        short_name: "MyMuNotes",
         description: "Write songs. Keep them safe.",
         start_url: "/#/app",
         scope: "/",

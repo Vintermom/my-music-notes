@@ -9,7 +9,7 @@ export const en = {
   "settings.helpExport": "Export or import notes using JSON files to move data between devices.",
   "settings.helpBackup": "To avoid data loss, export your notes regularly, especially before clearing browser data.",
   // App
-  "app.name": "My Music Notes",
+  "app.name": "MyMuNotes",
 
   // Landing page
   "landing.tagline": "Write songs. Keep them safe.",
@@ -18,15 +18,15 @@ export const en = {
   "landing.openApp": "Open App",
   "landing.tryDemo": "Try Demo",
   "landing.about": "About",
-  "landing.copyright": "© My Music Notes",
+  "landing.copyright": "© MyMuNotes",
   "landing.contact": "Contact / Support",
   "landing.howToInstall": "How to install",
 
   // Installation Guide
-  "landing.installGuide.title": "How to install My Music Notes",
+  "landing.installGuide.title": "How to install MyMuNotes",
   "landing.installGuide.intro": "You can also use it via the website.",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
-  "landing.installGuide.androidStep1": "Open the My Music Notes website",
+  "landing.installGuide.androidStep1": "Open the MyMuNotes website",
   "landing.installGuide.androidStep2": "Tap the three dots (⋮) in the top-right corner",
   "landing.installGuide.androidStep3": "Select \"Add to Home Screen\"",
   "landing.installGuide.iphoneTitle": "iPhone / iPad (Safari only)",
@@ -217,7 +217,7 @@ export const en = {
   "import.importing": "Importing...",
   "import.success": "Note imported successfully",
   "import.error": "Failed to import note",
-  "import.invalidBackupFile": "Invalid backup file. This file was not exported from My Music Notes.",
+  "import.invalidBackupFile": "Invalid backup file. This file was not exported from MyMuNotes.",
   "import.invalidFormat": "Only JSON files are allowed",
   "import.fileTooLarge": "File too large (max 3MB)",
   "import.limitReached": "Daily import limit reached",
