@@ -330,4 +330,19 @@ export const ko: Record<TranslationKey, string> = {
   "myStyles.deleted": "Style deleted",
   "myStyles.deleteTitle": "Delete saved style",
   "myStyles.deleteMessage": "Delete this saved style? Your notes are not affected.",
+
+  // Share (V1.4.0 additive)
+  "share.button": "Share",
+  "share.title": "Share song",
+  "share.pdf": "PDF",
+  "share.audio": "Audio",
+  "share.fullSong": "Full Song",
+  "share.pdfHint": "Share this song as a PDF file.",
+  "share.audioHint": "Share the recording of this song.",
+  "share.fullSongHint": "One ZIP with PDF, backup file and audio when available.",
+  "share.noAudio": "No recording in this song yet.",
+  "share.preparing": "Preparing file…",
+  "share.shared": "Shared",
+  "share.downloaded": "File downloaded",
+  "share.failed": "Could not prepare the file. Please try again.",
 };

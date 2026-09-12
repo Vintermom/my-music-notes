@@ -330,4 +330,19 @@ export const sv: Record<TranslationKey, string> = {
   "myStyles.deleted": "Stil borttagen",
   "myStyles.deleteTitle": "Ta bort sparad stil",
   "myStyles.deleteMessage": "Ta bort den här sparade stilen? Dina anteckningar påverkas inte.",
+
+  // Share (V1.4.0 additive)
+  "share.button": "Dela",
+  "share.title": "Dela låt",
+  "share.pdf": "PDF",
+  "share.audio": "Ljud",
+  "share.fullSong": "Hela låten",
+  "share.pdfHint": "Dela låten som en PDF-fil.",
+  "share.audioHint": "Dela inspelningen av den här låten.",
+  "share.fullSongHint": "En ZIP med PDF, säkerhetskopia och ljud när det finns.",
+  "share.noAudio": "Ingen inspelning i den här låten än.",
+  "share.preparing": "Förbereder fil…",
+  "share.shared": "Delad",
+  "share.downloaded": "Filen laddades ner",
+  "share.failed": "Kunde inte förbereda filen. Försök igen.",
 };
