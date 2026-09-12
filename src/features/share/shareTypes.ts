@@ -1,6 +1,6 @@
 import type { Note } from "@/domain/types";
 
-export type ShareKind = "pdf" | "audio" | "fullSong";
+export type ShareKind = "pdf" | "audio" | "allFiles";
 
 export interface PreparedFile {
   file: File;
