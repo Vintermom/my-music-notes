@@ -238,7 +238,7 @@ export function exportNoteAsJson(note: Note): string {
   return JSON.stringify({
     app: {
       appId: "com.mymusicnotes",
-      appName: "My Music Notes",
+      appName: "MyMuNotes",
       fileType: "mmnotes-backup",
       appVersion: APP_VERSION,
       platform: "web-desktop",

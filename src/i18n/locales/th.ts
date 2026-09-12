@@ -12,7 +12,7 @@ export const th: Record<TranslationKey, string> = {
   "settings.helpBackup": "เพื่อป้องกันข้อมูลสูญหาย ให้ส่งออกโน้ตเป็นประจำ โดยเฉพาะก่อนล้างข้อมูลเบราว์เซอร์",
 
   // App
-  "app.name": "My Music Notes",
+  "app.name": "MyMuNotes",
 
   // Home
   "home.pinnedNotes": "ปักหมุด",
@@ -180,7 +180,7 @@ export const th: Record<TranslationKey, string> = {
   "import.importing": "กำลังนำเข้า...",
   "import.success": "นำเข้าโน้ตสำเร็จ",
   "import.error": "นำเข้าโน้ตไม่สำเร็จ",
-  "import.invalidBackupFile": "ไฟล์สำรองไม่ถูกต้อง ไฟล์นี้ไม่ได้ส่งออกจาก My Music Notes",
+  "import.invalidBackupFile": "ไฟล์สำรองไม่ถูกต้อง ไฟล์นี้ไม่ได้ส่งออกจาก MyMuNotes",
   "import.invalidFormat": "อนุญาตเฉพาะไฟล์ JSON เท่านั้น",
   "import.fileTooLarge": "ไฟล์ใหญ่เกินไป (สูงสุด 3MB)",
   "import.limitReached": "ถึงขีดจำกัดการนำเข้าต่อวัน",
@@ -227,15 +227,15 @@ export const th: Record<TranslationKey, string> = {
   "landing.openApp": "เปิดแอป",
   "landing.tryDemo": "ลองใช้เดโม",
   "landing.about": "เกี่ยวกับ",
-  "landing.copyright": "© My Music Notes",
+  "landing.copyright": "© MyMuNotes",
   "landing.contact": "ติดต่อ / สนับสนุน",
   "landing.howToInstall": "วิธีติดตั้ง",
 
   // Installation Guide
-  "landing.installGuide.title": "วิธีติดตั้ง My Music Notes",
+  "landing.installGuide.title": "วิธีติดตั้ง MyMuNotes",
   "landing.installGuide.intro": "สามารถใช้งานผ่านเว็บไซต์ได้เช่นกัน",
   "landing.installGuide.androidTitle": "Android (Chrome / Edge)",
-  "landing.installGuide.androidStep1": "เปิดเว็บ My Music Notes",
+  "landing.installGuide.androidStep1": "เปิดเว็บ MyMuNotes",
   "landing.installGuide.androidStep2": "กด ⋮ มุมขวาบน",
   "landing.installGuide.androidStep3": "เลือก เพิ่มไปที่หน้าจอหลัก",
   "landing.installGuide.iphoneTitle": "iPhone / iPad (Safari เท่านั้น)",

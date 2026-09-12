@@ -51,7 +51,7 @@ export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  usePageMeta("Edit Song — My Music Notes");
+  usePageMeta("Edit Song — MyMuNotes");
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
   const styleRef = useRef<HTMLTextAreaElement>(null);
   const styleFullRef = useRef<HTMLTextAreaElement>(null);

@@ -131,8 +131,8 @@ export default function DemoPage() {
   const navigate = useNavigate();
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
   usePageMeta(
-    "Try the Demo — My Music Notes",
-    "Try My Music Notes right in your browser with a sample song. No signup, nothing stored."
+    "Try the Demo — MyMuNotes",
+    "Try MyMuNotes right in your browser with a sample song. No signup, nothing stored."
   );
   
   // Get initial demo content

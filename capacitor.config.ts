@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.vintermom.mymusicnotes',
-  appName: 'My Music Notes',
+  appName: 'MyMuNotes',
   webDir: 'dist'
 };
 

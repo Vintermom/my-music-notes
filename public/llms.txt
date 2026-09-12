@@ -1,8 +1,8 @@
-# My Music Notes
+# MyMuNotes
 
 > A local-first songwriting notebook for capturing lyrics, song ideas, style notes and short voice memos. Runs in the browser or as an installable PWA. No accounts. All data stays on the user's device.
 
-My Music Notes is a free Progressive Web App for songwriters. Notes are stored locally in the browser; nothing is uploaded to any server. The app supports English, Swedish, Thai, Korean, Japanese and Arabic.
+MyMuNotes is a free Progressive Web App for songwriters. Notes are stored locally in the browser; nothing is uploaded to any server. The app supports English, Swedish, Thai, Korean, Japanese and Arabic.
 
 ## Pages
 

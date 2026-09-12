@@ -1,4 +1,10 @@
-# My Music Notes
+# MyMuNotes
+
+## Brand rename
+
+- **Brand/display name:** My Music Notes → MyMuNotes
+- **Domain:** mmnotes.app — unchanged
+- This is a display-name-only rename.
 
 A beautiful songwriting note app for capturing your musical ideas, lyrics, and compositions.
 
@@ -110,7 +116,7 @@ This project uses Capacitor for native Android builds.
 
 **Capacitor Config** (set in `capacitor.config.ts`):
 - `appId: "io.vintermom.mymusicnotes"`
-- `appName: "My Music Notes"`
+- `appName: "MyMuNotes"`
 - `webDir: "dist"`
 
 ### Version Management

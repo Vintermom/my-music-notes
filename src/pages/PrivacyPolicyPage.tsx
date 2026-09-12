@@ -7,14 +7,14 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 const privacyText = {
   en: {
-    intro: "My Music Notes Desktop respects your privacy and is designed to keep your data under your control.",
+    intro: "MyMuNotes Desktop respects your privacy and is designed to keep your data under your control.",
     dataCollectionTitle: "Data Collection",
     dataCollection: "We use Google Analytics (GA4) to collect basic, anonymous usage statistics, such as the number of visitors, pages viewed, and button interactions (for example, Download or Demo clicks). This information is used solely to understand how the app is used and to improve functionality and user experience.",
     dataStorageTitle: "Data Storage",
-    dataStorage: "All songs, notes, and content created in My Music Notes Desktop are stored locally on your device. We do not upload, store, or access your song content on any external server.",
+    dataStorage: "All songs, notes, and content created in MyMuNotes Desktop are stored locally on your device. We do not upload, store, or access your song content on any external server.",
     audioRecordingsTitle: "Audio Recordings",
     audioRecordings: [
-      "My Music Notes may allow you to record short audio notes. Audio recordings are stored locally on your device. We do not upload, store, or access your audio recordings on any external server.",
+      "MyMuNotes may allow you to record short audio notes. Audio recordings are stored locally on your device. We do not upload, store, or access your audio recordings on any external server.",
       "If you clear your browser/app cache, site data, or local storage, your recordings may be deleted. You are responsible for exporting JSON backups or downloading audio files if you want to keep a copy of your recordings.",
       "Exported JSON files may include your note content and audio recording data, depending on the export option used.",
     ],
@@ -28,14 +28,14 @@ const privacyText = {
     contact: "For privacy questions or data-related requests, please contact:",
   },
   th: {
-    intro: "My Music Notes Desktop เคารพความเป็นส่วนตัวของคุณและออกแบบมาเพื่อให้ข้อมูลอยู่ภายใต้การควบคุมของคุณ",
+    intro: "MyMuNotes Desktop เคารพความเป็นส่วนตัวของคุณและออกแบบมาเพื่อให้ข้อมูลอยู่ภายใต้การควบคุมของคุณ",
     dataCollectionTitle: "การเก็บข้อมูล",
     dataCollection: "เราใช้ Google Analytics (GA4) เพื่อเก็บสถิติการใช้งานพื้นฐานแบบไม่ระบุตัวตน เช่น จำนวนผู้เข้าชม หน้าที่ดู และการโต้ตอบกับปุ่ม (เช่น ปุ่มดาวน์โหลดหรือเดโม) ข้อมูลนี้ใช้เพื่อทำความเข้าใจการใช้งานแอพและปรับปรุงฟังก์ชันกับประสบการณ์ผู้ใช้เท่านั้น",
     dataStorageTitle: "การจัดเก็บข้อมูล",
-    dataStorage: "เพลง โน้ต และเนื้อหาทั้งหมดที่สร้างใน My Music Notes Desktop จะถูกเก็บไว้ในเครื่องของคุณ เราไม่อัปโหลด จัดเก็บ หรือเข้าถึงเนื้อหาเพลงของคุณบนเซิร์ฟเวอร์ภายนอก",
+    dataStorage: "เพลง โน้ต และเนื้อหาทั้งหมดที่สร้างใน MyMuNotes Desktop จะถูกเก็บไว้ในเครื่องของคุณ เราไม่อัปโหลด จัดเก็บ หรือเข้าถึงเนื้อหาเพลงของคุณบนเซิร์ฟเวอร์ภายนอก",
     audioRecordingsTitle: "การบันทึกเสียง",
     audioRecordings: [
-      "My Music Notes อาจให้คุณบันทึกเสียงสั้น ๆ ภายในโน้ตได้ เสียงที่บันทึกจะถูกเก็บไว้ในเครื่องของคุณ เราไม่อัปโหลด ไม่จัดเก็บ และไม่เข้าถึงไฟล์เสียงของคุณบนเซิร์ฟเวอร์ภายนอก",
+      "MyMuNotes อาจให้คุณบันทึกเสียงสั้น ๆ ภายในโน้ตได้ เสียงที่บันทึกจะถูกเก็บไว้ในเครื่องของคุณ เราไม่อัปโหลด ไม่จัดเก็บ และไม่เข้าถึงไฟล์เสียงของคุณบนเซิร์ฟเวอร์ภายนอก",
       "หากคุณล้างแคชของเบราว์เซอร์/แอพ ข้อมูลเว็บไซต์ หรือพื้นที่จัดเก็บในเครื่อง เสียงที่บันทึกไว้อาจถูกลบได้ คุณเป็นผู้รับผิดชอบในการส่งออกไฟล์ JSON สำรอง หรือดาวน์โหลดไฟล์เสียง หากต้องการเก็บสำเนาเสียงของคุณไว้",
       "ไฟล์ JSON ที่ส่งออกอาจรวมเนื้อหาโน้ตและข้อมูลเสียงที่บันทึกไว้ ขึ้นอยู่กับตัวเลือกการส่งออกที่ใช้",
     ],
@@ -49,14 +49,14 @@ const privacyText = {
     contact: "หากมีคำถามเกี่ยวกับความเป็นส่วนตัวหรือข้อมูลของคุณ กรุณาติดต่อ:",
   },
   sv: {
-    intro: "My Music Notes Desktop respekterar din integritet och är utformad för att hålla dina data under din kontroll.",
+    intro: "MyMuNotes Desktop respekterar din integritet och är utformad för att hålla dina data under din kontroll.",
     dataCollectionTitle: "Datainsamling",
     dataCollection: "Vi använder Google Analytics (GA4) för att samla in grundläggande, anonym användningsstatistik, till exempel antal besökare, visade sidor och knappinteraktioner (till exempel nedladdnings- eller demoklick). Informationen används enbart för att förstå hur appen används och för att förbättra funktionalitet och användarupplevelse.",
     dataStorageTitle: "Datalagring",
-    dataStorage: "Alla låtar, anteckningar och allt innehåll som skapas i My Music Notes Desktop sparas lokalt på din enhet. Vi laddar inte upp, lagrar inte och har inte åtkomst till ditt låtinnehåll på någon extern server.",
+    dataStorage: "Alla låtar, anteckningar och allt innehåll som skapas i MyMuNotes Desktop sparas lokalt på din enhet. Vi laddar inte upp, lagrar inte och har inte åtkomst till ditt låtinnehåll på någon extern server.",
     audioRecordingsTitle: "Ljudinspelningar",
     audioRecordings: [
-      "My Music Notes kan låta dig spela in korta ljudanteckningar. Ljudinspelningar sparas lokalt på din enhet. Vi laddar inte upp, lagrar inte och har inte åtkomst till dina ljudinspelningar på någon extern server.",
+      "MyMuNotes kan låta dig spela in korta ljudanteckningar. Ljudinspelningar sparas lokalt på din enhet. Vi laddar inte upp, lagrar inte och har inte åtkomst till dina ljudinspelningar på någon extern server.",
       "Om du rensar webbläsarens/appens cache, webbplatsdata eller lokal lagring kan dina inspelningar raderas. Du ansvarar själv för att exportera JSON-säkerhetskopior eller ladda ner ljudfiler om du vill behålla en kopia av dina inspelningar.",
       "Exporterade JSON-filer kan innehålla ditt anteckningsinnehåll och ljudinspelningsdata, beroende på vilket exportalternativ som används.",
     ],
@@ -76,8 +76,8 @@ export default function PrivacyPolicyPage() {
   const lang = getCurrentLang();
   const copy = lang === "th" ? privacyText.th : lang === "sv" ? privacyText.sv : privacyText.en;
   usePageMeta(
-    "Privacy Policy — My Music Notes",
-    "How My Music Notes handles your data: local-first storage, audio recording behavior, and contact information."
+    "Privacy Policy — MyMuNotes",
+    "How MyMuNotes handles your data: local-first storage, audio recording behavior, and contact information."
   );
 
 

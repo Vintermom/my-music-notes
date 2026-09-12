@@ -45,7 +45,7 @@ function getBrowserLang(): "en" | "sv" | "th" {
 // Translations for install hints - using exact text from requirements
 const installHintTexts = {
   en: {
-    title: "Install My Music Notes",
+    title: "Install MyMuNotes",
     alreadyInstalled: "The app is already installed on your device.",
     desktop: "To install, click the install icon in the address bar, or open the browser menu and choose 'Install app'.",
     android: "Open the browser menu and tap \"Install app\" or \"Add to Home screen\".",
@@ -53,7 +53,7 @@ const installHintTexts = {
     close: "OK",
   },
   sv: {
-    title: "Installera My Music Notes",
+    title: "Installera MyMuNotes",
     alreadyInstalled: "Appen är redan installerad på din enhet.",
     desktop: "För att installera: klicka på installationsikonen i adressfältet, eller öppna webbläsarens meny och välj 'Installera app'.",
     android: "Öppna webbläsarens meny och välj \"Installera app\" eller \"Lägg till på startskärmen\".",
@@ -61,7 +61,7 @@ const installHintTexts = {
     close: "OK",
   },
   th: {
-    title: "ติดตั้ง My Music Notes",
+    title: "ติดตั้ง MyMuNotes",
     alreadyInstalled: "แอปนี้ถูกติดตั้งบนอุปกรณ์ของคุณแล้ว",
     desktop: "หากต้องการติดตั้ง: กดไอคอนติดตั้งที่แถบที่อยู่ หรือเปิดเมนูเบราว์เซอร์แล้วเลือก 'ติดตั้งแอป'.",
     android: "เปิดเมนูแล้วเลือก \"ติดตั้งแอป\" หรือ \"เพิ่มไปยังหน้าจอหลัก\"",
