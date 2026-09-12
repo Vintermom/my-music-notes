@@ -337,7 +337,8 @@ export const ko: Record<TranslationKey, string> = {
   "share.pdf": "PDF",
   "share.audio": "Audio",
   "share.allFiles": "All Files",
-...
+  "share.pdfHint": "Share this song as a PDF file.",
+  "share.audioHint": "Share the recording of this song.",
   "share.allFilesHint": "Shares the PDF and the recording together when supported.",
   "share.noAudio": "No recording in this song yet.",
   "share.preparing": "Preparing file…",

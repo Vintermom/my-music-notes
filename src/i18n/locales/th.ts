@@ -337,7 +337,8 @@ export const th: Record<TranslationKey, string> = {
   "share.pdf": "PDF",
   "share.audio": "เสียง",
   "share.allFiles": "ไฟล์ทั้งหมด",
-...
+  "share.pdfHint": "แชร์เพลงนี้เป็นไฟล์ PDF",
+  "share.audioHint": "แชร์ไฟล์เสียงของเพลงนี้",
   "share.allFilesHint": "แชร์ PDF และไฟล์เสียงพร้อมกันเมื่ออุปกรณ์รองรับ",
   "share.noAudio": "เพลงนี้ยังไม่มีไฟล์เสียง",
   "share.preparing": "กำลังเตรียมไฟล์…",

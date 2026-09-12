@@ -337,7 +337,8 @@ export const sv: Record<TranslationKey, string> = {
   "share.pdf": "PDF",
   "share.audio": "Ljud",
   "share.allFiles": "Alla filer",
-...
+  "share.pdfHint": "Dela den här låten som en PDF-fil.",
+  "share.audioHint": "Dela låtens inspelning.",
   "share.allFilesHint": "Delar PDF och ljudfilen tillsammans när enheten stödjer det.",
   "share.noAudio": "Ingen inspelning i den här låten än.",
   "share.preparing": "Förbereder fil…",
