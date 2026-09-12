@@ -43,8 +43,10 @@ Also included in V1.4.0 — Share (additive):
 - Share current song from a new Share icon in the editor header (before the three-dot menu)
 - Share PDF (Share-specific PDF builder; existing Print / Export PDF untouched)
 - Share Audio (existing recording, read-only, not re-encoded; option hidden when no recording exists)
-- Share Full Song — one local ZIP
-- Full Song ZIP contains PDF + JSON, and audio when available (audio is optional)
+- Share All Files — shares PDF + Audio together as multiple files when the device supports it
+- All Files checks `navigator.canShare({ files })` with both files before sharing; when multiple-file sharing is unsupported it falls back to downloading PDF and Audio separately
+- All Files with no recording falls back to PDF only
+- JSON is not part of Share — JSON remains available through the existing (...) > Export JSON option, unchanged
 - Native device/browser Share Sheet via the Web Share API (`navigator.share` + `navigator.canShare({ files })`)
 - Mail / Gmail / Google Drive / iCloud Drive / Files / AirDrop / other apps are chosen by the operating system Share Sheet, not by the app
 - Download fallback when native file sharing is unsupported or fails
@@ -52,7 +54,7 @@ Also included in V1.4.0 — Share (additive):
 - No direct cloud API integration (no Gmail/Drive/iCloud/Dropbox APIs, no OAuth, no sync)
 - Files leave the device only when the user explicitly chooses to share them
 - Share cancellation is treated as a normal action, not an error
-- Share code lives in `src/features/share/` (`ShareButton`, `ShareMenu`, `shareService`, exporters, utils); ZIP uses `jszip`
+- Share code lives in `src/features/share/` (`ShareButton`, `ShareMenu`, `shareService`, exporters, utils); no ZIP packaging is used
 
 Explicitly not included:
 
