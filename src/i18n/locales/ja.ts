@@ -336,10 +336,9 @@ export const ja: Record<TranslationKey, string> = {
   "share.title": "Share song",
   "share.pdf": "PDF",
   "share.audio": "Audio",
-  "share.fullSong": "Full Song",
-  "share.pdfHint": "Share this song as a PDF file.",
-  "share.audioHint": "Share the recording of this song.",
-  "share.fullSongHint": "One ZIP with PDF, backup file and audio when available.",
+  "share.allFiles": "All Files",
+...
+  "share.allFilesHint": "Shares the PDF and the recording together when supported.",
   "share.noAudio": "No recording in this song yet.",
   "share.preparing": "Preparing file…",
   "share.shared": "Shared",
