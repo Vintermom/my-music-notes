@@ -2,7 +2,6 @@ import type { PreparedFile, ShareResult, ShareNote, ShareKind } from "./shareTyp
 import { canShareFiles, isShareCancellation } from "./utils/shareSupport";
 import { prepareSharePdf } from "./exporters/sharePdfExporter";
 import { prepareActiveShareAudio } from "./exporters/shareAudioExporter";
-import { prepareFullSongPackage } from "./exporters/fullSongExporter";
 
 function downloadPrepared(prepared: PreparedFile): void {
   const url = URL.createObjectURL(prepared.blob);
@@ -34,6 +33,26 @@ async function shareOrDownload(prepared: PreparedFile, title: string): Promise<S
   }
 }
 
+async function shareOrDownloadMany(prepared: PreparedFile[], title: string): Promise<ShareResult> {
+  const files = prepared.map((p) => p.file);
+  if (canShareFiles(files)) {
+    try {
+      await navigator.share({ files, title });
+      return { status: "shared" };
+    } catch (error) {
+      if (isShareCancellation(error)) return { status: "cancelled" };
+      // Fall through to download fallback.
+    }
+  }
+
+  try {
+    prepared.forEach(downloadPrepared);
+    return { status: "downloaded" };
+  } catch {
+    return { status: "failed" };
+  }
+}
+
 export async function shareNoteAsset(note: ShareNote, kind: ShareKind): Promise<ShareResult> {
   try {
     const title = note.title?.trim() || "Untitled Song";
@@ -48,7 +67,11 @@ export async function shareNoteAsset(note: ShareNote, kind: ShareKind): Promise<
       return shareOrDownload(audio, title);
     }
 
-    return shareOrDownload(await prepareFullSongPackage(note), title);
+    // All Files: PDF plus audio when available. No JSON, no ZIP.
+    const prepared: PreparedFile[] = [prepareSharePdf(note)];
+    const audio = await prepareActiveShareAudio(note);
+    if (audio) prepared.push(audio);
+    return shareOrDownloadMany(prepared, title);
   } catch {
     return { status: "failed" };
   }

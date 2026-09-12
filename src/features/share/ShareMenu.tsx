@@ -29,9 +29,9 @@ export function ShareMenu({ hasAudio, busy, onSelect }: ShareMenuProps) {
           {t("share.audio")}
         </DropdownMenuItem>
       )}
-      <DropdownMenuItem disabled={busy} onClick={() => onSelect("fullSong")}>
+      <DropdownMenuItem disabled={busy} onClick={() => onSelect("allFiles")}>
         <Package className="h-4 w-4 mr-2" />
-        {t("share.fullSong")}
+        {t("share.allFiles")}
       </DropdownMenuItem>
     </DropdownMenuContent>
   );
