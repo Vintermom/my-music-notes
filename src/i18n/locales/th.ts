@@ -330,4 +330,19 @@ export const th: Record<TranslationKey, string> = {
   "myStyles.deleted": "ลบสไตล์แล้ว",
   "myStyles.deleteTitle": "ลบสไตล์ที่บันทึกไว้",
   "myStyles.deleteMessage": "ต้องการลบสไตล์ที่บันทึกไว้นี้หรือไม่? โน้ตเพลงของคุณจะไม่ได้รับผลกระทบ",
+
+  // Share (V1.4.0 additive)
+  "share.button": "แชร์",
+  "share.title": "แชร์เพลงนี้",
+  "share.pdf": "PDF",
+  "share.audio": "เสียง",
+  "share.fullSong": "เพลงทั้งชุด",
+  "share.pdfHint": "แชร์เพลงนี้เป็นไฟล์ PDF",
+  "share.audioHint": "แชร์ไฟล์เสียงที่บันทึกไว้ของเพลงนี้",
+  "share.fullSongHint": "ไฟล์ ZIP เดียว รวม PDF ไฟล์สำรอง และเสียงถ้ามี",
+  "share.noAudio": "เพลงนี้ยังไม่มีไฟล์เสียง",
+  "share.preparing": "กำลังเตรียมไฟล์…",
+  "share.shared": "แชร์แล้ว",
+  "share.downloaded": "ดาวน์โหลดไฟล์แล้ว",
+  "share.failed": "เตรียมไฟล์ไม่สำเร็จ กรุณาลองอีกครั้ง",
 };
