@@ -32,6 +32,7 @@ import { LyricsEditor } from "@/components/LyricsEditor";
 import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
 import { AllPromptSheet } from "@/components/AllPromptSheet";
 import { VoiceSheet } from "@/components/VoiceSheet";
+import { ShareButton } from "@/features/share/ShareButton";
 import { EnvironmentSheet } from "@/components/EnvironmentSheet";
 import { MyStylesSheet } from "@/components/MyStylesSheet";
 
