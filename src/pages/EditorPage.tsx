@@ -820,6 +820,7 @@ export default function EditorPage() {
             <ColorPicker value={note.color} onChange={(color) => updateField("color", color)}>
               <Button variant="ghost" size="icon" aria-label="Change note color"><Palette className="h-5 w-5" /></Button>
             </ColorPicker>
+            <ShareButton note={note} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="More actions"><MoreVertical className="h-5 w-5" /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end">
