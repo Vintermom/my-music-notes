@@ -38,6 +38,22 @@ Included in V1.4.0:
 - Text 1001–N selection helper (appears when Style > 1000 chars; selects that range in the existing textarea)
 - Copy menu when Style > 1000 chars: Copy 1–1000 / Copy 1001–N / Copy all (single Copy icon; ≤1000 copies immediately)
 
+Also included in V1.4.0 — Share (additive):
+
+- Share current song from a new Share icon in the editor header (before the three-dot menu)
+- Share PDF (Share-specific PDF builder; existing Print / Export PDF untouched)
+- Share Audio (existing recording, read-only, not re-encoded; option hidden when no recording exists)
+- Share Full Song — one local ZIP
+- Full Song ZIP contains PDF + JSON, and audio when available (audio is optional)
+- Native device/browser Share Sheet via the Web Share API (`navigator.share` + `navigator.canShare({ files })`)
+- Mail / Gmail / Google Drive / iCloud Drive / Files / AirDrop / other apps are chosen by the operating system Share Sheet, not by the app
+- Download fallback when native file sharing is unsupported or fails
+- Local-first privacy: all files are prepared on-device, nothing is uploaded to any server
+- No direct cloud API integration (no Gmail/Drive/iCloud/Dropbox APIs, no OAuth, no sync)
+- Files leave the device only when the user explicitly chooses to share them
+- Share cancellation is treated as a normal action, not an error
+- Share code lives in `src/features/share/` (`ShareButton`, `ShareMenu`, `shareService`, exporters, utils); ZIP uses `jszip`
+
 Explicitly not included:
 
 - No SFX system was added
