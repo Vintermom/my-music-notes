@@ -45,7 +45,24 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2,ttf}"],
+        // Share-PDF fonts are large and only needed when sharing: never precache
+        // them on install, cache them on first use instead (rule below).
+        globIgnores: ["**/fonts/share/**"],
         runtimeCaching: [
+          {
+            urlPattern: /\/fonts\/share\/.*\.ttf$/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "share-pdf-fonts",
+              expiration: {
+                maxEntries: 8,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: "CacheFirst",
