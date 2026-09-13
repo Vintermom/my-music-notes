@@ -2,6 +2,7 @@ import type { TDocumentDefinitions, Content, ContentText } from "pdfmake/interfa
 import { APP_VERSION } from "@/lib/appVersion";
 import type { ShareNote, PreparedFile } from "../shareTypes";
 import { safeBaseName, withExtension } from "../utils/fileName";
+import { localExportTimestamp } from "../utils/shareTimestamp";
 import {
   buildFontDefinitions,
   collectFontFamilies,
@@ -9,6 +10,12 @@ import {
   segmentTextByFont,
   type ShareFontFamily,
 } from "../pdf/sharePdfFonts";
+
+/** Export footer, generated locally at the moment the Share PDF is created. */
+export function shareFooterText(date: Date = new Date()): string {
+  return `ส่งออกจาก: MyMuNotes (เว็บแอป) \u00b7 เวอร์ชัน ${APP_VERSION} \u00b7 ${localExportTimestamp(date)}`;
+}
+
 
 /**
  * Share-specific PDF builder (Share feature only).
