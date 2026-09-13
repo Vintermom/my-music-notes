@@ -30,6 +30,7 @@ export function ShareButton({ note }: ShareButtonProps) {
       toast.dismiss(pending);
       if (result.status === "shared") toast.success(t("share.shared"));
       else if (result.status === "downloaded") toast.success(t("share.downloaded"));
+      else if (result.status === "saved") toast.success(t("share.savedToFolder"));
       else if (result.status === "failed") {
         toast.error(kind === "audio" && !hasAudio ? t("share.noAudio") : t("share.failed"));
       }

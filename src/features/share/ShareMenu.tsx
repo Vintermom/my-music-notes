@@ -1,4 +1,4 @@
-import { FileText, Music, Package } from "lucide-react";
+import { FileText, FolderDown, Music, Package } from "lucide-react";
 import { t } from "@/i18n";
 import {
   DropdownMenuContent,
@@ -32,6 +32,11 @@ export function ShareMenu({ hasAudio, busy, onSelect }: ShareMenuProps) {
       <DropdownMenuItem disabled={busy} onClick={() => onSelect("allFiles")}>
         <Package className="h-4 w-4 mr-2" />
         {t("share.allFiles")}
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem disabled={busy} onClick={() => onSelect("saveFolder")}>
+        <FolderDown className="h-4 w-4 mr-2" />
+        {t("share.saveFolder")}
       </DropdownMenuItem>
     </DropdownMenuContent>
   );

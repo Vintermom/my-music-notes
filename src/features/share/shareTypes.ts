@@ -1,6 +1,6 @@
 import type { Note } from "@/domain/types";
 
-export type ShareKind = "pdf" | "audio" | "allFiles";
+export type ShareKind = "pdf" | "audio" | "allFiles" | "saveFolder";
 
 export interface PreparedFile {
   file: File;
@@ -9,7 +9,7 @@ export interface PreparedFile {
 }
 
 export interface ShareResult {
-  status: "shared" | "downloaded" | "cancelled" | "failed";
+  status: "shared" | "downloaded" | "saved" | "cancelled" | "failed";
 }
 
 export type ShareNote = Note;
