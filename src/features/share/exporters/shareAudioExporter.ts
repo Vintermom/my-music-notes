@@ -19,6 +19,13 @@ async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
   return response.blob();
 }
 
+/** Uses the recording's real MIME type; only falls back when it is missing or wrong. */
+function audioMimeOf(blob: Blob): string {
+  const type = (blob.type || "").toLowerCase();
+  return type.startsWith("audio/") || type.startsWith("video/") ? blob.type : "audio/webm";
+}
+
+
 export function hasShareableAudio(note?: ShareNote | null): boolean {
   return !!note?.takes?.some((take) => !!take.blob);
 }
