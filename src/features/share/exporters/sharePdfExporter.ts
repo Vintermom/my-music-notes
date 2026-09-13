@@ -2,6 +2,7 @@ import type { TDocumentDefinitions, Content, ContentText } from "pdfmake/interfa
 import { APP_VERSION } from "@/lib/appVersion";
 import type { ShareNote, PreparedFile } from "../shareTypes";
 import { safeBaseName, withExtension } from "../utils/fileName";
+import { localExportTimestamp } from "../utils/shareTimestamp";
 import {
   buildFontDefinitions,
   collectFontFamilies,
@@ -9,6 +10,12 @@ import {
   segmentTextByFont,
   type ShareFontFamily,
 } from "../pdf/sharePdfFonts";
+
+/** Export footer, generated locally at the moment the Share PDF is created. */
+export function shareFooterText(date: Date = new Date()): string {
+  return `ส่งออกจาก: MyMuNotes (เว็บแอป) \u00b7 เวอร์ชัน ${APP_VERSION} \u00b7 ${localExportTimestamp(date)}`;
+}
+
 
 /**
  * Share-specific PDF builder (Share feature only).
@@ -143,7 +150,7 @@ function buildDocumentDefinition(note: ShareNote): TDocumentDefinitions {
     content.push(...linesToContent(tags, hanFamily, secondaryStyle));
   }
 
-  const footerLabel = `MyMuNotes \u2022 V${APP_VERSION}`;
+  const footerLabel = shareFooterText();
 
   return {
     pageSize: "A4",
@@ -156,20 +163,28 @@ function buildDocumentDefinition(note: ShareNote): TDocumentDefinitions {
       currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0,
     footer: (currentPage, pageCount) => ({
       columns: [
-        { text: footerLabel, fontSize: SIZE_FOOTER, color: COLOR_MUTED, font: "ShareLatin" },
         {
-          text: `Page ${currentPage} of ${pageCount}`,
+          text: runsFor(footerLabel, hanFamily),
+          fontSize: SIZE_FOOTER,
+          color: COLOR_MUTED,
+          width: "*",
+        },
+        {
+          text: `${currentPage} / ${pageCount}`,
           fontSize: SIZE_FOOTER,
           color: COLOR_MUTED,
           font: "ShareLatin",
           alignment: "right",
+          width: "auto",
         },
       ],
-      margin: [PAGE_MARGIN_X, 28, PAGE_MARGIN_X, 0],
+      columnGap: 10,
+      margin: [PAGE_MARGIN_X, 26, PAGE_MARGIN_X, 0],
     }),
     content,
   };
 }
+
 
 type PdfMakeModule = typeof import("pdfmake/build/pdfmake");
 
@@ -199,7 +214,10 @@ export async function buildSharePdfBlob(note: ShareNote): Promise<Blob> {
     note.style || "",
     note.extraInfo || "",
     (note.tags || []).join(", "),
+    // The Thai footer needs its font family loaded too.
+    shareFooterText(),
   ]);
+
   const fonts = buildFontDefinitions(families);
 
   return new Promise<Blob>((resolve, reject) => {
