@@ -214,7 +214,10 @@ export async function buildSharePdfBlob(note: ShareNote): Promise<Blob> {
     note.style || "",
     note.extraInfo || "",
     (note.tags || []).join(", "),
+    // The Thai footer needs its font family loaded too.
+    shareFooterText(),
   ]);
+
   const fonts = buildFontDefinitions(families);
 
   return new Promise<Blob>((resolve, reject) => {
