@@ -44,23 +44,31 @@ Included in V1.4.0:
 - Text 1001–N selection helper (appears when Style > 1000 chars; selects that range in the existing textarea)
 - Copy menu when Style > 1000 chars: Copy 1–1000 / Copy 1001–N / Copy all (single Copy icon; ≤1000 copies immediately)
 
-Also included in V1.4.0 — Share (additive):
+Also included in V1.4.0 — Share / Save (additive):
 
 - Share current song from a new Share icon in the editor header (before the three-dot menu)
 - Share PDF (Share-specific PDF builder; existing Print / Export PDF untouched)
+  - A4 portrait, white background, comfortable margins, natural multi-page flow (long songs continue onto page 2, 3, …)
+  - Content order: Song Title, Composer, Lyrics, then Style / Extra Info / Tags only when they have content
+  - Lyrics are preserved exactly: line breaks, blank lines, indentation and user-written section labels such as `[Verse 1]` / `[Chorus]`
+  - Real Unicode text (not a screenshot): Thai (vowels and tone marks positioned correctly), Swedish (å ä ö Å Ä Ö), English, Korean, Japanese and mixed-language lyrics
+  - Locally bundled SIL-OFL fonts in `public/fonts/share/` (Noto Sans, Noto Sans Thai, Noto Sans KR, Noto Sans JP); only the fonts needed for the song's scripts are loaded, and they are cached after first use
+  - Small footer `MyMuNotes • V1.4.0` with page numbers; no internal IDs or technical metadata
 - Share Audio (existing recording, read-only, not re-encoded; option hidden when no recording exists)
 - Share All Files — shares PDF + Audio together as multiple files when the device supports it
 - All Files checks `navigator.canShare({ files })` with both files before sharing; when multiple-file sharing is unsupported it falls back to downloading PDF and Audio separately
 - All Files with no recording falls back to PDF only
+- Save All to Folder — when the browser/platform provides a user-approved folder capability (`showDirectoryPicker`), the user picks a location and a `Song-Title/` folder is created containing `Song-Title.pdf` and the recording (PDF only when there is no recording)
+- Save All fallback — where folder access is unavailable (or denied), the same files are saved/downloaded separately with matching song-based filenames; no ZIP, no server
 - JSON is not part of Share — JSON remains available through the existing (...) > Export JSON option, unchanged
 - Native device/browser Share Sheet via the Web Share API (`navigator.share` + `navigator.canShare({ files })`)
 - Mail / Gmail / Google Drive / iCloud Drive / Files / AirDrop / other apps are chosen by the operating system Share Sheet, not by the app
 - Download fallback when native file sharing is unsupported or fails
-- Local-first privacy: all files are prepared on-device, nothing is uploaded to any server
+- Local-first privacy: all files (including the PDF) are prepared on-device, nothing is uploaded to any server
 - No direct cloud API integration (no Gmail/Drive/iCloud/Dropbox APIs, no OAuth, no sync)
-- Files leave the device only when the user explicitly chooses to share them
-- Share cancellation is treated as a normal action, not an error
-- Share code lives in `src/features/share/` (`ShareButton`, `ShareMenu`, `shareService`, exporters, utils); no ZIP packaging is used
+- Files leave the device only when the user explicitly chooses to share or save them
+- Share cancellation and folder-picker cancellation are treated as normal actions, not errors
+- Share code lives in `src/features/share/` (`ShareButton`, `ShareMenu`, `shareService`, `exporters/`, `pdf/sharePdfFonts`, `utils/` incl. `folderSave`); no ZIP packaging is used
 
 Explicitly not included:
 

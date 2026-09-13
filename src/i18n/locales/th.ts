@@ -345,4 +345,6 @@ export const th: Record<TranslationKey, string> = {
   "share.shared": "แชร์แล้ว",
   "share.downloaded": "ดาวน์โหลดไฟล์แล้ว",
   "share.failed": "เตรียมไฟล์ไม่สำเร็จ กรุณาลองอีกครั้ง",
+  "share.saveFolder": "บันทึกทั้งหมดลงโฟลเดอร์",
+  "share.savedToFolder": "บันทึกลงโฟลเดอร์แล้ว",
 };
