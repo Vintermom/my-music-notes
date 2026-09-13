@@ -70,7 +70,10 @@ Also included in V1.4.0 — Share / Save (additive):
 - No direct cloud API integration (no Gmail/Drive/iCloud/Dropbox APIs, no OAuth, no sync)
 - Files leave the device only when the user explicitly chooses to share or save them
 - Share cancellation and folder-picker cancellation are treated as normal actions, not errors
-- Share code lives in `src/features/share/` (`ShareButton`, `ShareMenu`, `shareService`, `exporters/`, `pdf/sharePdfFonts`, `utils/` incl. `folderSave`); no ZIP packaging is used
+- Share code lives in `src/features/share/` (`ShareButton`, `ShareMenu`, `shareService`, `exporters/`, `pdf/sharePdfFonts`, `utils/` incl. `folderSave`, `shareValidation`, `shareTimestamp`); no ZIP packaging is used
+- Every file is fully generated and validated before the Share Sheet opens (real `File` object, size > 0, correct filename/extension/MIME type); invalid files are never handed over, so mail clients cannot receive empty attachments
+- Blob/object URLs and file references are released only after sharing has completed, failed or been cancelled
+
 
 Explicitly not included:
 
