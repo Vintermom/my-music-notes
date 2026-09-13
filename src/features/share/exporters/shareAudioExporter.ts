@@ -66,11 +66,14 @@ export async function prepareActiveShareAudio(note: ShareNote): Promise<Prepared
   if (takes.length === 0) return null;
   const active = takes.find((take) => take.id === note.activeTakeId) || takes[0];
   const blob = await dataUrlToBlob(active.blob);
-  const ext = extensionFromMime(blob.type || "audio/webm");
+  if (blob.size === 0) return null;
+  const mime = audioMimeOf(blob);
+  const ext = extensionFromMime(mime);
   const fileName = `${safeBaseName(note.title)}.${ext}`;
   return {
     blob,
     fileName,
-    file: new File([blob], fileName, { type: blob.type || "audio/webm" }),
+    file: new File([blob], fileName, { type: mime }),
   };
 }
+
