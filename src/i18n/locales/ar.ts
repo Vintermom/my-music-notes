@@ -345,4 +345,6 @@ export const ar: Record<TranslationKey, string> = {
   "share.shared": "Shared",
   "share.downloaded": "File downloaded",
   "share.failed": "Could not prepare the file. Please try again.",
+  "share.saveFolder": "Save All to Folder",
+  "share.savedToFolder": "Saved to folder",
 };

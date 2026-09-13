@@ -345,4 +345,6 @@ export const sv: Record<TranslationKey, string> = {
   "share.shared": "Delad",
   "share.downloaded": "Filen laddades ner",
   "share.failed": "Kunde inte förbereda filen. Försök igen.",
+  "share.saveFolder": "Spara alla till mapp",
+  "share.savedToFolder": "Sparat i mappen",
 };
