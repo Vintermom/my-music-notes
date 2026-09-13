@@ -143,7 +143,7 @@ function buildDocumentDefinition(note: ShareNote): TDocumentDefinitions {
     content.push(...linesToContent(tags, hanFamily, secondaryStyle));
   }
 
-  const footerLabel = `MyMuNotes \u2022 V${APP_VERSION}`;
+  const footerLabel = shareFooterText();
 
   return {
     pageSize: "A4",
@@ -156,20 +156,28 @@ function buildDocumentDefinition(note: ShareNote): TDocumentDefinitions {
       currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0,
     footer: (currentPage, pageCount) => ({
       columns: [
-        { text: footerLabel, fontSize: SIZE_FOOTER, color: COLOR_MUTED, font: "ShareLatin" },
         {
-          text: `Page ${currentPage} of ${pageCount}`,
+          text: runsFor(footerLabel, hanFamily),
+          fontSize: SIZE_FOOTER,
+          color: COLOR_MUTED,
+          width: "*",
+        },
+        {
+          text: `${currentPage} / ${pageCount}`,
           fontSize: SIZE_FOOTER,
           color: COLOR_MUTED,
           font: "ShareLatin",
           alignment: "right",
+          width: "auto",
         },
       ],
-      margin: [PAGE_MARGIN_X, 28, PAGE_MARGIN_X, 0],
+      columnGap: 10,
+      margin: [PAGE_MARGIN_X, 26, PAGE_MARGIN_X, 0],
     }),
     content,
   };
 }
+
 
 type PdfMakeModule = typeof import("pdfmake/build/pdfmake");
 
