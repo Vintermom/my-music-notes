@@ -53,7 +53,9 @@ Also included in V1.4.0 — Share / Save (additive):
   - Lyrics are preserved exactly: line breaks, blank lines, indentation and user-written section labels such as `[Verse 1]` / `[Chorus]`
   - Real Unicode text (not a screenshot): Thai (vowels and tone marks positioned correctly), Swedish (å ä ö Å Ä Ö), English, Korean, Japanese and mixed-language lyrics
   - Locally bundled SIL-OFL fonts in `public/fonts/share/` (Noto Sans, Noto Sans Thai, Noto Sans KR, Noto Sans JP); only the fonts needed for the song's scripts are loaded, and they are cached after first use
-  - Small footer `MyMuNotes • V1.4.0` with page numbers; no internal IDs or technical metadata
+  - Export footer on every page: `ส่งออกจาก: MyMuNotes (เว็บแอป) · เวอร์ชัน 1.4.0 · YYYY-MM-DD HH:mm (UTC±X)` plus the page number; no internal IDs or technical metadata
+  - The footer date/time and UTC offset are generated locally on the device at the moment of export (24-hour clock, real timezone offset including daylight saving); no server is contacted
+
 - Share Audio (existing recording, read-only, not re-encoded; option hidden when no recording exists)
 - Share All Files — shares PDF + Audio together as multiple files when the device supports it
 - All Files checks `navigator.canShare({ files })` with both files before sharing; when multiple-file sharing is unsupported it falls back to downloading PDF and Audio separately
