@@ -44,19 +44,22 @@ export async function prepareShareAudioFiles(note: ShareNote): Promise<PreparedF
 
   for (let i = 0; i < takes.length; i += 1) {
     const blob = await dataUrlToBlob(takes[i].blob);
-    const ext = extensionFromMime(blob.type || "audio/webm");
+    if (blob.size === 0) continue;
+    const mime = audioMimeOf(blob);
+    const ext = extensionFromMime(mime);
     const fileName = takes.length === 1
       ? `${base}.${ext}`
       : `recording-${String(i + 1).padStart(2, "0")}.${ext}`;
     prepared.push({
       blob,
       fileName,
-      file: new File([blob], fileName, { type: blob.type || "audio/webm" }),
+      file: new File([blob], fileName, { type: mime }),
     });
   }
 
   return prepared;
 }
+
 
 export async function prepareActiveShareAudio(note: ShareNote): Promise<PreparedFile | null> {
   const takes = (note.takes || []).filter((take) => !!take.blob);
