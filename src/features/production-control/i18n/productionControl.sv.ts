@@ -8,8 +8,9 @@ export const productionControlSv: ProductionControlStrings = {
   "pc.clear": "Rensa",
   "pc.insert": "Lägg in i Style",
 
+  "pc.category.all": "Alla",
   "pc.category.mixSeparation": "Mix & separation",
-  "pc.category.percussionArtifacts": "Percussion & artefakter",
+  "pc.category.percussionArtifacts": "Slagverk & artefakter",
   "pc.category.frequencyBalance": "Frekvensbalans",
   "pc.category.vocalPlacement": "Sångplacering",
   "pc.category.tempo": "Tempo",
@@ -76,4 +77,7 @@ export const productionControlSv: ProductionControlStrings = {
   "pc.tempo.customHint": "Använd när du redan vet exakt vilket tempo du vill ha.",
   "pc.tempo.customInvalid": "Ange ett BPM mellan 30 och 300.",
   "pc.tempo.apply": "Lägg till BPM",
+
+  "pc.searchPlaceholder": "Sök produktionsalternativ...",
+  "pc.noResults": "Inga produktionsalternativ hittades.",
 };

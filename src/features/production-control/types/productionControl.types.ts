@@ -9,6 +9,9 @@ export type ProductionCategoryId =
   | "vocalPlacement"
   | "tempo";
 
+// Category shortcut/filter row value: "all" shows every category.
+export type ProductionCategoryFilter = "all" | ProductionCategoryId;
+
 export interface ProductionCategory {
   id: ProductionCategoryId;
   labelKey: string;
