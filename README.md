@@ -90,6 +90,9 @@ Production Control appears in the Style tools row directly after Environment (`S
 - Duplicate protection: identical prompt segments are never inserted twice; after insertion Style stays normal user-controlled text (selector state is never synced back from Style)
 - Localized labels and hints in EN / TH / SV (other app languages fall back to English); inserted prompts are never translated
 - Current categories: Mix & Separation, Percussion & Artifacts, Frequency Balance, Vocal Placement, Tempo
+- Category shortcut row at the top of the panel — the same chip pattern as Voice (`All · Mix & Separation · Percussion / Artifacts · Frequency Balance · Vocal Placement · Tempo`), horizontally scrollable on mobile, localized in EN / TH / SV via `pc.category.*` keys. `All` shows every option; a category shows only that category's options
+- Search field above the chips (same behavior as Voice search): matches the canonical English prompt plus the label and hint in every Production Control language, so a Thai or Swedish query finds English-prompt options
+- Category and search filtering only change what is currently visible — they never clear or remove selected options; multi-select keeps working across categories and selections survive switching categories
 - Tempo is a subcategory: Slow (60–80), Medium (80–110), Fast (110–140), Very Fast (140–180), Stable Tempo, plus Custom BPM (validated numeric input, inserts editable text such as `72 BPM, steady tempo`)
 - Designed so additional production categories (Instruments, Stereo, Dynamics, Arrangement, Ending, …) can be added later without rebuilding the panel
 - Style behavior is unchanged: 2000-character capacity, counter, Copy 1–1000 / Copy 1001–N / Copy all, Undo, Remove All, full-screen view
@@ -99,12 +102,12 @@ Production Control appears in the Style tools row directly after Environment (`S
 ```
 src/features/production-control/
   components/  ProductionControlButton.tsx, ProductionControlPanel.tsx,
-               ProductionControlSection.tsx, TempoControl.tsx
+               ProductionControlSection.tsx, ProductionControlCategoryRow.tsx, TempoControl.tsx
   data/        productionControlOptions.ts (categories + preset metadata), tempoOptions.ts
   prompts/     mixSeparationPrompts.ts, percussionArtifactPrompts.ts, frequencyPrompts.ts,
                vocalPlacementPrompts.ts, tempoPrompts.ts
   i18n/        productionControl.en.ts, productionControl.th.ts, productionControl.sv.ts, index.ts (pcT)
-  utils/       insertProductionPrompt.ts, bpmFormatter.ts
+  utils/       insertProductionPrompt.ts, bpmFormatter.ts, productionControlSearch.ts
   types/       productionControl.types.ts
   index.ts     public feature surface
 ```
