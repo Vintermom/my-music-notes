@@ -126,8 +126,8 @@ The core Production Control components should not be modified unless genuinely n
 ### Adding a new category
 
 1. Add the category id to `ProductionCategoryId` in `types/productionControl.types.ts`.
-2. Add an entry to `productionCategories` in `data/productionControlOptions.ts` (`kind: "presets"` renders automatically).
-3. Add a prompts file and the presets for that category, plus EN / TH / SV strings.
+2. Add an entry to `productionCategories` in `data/productionControlOptions.ts` (`kind: "presets"` renders automatically). The category shortcut row and the category filter pick it up automatically — `ProductionControlCategoryRow` renders its chips from this list, so no UI changes are needed.
+3. Add a prompts file and the presets for that category, plus the required EN / TH / SV translations: the category label (`pc.category.<id>`) and every option's label and hint in `i18n/productionControl.en.ts`, `productionControl.th.ts` and `productionControl.sv.ts`.
 
 Only a category needing its own custom control (as Tempo does with Custom BPM) requires new UI, added as a child of `ProductionControlSection`.
 
