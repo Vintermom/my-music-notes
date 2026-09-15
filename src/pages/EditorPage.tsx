@@ -712,6 +712,7 @@ export default function EditorPage() {
       <Button variant="ghost" size="sm" onClick={() => setStylePickerOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("stylePicker.title")}</Button>
       <Button variant="ghost" size="sm" onClick={() => setVoiceOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("voice.button")}</Button>
       <Button variant="ghost" size="sm" onClick={() => setEnvironmentOpen(true)} className="h-6 px-1.5 text-xs no-print"><Plus className="h-3 w-3 mr-0.5" />{t("environment.button")}</Button>
+      <ProductionControlButton onClick={() => setProductionControlOpen(true)} />
     </div>
   );
 
@@ -1069,6 +1070,7 @@ export default function EditorPage() {
       <MyStylesSheet open={myStylesOpen} onClose={() => setMyStylesOpen(false)} currentStyle={note.style || ""} onInsert={handleInsertPreset} />
       <VoiceSheet open={voiceOpen} onClose={() => setVoiceOpen(false)} onInsert={handleInsertVoice} />
       <EnvironmentSheet open={environmentOpen} onClose={() => setEnvironmentOpen(false)} onInsert={handleInsertVoice} />
+      <ProductionControlPanel open={productionControlOpen} onClose={() => setProductionControlOpen(false)} onInsert={handleInsertVoice} />
 
       <LocalFirstNotice open={showFirstSaveNotice} onOpenChange={setShowFirstSaveNotice} />
     </div>
