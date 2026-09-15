@@ -81,6 +81,55 @@ Explicitly not included:
 - No Symbols toolbar was added
 - No user-facing What's New / update popup is enabled
 
+## Production Control (additive)
+
+Production Control appears in the Style tools row directly after Environment (`Style · Presets · My Styles · + Style · + Voice · + Environment · + Production Control`). It follows the same interaction pattern as Voice / Environment: open the bottom panel, select options, review the preview, then Insert to Style.
+
+- Multi-select: any number of options, across categories, and freely combined with Voice and Environment
+- Inserts canonical **English** production prompts into the existing Style field as ordinary, fully editable text — no locked chips, no automatic rewriting of manually edited Style content
+- Duplicate protection: identical prompt segments are never inserted twice; after insertion Style stays normal user-controlled text (selector state is never synced back from Style)
+- Localized labels and hints in EN / TH / SV (other app languages fall back to English); inserted prompts are never translated
+- Current categories: Mix & Separation, Percussion & Artifacts, Frequency Balance, Vocal Placement, Tempo
+- Tempo is a subcategory: Slow (60–80), Medium (80–110), Fast (110–140), Very Fast (140–180), Stable Tempo, plus Custom BPM (validated numeric input, inserts editable text such as `72 BPM, steady tempo`)
+- Designed so additional production categories (Instruments, Stereo, Dynamics, Arrangement, Ending, …) can be added later without rebuilding the panel
+- Style behavior is unchanged: 2000-character capacity, counter, Copy 1–1000 / Copy 1001–N / Copy all, Undo, Remove All, full-screen view
+
+### Production Control architecture
+
+```
+src/features/production-control/
+  components/  ProductionControlButton.tsx, ProductionControlPanel.tsx,
+               ProductionControlSection.tsx, TempoControl.tsx
+  data/        productionControlOptions.ts (categories + preset metadata), tempoOptions.ts
+  prompts/     mixSeparationPrompts.ts, percussionArtifactPrompts.ts, frequencyPrompts.ts,
+               vocalPlacementPrompts.ts, tempoPrompts.ts
+  i18n/        productionControl.en.ts, productionControl.th.ts, productionControl.sv.ts, index.ts (pcT)
+  utils/       insertProductionPrompt.ts, bpmFormatter.ts
+  types/       productionControl.types.ts
+  index.ts     public feature surface
+```
+
+UI, data, prompts, localization, utilities and types are intentionally separated so future Production Control updates stay safe and local to this folder. Localization lives inside the feature (`pcT`), so the shared locale files are untouched. Integration with the editor is deliberately minimal: import the button and panel, render the button after Environment, and reuse the existing Style insertion mechanism.
+
+### Adding a new Production Control option
+
+1. Add the canonical English prompt to the matching file in `prompts/`.
+2. Add the option metadata (`id`, `category`, `labelKey`, `hintKey`, `prompt`) in `data/productionControlOptions.ts`.
+3. Add EN / TH / SV label and hint under the same keys in `i18n/productionControl.*.ts`.
+4. Assign it to an existing category id.
+
+The core Production Control components should not be modified unless genuinely new UI behavior is required.
+
+### Adding a new category
+
+1. Add the category id to `ProductionCategoryId` in `types/productionControl.types.ts`.
+2. Add an entry to `productionCategories` in `data/productionControlOptions.ts` (`kind: "presets"` renders automatically).
+3. Add a prompts file and the presets for that category, plus EN / TH / SV strings.
+
+Only a category needing its own custom control (as Tempo does with Custom BPM) requires new UI, added as a child of `ProductionControlSection`.
+
+**Do not hardcode new Production Control presets directly inside UI components** — all presets must be data-driven.
+
 ## Technology Stack
 
 - Vite + React + TypeScript
