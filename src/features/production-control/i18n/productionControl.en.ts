@@ -8,6 +8,7 @@ export const productionControlEn: ProductionControlStrings = {
   "pc.clear": "Clear",
   "pc.insert": "Insert to Style",
 
+  "pc.category.all": "All",
   "pc.category.mixSeparation": "Mix & Separation",
   "pc.category.percussionArtifacts": "Percussion & Artifacts",
   "pc.category.frequencyBalance": "Frequency Balance",
@@ -77,4 +78,7 @@ export const productionControlEn: ProductionControlStrings = {
   "pc.tempo.customHint": "Use when you already know the exact tempo you want.",
   "pc.tempo.customInvalid": "Enter a BPM between 30 and 300.",
   "pc.tempo.apply": "Add BPM",
+
+  "pc.searchPlaceholder": "Search production options...",
+  "pc.noResults": "No production options found.",
 };

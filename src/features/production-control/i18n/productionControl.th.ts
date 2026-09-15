@@ -8,11 +8,12 @@ export const productionControlTh: ProductionControlStrings = {
   "pc.clear": "ล้าง",
   "pc.insert": "แทรกลงในสไตล์",
 
+  "pc.category.all": "ทั้งหมด",
   "pc.category.mixSeparation": "มิกซ์และการแยกเสียง",
-  "pc.category.percussionArtifacts": "เพอร์คัชชันและเสียงรบกวน",
+  "pc.category.percussionArtifacts": "เครื่องกระทบและเสียงผิดปกติ",
   "pc.category.frequencyBalance": "สมดุลย่านความถี่",
   "pc.category.vocalPlacement": "ตำแหน่งเสียงร้อง",
-  "pc.category.tempo": "จังหวะ (เทมโป)",
+  "pc.category.tempo": "จังหวะ / BPM",
 
   "pc.option.clearInstrumentSeparation.label": "แยกเสียงเครื่องดนตรีชัดเจน",
   "pc.option.clearInstrumentSeparation.hint":
@@ -76,4 +77,7 @@ export const productionControlTh: ProductionControlStrings = {
   "pc.tempo.customHint": "ใช้เมื่อคุณรู้ค่าจังหวะที่ต้องการอยู่แล้ว",
   "pc.tempo.customInvalid": "กรอก BPM ระหว่าง 30 ถึง 300",
   "pc.tempo.apply": "เพิ่ม BPM",
+
+  "pc.searchPlaceholder": "ค้นหาตัวเลือกโปรดักชัน...",
+  "pc.noResults": "ไม่พบตัวเลือกโปรดักชัน",
 };
