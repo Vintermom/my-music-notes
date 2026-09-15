@@ -34,6 +34,7 @@ import { AllPromptSheet } from "@/components/AllPromptSheet";
 import { VoiceSheet } from "@/components/VoiceSheet";
 import { ShareButton } from "@/features/share/ShareButton";
 import { EnvironmentSheet } from "@/components/EnvironmentSheet";
+import { ProductionControlButton, ProductionControlPanel } from "@/features/production-control";
 import { MyStylesSheet } from "@/components/MyStylesSheet";
 
 import { mergeIntoStyle } from "@/lib/voice/voicePrompt";
@@ -94,6 +95,7 @@ export default function EditorPage() {
   const [allPromptOpen, setAllPromptOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [environmentOpen, setEnvironmentOpen] = useState(false);
+  const [productionControlOpen, setProductionControlOpen] = useState(false);
   const [lyricsFullScreen, setLyricsFullScreen] = useState(false);
   const [styleFullScreen, setStyleFullScreen] = useState(false);
   const [myStylesOpen, setMyStylesOpen] = useState(false);
