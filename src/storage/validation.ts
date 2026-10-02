@@ -12,6 +12,7 @@ import {
   DEFAULT_SETTINGS,
   NoteColor
 } from "@/domain/types";
+import { sanitizeScoreData } from "@/features/score/utils/scoreData";
 
 /**
  * Truncate string to max length safely
@@ -91,6 +92,7 @@ export function validateNote(data: unknown): Note | null {
     hasAudio: typeof note.hasAudio === "boolean" ? note.hasAudio : false,
     takes,
     activeTakeId: typeof note.activeTakeId === "string" ? note.activeTakeId : "",
+    ...(note.noteType === "score" ? { noteType: "score" as const, score: sanitizeScoreData(note.score) } : {}),
     createdAt: note.createdAt,
     updatedAt: note.updatedAt,
     timeline,

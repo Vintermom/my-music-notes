@@ -83,6 +83,7 @@ export function createNote(data?: Partial<Note>): Note {
   if (typeof data?.hasAudio === "boolean") sanitizedData.hasAudio = data.hasAudio;
   if (Array.isArray(data?.takes)) sanitizedData.takes = data.takes;
   if (typeof data?.activeTakeId === "string") sanitizedData.activeTakeId = data.activeTakeId;
+  if (data?.noteType === "score") { sanitizedData.noteType = "score"; sanitizedData.score = data.score; }
 
   const note: Note = {
     ...DEFAULT_NOTE,
@@ -128,6 +129,8 @@ export function updateNote(id: string, updates: Partial<Omit<Note, "id" | "creat
   if (typeof updates.hasAudio === "boolean") sanitizedUpdates.hasAudio = updates.hasAudio;
   if (Array.isArray(updates.takes)) sanitizedUpdates.takes = updates.takes;
   if (typeof updates.activeTakeId === "string") sanitizedUpdates.activeTakeId = updates.activeTakeId;
+  if (updates.score !== undefined) sanitizedUpdates.score = updates.score;
+  if (updates.noteType === "score") sanitizedUpdates.noteType = "score";
 
   const updatedNote: Note = {
     ...currentNote,

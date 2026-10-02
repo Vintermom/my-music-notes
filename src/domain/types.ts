@@ -1,3 +1,5 @@
+import type { ScoreData } from "@/features/score/types/score.types";
+
 export type NoteColor = 
   | "default" 
   | "cream" 
@@ -68,6 +70,9 @@ export interface Note {
   hasAudio?: boolean;
   takes?: AudioTake[];
   activeTakeId?: string;
+  // V1.5.0 Score (optional; absent on existing Text/Record notes)
+  noteType?: "score";
+  score?: ScoreData;
   createdAt: number;
   updatedAt: number;
   timeline: TimelineEntry[];
