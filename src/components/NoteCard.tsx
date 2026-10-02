@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { getHomeNoteType } from "@/lib/homeNoteType";
 
 interface NoteCardProps {
   note: Note;
@@ -33,6 +34,12 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
     e.stopPropagation();
   };
   const audioTakeCount = note.takes?.length || 0;
+  const noteType = getHomeNoteType(note);
+  const typeLabel = noteType === "score"
+    ? t("card.type.score")
+    : noteType === "record"
+      ? t("card.type.record")
+      : t("card.type.lyrics");
 
   return (
     <div
@@ -53,6 +60,12 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
             {note.composer}
           </p>
         )}
+
+        <div className="mb-2">
+          <span className="inline-flex rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-secondary-foreground">
+            {typeLabel}
+          </span>
+        </div>
 
         {audioTakeCount > 0 && (
           <div className="mb-2 flex items-center gap-1.5 text-[11px] font-light text-muted-foreground">

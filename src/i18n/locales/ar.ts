@@ -19,9 +19,15 @@ export const ar: Record<TranslationKey, string> = {
   "home.otherNotes": "ملاحظات",
   "home.noNotes": "لا توجد ملاحظات بعد",
   "home.noNotesDesc": "اضغط على زر + لإنشاء أول ملاحظة أغنية",
+  "home.noScoreNotesDesc": "ستتوفر ملاحظات النوتة في تحديث قادم",
   "home.noPinnedNotes": "لا توجد ملاحظات مثبتة",
   "home.noSearchResults": "لم يتم العثور على ملاحظات",
   "home.searchPlaceholder": "البحث في الملاحظات...",
+  "home.filter.label": "تصفية الملاحظات حسب النوع",
+  "home.filter.all": "الكل",
+  "home.filter.lyrics": "كلمات",
+  "home.filter.record": "تسجيل",
+  "home.filter.score": "نوتة",
 
   // Sort options
   "sort.updatedDesc": "آخر تحديث",
@@ -33,6 +39,9 @@ export const ar: Record<TranslationKey, string> = {
   "card.unpin": "إلغاء التثبيت",
   "card.duplicate": "تكرار",
   "card.delete": "حذف",
+  "card.type.lyrics": "كلمات",
+  "card.type.record": "تسجيل",
+  "card.type.score": "نوتة",
 
   // Editor
   "editor.newNote": "ملاحظة جديدة",

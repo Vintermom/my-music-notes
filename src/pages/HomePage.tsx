@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { NoteTypeFilter } from "@/components/NoteTypeFilter";
+import { getHomeNoteType, type HomeNoteTypeFilter } from "@/lib/homeNoteType";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -50,6 +52,7 @@ export default function HomePage() {
   const [createSheetOpen, setCreateSheetOpen] = useState(false);
   const [audioStorageNoticeOpen, setAudioStorageNoticeOpen] = useState(false);
   const [hideAudioStorageNotice, setHideAudioStorageNotice] = useState(false);
+  const [noteTypeFilter, setNoteTypeFilter] = useState<HomeNoteTypeFilter>("all");
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(() => 
     safeGet<1 | 2>("mobileGridCols", 1)
   );
@@ -148,6 +151,14 @@ export default function HomePage() {
       })
     : otherNotes;
 
+  const typeFilteredPinned = noteTypeFilter === "all"
+    ? filteredPinned
+    : filteredPinned.filter((note) => getHomeNoteType(note) === noteTypeFilter);
+
+  const typeFilteredOther = noteTypeFilter === "all"
+    ? filteredOther
+    : filteredOther.filter((note) => getHomeNoteType(note) === noteTypeFilter);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -188,24 +199,28 @@ export default function HomePage() {
             sortOption={settings.defaultSort}
             onSortChange={setSort}
           />
+          <div className="mt-3">
+            <NoteTypeFilter value={noteTypeFilter} onChange={setNoteTypeFilter} />
+          </div>
         </div>
       </header>
 
       {/* Content */}
       <main className="container max-w-4xl mx-auto px-4 py-6 pb-24">
-        {searchQuery && filteredPinned.length === 0 && filteredOther.length === 0 ? (
+        {searchQuery && noteTypeFilter !== "score" && typeFilteredPinned.length === 0 && typeFilteredOther.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">{t("home.noSearchResults")}</p>
           </div>
         ) : (
           <NoteGrid
-            pinnedNotes={filteredPinned}
-            otherNotes={filteredOther}
+            pinnedNotes={typeFilteredPinned}
+            otherNotes={typeFilteredOther}
             onNoteClick={handleNoteClick}
             onPin={handlePin}
             onDuplicate={handleDuplicate}
             onDelete={handleDeleteClick}
             mobileGridCols={isMobile ? mobileGridCols : undefined}
+            emptyDescription={noteTypeFilter === "score" ? t("home.noScoreNotesDesc") : undefined}
           />
         )}
       </main>
