@@ -194,15 +194,20 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
                       stroke="currentColor" className="text-muted-foreground"
                       strokeDasharray={ml.virtual ? "3 3" : undefined}
                     />
-                    <text
-                      x={ml.x + 3} y={oy + TOP - 6} fontSize={9}
-                      className={ml.virtual ? "fill-muted-foreground" : "fill-muted-foreground cursor-pointer"}
-                      onClick={ml.virtual ? undefined : (event) => { event.stopPropagation(); onMeasureMenu(ml.index); }}
-                      role={ml.virtual ? undefined : "button"}
-                      aria-label={ml.virtual ? undefined : scoreT("score.measureMenu").replace("{number}", String(ml.index + 1))}
-                    >
-                      {ml.index + 1}
-                    </text>
+                    {ml.virtual ? (
+                      <text x={ml.x + 3} y={oy + TOP - 6} fontSize={9} className="fill-muted-foreground">{ml.index + 1}</text>
+                    ) : (
+                      <g
+                        className="cursor-pointer text-muted-foreground"
+                        onClick={(event) => { event.stopPropagation(); onMeasureMenu(ml.index); }}
+                        role="button" tabIndex={0}
+                        aria-label={scoreT("score.measureMenu").replace("{number}", String(ml.index + 1))}
+                        onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onMeasureMenu(ml.index); } }}
+                      >
+                        <rect x={ml.x} y={oy + TOP - 27} width={30} height={24} rx={4} fill="currentColor" opacity={0.08} />
+                        <text x={ml.x + 7} y={oy + TOP - 10} fontSize={10} fill="currentColor">{ml.index + 1} ⋯</text>
+                      </g>
+                    )}
                   </g>
                 ))}
               </g>

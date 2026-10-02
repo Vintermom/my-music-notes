@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Trash2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { ScoreAccidental, ScoreEvent } from "../types/score.types";
 import { DURATIONS, pitchName } from "../utils/notation";
@@ -65,9 +66,10 @@ export function ScoreSelectionPanel({ event, onPatch, onMove, onDelete, onClose 
               ))}
             </>
           )}
-          <button type="button" className={cn(btn, "text-destructive ml-auto")} onClick={onDelete} aria-label={scoreT("score.delete")}>
+          <Button type="button" variant="outline" className="h-10 min-w-10 text-destructive ml-auto" onClick={onDelete} aria-label={scoreT("score.delete")}>
             <Trash2 className="h-5 w-5" />
-          </button>
+            <span className="hidden sm:inline">{scoreT("score.delete")}</span>
+          </Button>
         </div>
         {isNote && (
           <Input

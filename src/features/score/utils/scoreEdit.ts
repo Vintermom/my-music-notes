@@ -131,3 +131,26 @@ export function replaceAllLyrics(score: ScoreData): ScoreMeasure[] {
     }),
   }));
 }
+
+/** Keep a direct correction reflected in master lyrics only when its prior token is unambiguous. */
+export function syncNoteLyric(score: ScoreData, id: string, lyric: string): Pick<ScoreData, "measures" | "lyrics"> | null {
+  const found = findEvent(score, id);
+  if (!found || found.ev.kind !== "note") return null;
+  const clean = lyric.slice(0, 40);
+  const previous = found.ev.lyric || "";
+  const measures = patchEvent(score, id, { lyric: clean || undefined });
+  if (!measures) return null;
+  if (!previous || previous === clean) return { measures, lyrics: score.lyrics };
+
+  let replaced = false;
+  const lyrics = score.lyrics.split("\n").map((line) => {
+    if (replaced || /^\s*\[.*\]\s*$/.test(line)) return line;
+    const words = line.split(/(\s+)/);
+    const index = words.findIndex((word) => word === previous);
+    if (index < 0) return line;
+    words[index] = clean;
+    replaced = true;
+    return words.join("");
+  }).join("\n");
+  return { measures, lyrics };
+}
