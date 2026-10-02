@@ -18,7 +18,7 @@ export function ScoreToolbar({ score, onChange }: Props) {
   const [numerator, setNumerator] = useState(scoreNumerator);
   const [denominator, setDenominator] = useState(scoreDenominator);
   useEffect(() => {
-    setCustom(!SCORE_TIME_SIGNATURES.includes(score.timeSignature));
+    if (!SCORE_TIME_SIGNATURES.includes(score.timeSignature)) setCustom(true);
     setNumerator(scoreNumerator);
     setDenominator(scoreDenominator);
   }, [score.timeSignature, scoreNumerator, scoreDenominator]);
