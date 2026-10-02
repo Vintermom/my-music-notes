@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, HelpCircle, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +19,18 @@ import { ScoreSelectionPanel } from "./ScoreSelectionPanel";
 import { ScoreChordDialog } from "./ScoreChordDialog";
 import { ScorePlaybackBar } from "./ScorePlaybackBar";
 import { ScoreLyrics } from "./ScoreLyrics";
+import { ScoreLinkedRecording } from "./ScoreLinkedRecording";
+import { ScoreHelp } from "./ScoreHelp";
+import { useLinkedRecording } from "../hooks/useLinkedRecording";
 
 export default function ScorePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { note, setTitle, setScore, flush } = useScoreNote(id);
   const playback = useScorePlayback(note?.score, id);
+  const stopScorePlayback = playback.stop;
+  const linked = useLinkedRecording(note?.score?.linkedRecordId, stopScorePlayback);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [mode, setMode] = useState<EntryMode>("note");
   const [duration, setDuration] = useState<ScoreDuration>("q");
   const [accidental, setAccidental] = useState<ScoreAccidental | null>(null);
@@ -34,7 +40,7 @@ export default function ScorePage() {
 
   useEffect(() => { setSelectedId(null); setChordTarget(null); }, [id]);
 
-  const goBack = () => { playback.stop(); flush(); navigate("/app"); };
+  const goBack = () => { playback.stop(); linked.pause(); flush(); navigate("/app"); };
 
   if (note === undefined) return null;
   if (note === null || !note.score) {
@@ -65,7 +71,16 @@ export default function ScorePage() {
     setScore({ measures });
   };
 
+  const handlePrint = async () => {
+    playback.stop();
+    linked.pause();
+    flush();
+    const { printScore } = await import("../print/scorePrintService");
+    await printScore(note);
+  };
+
   const handlePlay = () => {
+    linked.pause();
     if (!playback.play()) toast(scoreT("score.nothingToPlay"));
   };
 
@@ -83,10 +98,20 @@ export default function ScorePage() {
             aria-label={scoreT("score.titlePlaceholder")}
             className="text-lg font-semibold border-none bg-transparent shadow-none focus-visible:ring-0 px-1"
           />
+          <Button
+            variant="ghost" size="icon" onClick={() => setHelpOpen((o) => !o)}
+            aria-label={scoreT("score.help")} aria-expanded={helpOpen} title={scoreT("score.help")}
+          >
+            <HelpCircle className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={handlePrint} aria-label={scoreT("score.printPdf")} title={scoreT("score.printPdf")}>
+            <Printer className="h-5 w-5" />
+          </Button>
         </div>
       </header>
 
       <main className={`container max-w-4xl mx-auto px-4 py-4 space-y-3 ${selected ? "pb-56" : "pb-24"}`}>
+        {helpOpen && <ScoreHelp />}
         <ScoreToolbar score={score} onChange={setScore} />
         <ScorePlaybackBar
           playing={playback.playing}
@@ -95,6 +120,16 @@ export default function ScorePage() {
           onPlay={handlePlay}
           onStop={playback.stop}
           onVolume={(volume) => setScore({ volume })}
+        />
+        <ScoreLinkedRecording
+          linkedId={score.linkedRecordId}
+          record={linked.record}
+          available={linked.available}
+          playing={linked.playing}
+          onLink={(linkedRecordId) => setScore({ linkedRecordId })}
+          onUnlink={() => { linked.pause(); setScore({ linkedRecordId: undefined }); }}
+          onPlay={linked.play}
+          onPause={linked.pause}
         />
         <ScoreEntryToolbar
           mode={mode}

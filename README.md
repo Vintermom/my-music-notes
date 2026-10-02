@@ -49,6 +49,15 @@ A beautiful songwriting note app for capturing your musical ideas, lyrics, and c
 - Added MIDI-style piano playback with tempo and volume (synthesized in the browser with the Web Audio API; no third-party library or audio samples).
 - Score remains under development and unreleased.
 
+## 2026-10-02 – V1.5.0 Score Integration & Output
+
+- Added optional linking to existing Record notes.
+- Added Score-specific A4 Print / Save as PDF.
+- Added multilingual Score hints.
+- Added responsive and persistence checks for Score.
+- V1.5.0 remains unreleased.
+- Fonts: Score print reuses the already bundled Noto Sans, Noto Sans Thai, Noto Sans KR and Noto Sans JP (SIL Open Font License 1.1) for multilingual text; no new dependency was added.
+
 ## V1.4.0 — Voice Update (internal notes)
 
 Included in V1.4.0:

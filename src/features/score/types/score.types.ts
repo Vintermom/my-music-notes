@@ -48,4 +48,6 @@ export interface ScoreData {
   chords: ScoreChord[];
   /** Free, editable lyrics text (sections like [Verse] are ordinary text). */
   lyrics: string;
+  /** Optional reference to an existing Record note (audio is never copied). */
+  linkedRecordId?: string;
 }

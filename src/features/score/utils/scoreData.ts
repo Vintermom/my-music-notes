@@ -99,5 +99,6 @@ export function sanitizeScoreData(value: unknown): ScoreData {
       ? v.chords.map(sanitizeChord).filter((x): x is ScoreChord => x !== null)
       : [],
     lyrics: typeof v.lyrics === "string" ? v.lyrics.slice(0, 50000) : "",
+    ...(typeof v.linkedRecordId === "string" && v.linkedRecordId ? { linkedRecordId: v.linkedRecordId } : {}),
   };
 }

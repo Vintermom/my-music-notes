@@ -125,7 +125,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
   const playing = positioned.find((p) => p.ev.id === playingId);
 
   return (
-    <section aria-label={scoreT("score.workspace")} className="rounded-lg border border-border">
+    <section dir="ltr" aria-label={scoreT("score.workspace")} className="rounded-lg border border-border">
       <div ref={wrapRef} className="w-full overflow-x-auto">
         <svg
           width={width}
