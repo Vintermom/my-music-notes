@@ -222,7 +222,7 @@ export default function ScorePage() {
         <div className="flex justify-end"><Button variant="ghost" size="icon" onClick={() => setHelpOpen((open) => !open)} aria-label={scoreT("score.help")}><HelpCircle className="h-5 w-5" /></Button></div>
         {workspace}
         <ScoreLinkedRecording linkedId={score.linkedRecordId} record={linked.record} available={linked.available} playing={linked.playing} onLink={(linkedRecordId) => setScore({ linkedRecordId })} onUnlink={() => { linked.pause(); setScore({ linkedRecordId: undefined }); }} onPlay={linked.play} onPause={linked.pause} />
-        {lyrics}
+        {!lyricsFullscreen && lyrics}
         <div className="space-y-1">
           <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
           <Textarea value={note.style} maxLength={2000} onChange={(event) => setMetadata({ style: event.target.value })} placeholder={t("editor.style")} className="min-h-[70px] resize-none text-sm textarea-desktop" />
