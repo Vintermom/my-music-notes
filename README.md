@@ -241,3 +241,5 @@ This project uses Capacitor for native Android builds.
 ## License
 
 MIT
+
+- 2026-10-02 (V1.5.0, development, unreleased): Score Print, Save as PDF and Share PDF now share one Score-only A4 layout — measures fill the page width, wrap onto new staff lines when dense, give long lyrics and chords room, and never split a staff across pages. Score Lyrics fullscreen now uses nearly the whole screen. Clear Score (with confirmation) verified to keep title, composer, Style, Tags, dates and master Lyrics.
