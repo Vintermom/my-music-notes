@@ -27,7 +27,6 @@ import { TagsInput } from "@/components/TagsInput";
 import { InsertSheet } from "@/components/InsertSheet";
 import { StylePicker } from "@/components/StylePicker";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { PrintDialog } from "@/components/PrintDialog";
 import { LyricsEditor } from "@/components/LyricsEditor";
 import { LocalFirstNotice, markFirstSave, hasFirstSaveOccurred, shouldShowFirstSaveNotice } from "@/components/LocalFirstNotice";
 import { AllPromptSheet } from "@/components/AllPromptSheet";
@@ -87,8 +86,6 @@ export default function EditorPage() {
   const [discardRecorderDialogOpen, setDiscardRecorderDialogOpen] = useState(false);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [clearStyleDialogOpen, setClearStyleDialogOpen] = useState(false);
-  const [printDialogOpen, setPrintDialogOpen] = useState(false);
-  const [printMode, setPrintMode] = useState<"print" | "pdf">("print");
   const [lyricsExpanded, setLyricsExpanded] = useState(true);
   const [styleExpanded, setStyleExpanded] = useState(true);
   const [showFirstSaveNotice, setShowFirstSaveNotice] = useState(false);
@@ -482,20 +479,19 @@ export default function EditorPage() {
 
   // Handle Print action
   const handlePrintAction = () => {
-    setPrintMode("print");
-    setPrintDialogOpen(true);
+    handlePrint("print");
   };
 
   // Handle PDF action
   const handlePdfAction = () => {
     if (!note) return;
-    setPrintMode("pdf");
-    setPrintDialogOpen(true);
+    handlePrint("pdf");
   };
 
-  const handlePrint = (textOnly: boolean) => {
+  const handlePrint = (outputMode: "print" | "pdf") => {
     if (!note) return;
-    const isPdf = printMode === "pdf";
+    const textOnly = true;
+    const isPdf = outputMode === "pdf";
     const timestampLabel = isPdf ? t("print.saved") : t("print.printed");
     
     // Common styles: All text BLACK, only labels BOLD
@@ -1060,7 +1056,6 @@ export default function EditorPage() {
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={handleInsert} />
 
       <StylePicker open={stylePickerOpen} onOpenChange={setStylePickerOpen} onInsertChips={handleInsertStyleChips} />
-      <PrintDialog open={printDialogOpen} onOpenChange={setPrintDialogOpen} note={note} onPrint={handlePrint} mode={printMode} />
       <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t("dialog.deleteTitle")} description={t("dialog.deleteMessage")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDelete} variant="destructive" />
       <ConfirmDialog open={!!deleteTakeId} onOpenChange={(open) => !open && setDeleteTakeId(null)} title={t("audio.deleteRecording")} description={t("audio.confirmDelete")} confirmLabel={t("dialog.confirm")} onConfirm={confirmDeleteTake} variant="destructive" />
       <ConfirmDialog open={discardRecorderDialogOpen} onOpenChange={setDiscardRecorderDialogOpen} title={t("audio.discard")} description={t("audio.confirmDiscard")} confirmLabel={t("dialog.confirm")} onConfirm={closeRecorderWithoutSaving} variant="destructive" />

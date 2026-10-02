@@ -1,3 +1,3 @@
-- [ ] Keep the Score toolbar unchanged and move Hint/Fullscreen into the staff container.
-- [ ] Route Text/Record Print and Export PDF directly to the existing document output without the preview popup.
-- [ ] Verify Score fullscreen reuses the same state and all protected output/share behavior remains unchanged.
+- [x] Keep the Score toolbar unchanged and move Hint/Fullscreen into the staff container.
+- [x] Route Text/Record Print and Export PDF directly to the existing document output without the preview popup.
+- [x] Verify Score fullscreen reuses the same state and all protected output/share behavior remains unchanged.

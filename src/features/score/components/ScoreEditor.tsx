@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ScoreData, ScoreEvent } from "../types/score.types";
 import {
   DURATION_UNITS, beatUnits, bottomLineDia, keyInfo, keySignaturePositions,
@@ -20,6 +20,8 @@ interface Props {
   onSelect: (id: string | null) => void;
   onChordTarget: (target: ChordTarget) => void;
   onMeasureMenu: (measure: number) => void;
+  staffActions?: ReactNode;
+  staffHelp?: ReactNode;
 }
 
 // Geometry (px). Line spacing 10, so one diatonic step = 5.
@@ -34,7 +36,7 @@ const CLEF_FONT = { fontFamily: '"Noto Music", "Segoe UI Symbol", "Apple Symbols
 
 interface MeasureLayout { index: number; sys: number; x: number; w: number; virtual: boolean; header: number }
 
-export function ScoreEditor({ score, mode, selectedId, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu }: Props) {
+export function ScoreEditor({ score, mode, selectedId, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu, staffActions, staffHelp }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(360);
 
@@ -148,7 +150,8 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
   const playing = positioned.find((p) => p.ev.id === playingId);
 
   return (
-    <section dir="ltr" aria-label={scoreT("score.workspace")} className="rounded-lg border border-border">
+    <section dir="ltr" aria-label={scoreT("score.workspace")} className="relative rounded-lg border border-border">
+      {staffActions && <div className="absolute right-2 top-2 z-[1] flex items-center gap-1 rounded-md bg-background/90 shadow-sm backdrop-blur-sm">{staffActions}</div>}
       <div ref={wrapRef} className="w-full overflow-x-auto">
         <svg
           width={layout.renderWidth}
@@ -270,6 +273,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
           })}
         </svg>
       </div>
+      {staffHelp}
     </section>
   );
 }
