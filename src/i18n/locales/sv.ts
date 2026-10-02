@@ -22,6 +22,11 @@ export const sv: Record<TranslationKey, string> = {
   "home.noPinnedNotes": "Inga fästa anteckningar",
   "home.noSearchResults": "Inga anteckningar hittades",
   "home.searchPlaceholder": "Sök anteckningar...",
+  "home.filter.label": "Filtrera anteckningar efter typ",
+  "home.filter.all": "Alla",
+  "home.filter.lyrics": "Låttext",
+  "home.filter.record": "Inspelning",
+  "home.filter.score": "Noter",
 
   // Sort options
   "sort.updatedDesc": "Senast uppdaterad",
@@ -33,6 +38,9 @@ export const sv: Record<TranslationKey, string> = {
   "card.unpin": "Lossa",
   "card.duplicate": "Duplicera",
   "card.delete": "Radera",
+  "card.type.lyrics": "Låttext",
+  "card.type.record": "Inspelning",
+  "card.type.score": "Noter",
 
   // Editor
   "editor.newNote": "Ny anteckning",

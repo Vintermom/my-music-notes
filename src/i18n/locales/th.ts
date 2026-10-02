@@ -22,6 +22,11 @@ export const th: Record<TranslationKey, string> = {
   "home.noPinnedNotes": "ไม่มีโน้ตที่ปักหมุด",
   "home.noSearchResults": "ไม่พบโน้ต",
   "home.searchPlaceholder": "ค้นหาโน้ต...",
+  "home.filter.label": "กรองโน้ตตามประเภท",
+  "home.filter.all": "ทั้งหมด",
+  "home.filter.lyrics": "เนื้อเพลง",
+  "home.filter.record": "บันทึกเสียง",
+  "home.filter.score": "โน้ตเพลง",
 
   // Sort options
   "sort.updatedDesc": "อัปเดตล่าสุด",
@@ -33,6 +38,9 @@ export const th: Record<TranslationKey, string> = {
   "card.unpin": "เลิกปักหมุด",
   "card.duplicate": "ทำสำเนา",
   "card.delete": "ลบ",
+  "card.type.lyrics": "เนื้อเพลง",
+  "card.type.record": "บันทึกเสียง",
+  "card.type.score": "โน้ตเพลง",
 
   // Editor
   "editor.newNote": "โน้ตใหม่",

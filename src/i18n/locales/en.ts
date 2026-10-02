@@ -59,6 +59,11 @@ export const en = {
   "home.noPinnedNotes": "No pinned notes",
   "home.noSearchResults": "No notes found",
   "home.searchPlaceholder": "Search notes...",
+  "home.filter.label": "Filter notes by type",
+  "home.filter.all": "All",
+  "home.filter.lyrics": "Lyrics",
+  "home.filter.record": "Record",
+  "home.filter.score": "Score",
 
   // Sort options
   "sort.updatedDesc": "Recently updated",
@@ -70,6 +75,9 @@ export const en = {
   "card.unpin": "Unpin",
   "card.duplicate": "Duplicate",
   "card.delete": "Delete",
+  "card.type.lyrics": "Lyrics",
+  "card.type.record": "Record",
+  "card.type.score": "Score",
 
   // Editor
   "editor.newNote": "New Note",

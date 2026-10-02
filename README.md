@@ -8,6 +8,10 @@
 
 A beautiful songwriting note app for capturing your musical ideas, lyrics, and compositions.
 
+## Updates
+
+- **2026-10-02 — Home note type filtering:** Added All / Lyrics / Record / Score filters to the Home notes list, with small type labels on note cards. Existing Text notes appear as Lyrics, existing Record notes appear as Record, and Score is reserved for the upcoming Score feature.
+
 ## Features
 
 - 📝 Create and manage song notes with lyrics, style, and metadata

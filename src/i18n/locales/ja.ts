@@ -22,6 +22,11 @@ export const ja: Record<TranslationKey, string> = {
   "home.noPinnedNotes": "ピン留めされたノートなし",
   "home.noSearchResults": "ノートが見つかりません",
   "home.searchPlaceholder": "ノートを検索...",
+  "home.filter.label": "種類でノートを絞り込む",
+  "home.filter.all": "すべて",
+  "home.filter.lyrics": "歌詞",
+  "home.filter.record": "録音",
+  "home.filter.score": "楽譜",
 
   // Sort options
   "sort.updatedDesc": "更新日順",
@@ -33,6 +38,9 @@ export const ja: Record<TranslationKey, string> = {
   "card.unpin": "ピン解除",
   "card.duplicate": "複製",
   "card.delete": "削除",
+  "card.type.lyrics": "歌詞",
+  "card.type.record": "録音",
+  "card.type.score": "楽譜",
 
   // Editor
   "editor.newNote": "新しいノート",

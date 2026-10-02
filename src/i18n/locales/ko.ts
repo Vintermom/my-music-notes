@@ -22,6 +22,11 @@ export const ko: Record<TranslationKey, string> = {
   "home.noPinnedNotes": "고정된 노트 없음",
   "home.noSearchResults": "노트를 찾을 수 없음",
   "home.searchPlaceholder": "노트 검색...",
+  "home.filter.label": "유형별 노트 필터",
+  "home.filter.all": "전체",
+  "home.filter.lyrics": "가사",
+  "home.filter.record": "녹음",
+  "home.filter.score": "악보",
 
   // Sort options
   "sort.updatedDesc": "최근 업데이트순",
@@ -33,6 +38,9 @@ export const ko: Record<TranslationKey, string> = {
   "card.unpin": "고정 해제",
   "card.duplicate": "복제",
   "card.delete": "삭제",
+  "card.type.lyrics": "가사",
+  "card.type.record": "녹음",
+  "card.type.score": "악보",
 
   // Editor
   "editor.newNote": "새 노트",
