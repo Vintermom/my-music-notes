@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import { Button } from "@/components/ui/button";
 import { Maximize2, Plus, Upload } from "lucide-react";
 import { LyricsEditor } from "@/components/LyricsEditor";
@@ -13,10 +14,11 @@ interface Props {
   onInsert: () => void;
   onFullscreen?: () => void;
   fullscreen?: boolean;
+  textareaRef?: RefObject<HTMLTextAreaElement>;
 }
 
 /** Plain editable lyrics. Sections such as [Verse] stay ordinary text. */
-export function ScoreLyrics({ value, onChange, onAlign, onReplaceAll, onImport, onInsert, onFullscreen, fullscreen = false }: Props) {
+export function ScoreLyrics({ value, onChange, onAlign, onReplaceAll, onImport, onInsert, onFullscreen, fullscreen = false, textareaRef }: Props) {
   const actions = (
     <>
       <Button type="button" variant="outline" size="sm" onClick={onImport}><Upload className="h-4 w-4 mr-1.5" />{scoreT("score.importLyrics")}</Button>
@@ -34,6 +36,7 @@ export function ScoreLyrics({ value, onChange, onAlign, onReplaceAll, onImport, 
         <LyricsEditor
           value={value}
           onChange={onChange}
+          textareaRef={textareaRef}
           placeholder={scoreT("score.lyricsPlaceholder")}
           className="h-[calc(100dvh-7.5rem)] max-h-none text-base"
         />
@@ -51,7 +54,7 @@ export function ScoreLyrics({ value, onChange, onAlign, onReplaceAll, onImport, 
           </Button>
         )}
       </div>
-      <LyricsEditor value={value} onChange={onChange} placeholder={scoreT("score.lyricsPlaceholder")} className="min-h-[140px] text-sm" />
+      <LyricsEditor textareaRef={textareaRef} value={value} onChange={onChange} placeholder={scoreT("score.lyricsPlaceholder")} className="min-h-[140px] text-sm" />
       <div className="flex flex-wrap items-center gap-2">
         {actions}
         <span className="text-xs text-muted-foreground">{scoreT("score.alignHint")}</span>

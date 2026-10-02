@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Copy, FileDown, FileJson, HelpCircle, Maximize2, MoreVertical, Palette, Pin, Printer, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -66,10 +66,22 @@ export default function ScorePage() {
   const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [lyricsFullscreen, setLyricsFullscreen] = useState(false);
   const [scoreFullscreen, setScoreFullscreen] = useState(false);
+  const lyricsRef = useRef<HTMLTextAreaElement>(null);
   const history = useScoreHistory(id, note?.score, setScore);
   usePageMeta(`${note?.title || scoreT("score.untitled")} — MyMuNotes`, scoreT("score.workspaceEmpty"));
 
   useEffect(() => { setSelectedId(null); setSelectedChord(null); setChordTarget(null); }, [id]);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target;
+      const typing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+      if (typing || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
+      event.preventDefault();
+      if (event.shiftKey) history.redo(); else history.undo();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [history.redo, history.undo]);
 
   const goBack = () => { playback.stop(); linked.pause(); flush(); navigate("/app"); };
 
@@ -167,6 +179,7 @@ export default function ScorePage() {
       value={score.lyrics} onChange={(value) => history.commit({ lyrics: value })}
       onImport={() => setLyricsImportOpen(true)} onFullscreen={() => setLyricsFullscreen(true)} fullscreen={lyricsFullscreen}
       onInsert={() => setInsertSheetOpen(true)}
+      textareaRef={lyricsRef}
       onAlign={() => history.commit({ measures: alignLyrics(score) })}
       onReplaceAll={() => {
         const assigned = score.measures.some((measure) => measure.events.some((event) => event.kind === "note" && event.lyric));
@@ -236,7 +249,14 @@ export default function ScorePage() {
       <ScoreChordDialog target={chordTarget} onClose={() => setChordTarget(null)} onSave={(symbol) => { if (chordTarget) history.commit({ chords: upsertChord(score, chordTarget, symbol) }); setChordTarget(null); setSelectedChord(null); }} onDelete={() => { if (chordTarget?.id) history.commit({ chords: removeChord(score, chordTarget.id) }); setChordTarget(null); setSelectedChord(null); }} />
       <ScoreMeasureMenu measure={measureMenu} onClose={() => setMeasureMenu(null)} onClear={(measure) => history.commit(clearMeasure(score, measure))} onDelete={(measure) => { history.commit(deleteMeasure(score, measure)); setSelectedId(null); }} />
       <ScoreLyricsImportDialog open={lyricsImportOpen} onOpenChange={setLyricsImportOpen} onImport={(imported) => history.commit({ lyrics: imported })} />
-      <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={(text) => history.commit({ lyrics: `${score.lyrics}${score.lyrics && !score.lyrics.endsWith("\n") ? "\n" : ""}${text}\n` })} />
+      <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={(text) => {
+        const cursor = lyricsRef.current?.selectionStart ?? score.lyrics.length;
+        const before = score.lyrics.slice(0, cursor);
+        const after = score.lyrics.slice(cursor);
+        const prefix = before && !before.endsWith("\n") ? "\n" : "";
+        const suffix = after && !after.startsWith("\n") ? "\n" : "";
+        history.commit({ lyrics: `${before}${prefix}${text}${suffix}${after}` });
+      }} />
       <ConfirmDialog open={confirmReplaceLyrics} onOpenChange={setConfirmReplaceLyrics} title={scoreT("score.replaceAllLyricsTitle")} description={scoreT("score.replaceAllLyricsConfirm")} confirmLabel={scoreT("score.replaceAllLyrics")} onConfirm={() => { history.commit({ measures: replaceAllLyrics(score) }); setConfirmReplaceLyrics(false); }} />
       <ConfirmDialog open={confirmClearScore} onOpenChange={setConfirmClearScore} title={scoreT("score.clearScoreTitle")} description={scoreT("score.clearScoreConfirm")} confirmLabel={scoreT("score.clearScore")} variant="destructive" onConfirm={() => { history.commit(clearScore()); setSelectedId(null); setSelectedChord(null); setConfirmClearScore(false); }} />
       <ConfirmDialog open={confirmClearAll} onOpenChange={setConfirmClearAll} title={scoreT("score.clearAllTitle")} description={scoreT("score.clearAllConfirm")} confirmLabel={scoreT("score.clearAll")} variant="destructive" onConfirm={() => { setScore(createDefaultScoreData()); setTitle(""); setMetadata({ composer: "", style: "", tags: [] }); setSelectedId(null); setSelectedChord(null); setConfirmClearAll(false); }} />
