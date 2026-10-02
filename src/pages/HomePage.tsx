@@ -207,7 +207,7 @@ export default function HomePage() {
 
       {/* Content */}
       <main className="container max-w-4xl mx-auto px-4 py-6 pb-24">
-        {searchQuery && typeFilteredPinned.length === 0 && typeFilteredOther.length === 0 ? (
+        {searchQuery && noteTypeFilter !== "score" && typeFilteredPinned.length === 0 && typeFilteredOther.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">{t("home.noSearchResults")}</p>
           </div>

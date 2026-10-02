@@ -35,7 +35,11 @@ export function NoteCard({ note, onClick, onPin, onDuplicate, onDelete }: NoteCa
   };
   const audioTakeCount = note.takes?.length || 0;
   const noteType = getHomeNoteType(note);
-  const typeLabel = noteType === "record" ? t("card.type.record") : t("card.type.lyrics");
+  const typeLabel = noteType === "score"
+    ? t("card.type.score")
+    : noteType === "record"
+      ? t("card.type.record")
+      : t("card.type.lyrics");
 
   return (
     <div
