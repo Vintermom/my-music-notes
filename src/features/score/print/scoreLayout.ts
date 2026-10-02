@@ -164,7 +164,7 @@ export function layoutScore(score: ScoreData): ScoreLayout {
           for (let d = bottomDia - 2; d >= dia; d -= 2) ledgers.push(d);
           for (let d = bottomDia + 10; d <= dia; d += 2) ledgers.push(d);
         }
-        return { event: ev, x: ev.kind === "note" && ev.lyric ? Math.max(cx, xs[i] + accShift + 8) : cx, y: yFor(dia), dia, stemUp: dia < midDia, ledgers };
+        return { event: ev, x: ev.kind === "note" && ev.lyric ? Math.max(cx, xs[i] + accShift + textWidth(ev.lyric, LYRIC_SIZE) / 2 + 5) : cx, y: yFor(dia), dia, stemUp: dia < midDia, ledgers };
       });
       const chords = score.chords.filter((c) => c.measure === p.index).sort((a, b) => a.offset - b.offset).map((c, k, all) => {
         let cx: number;
