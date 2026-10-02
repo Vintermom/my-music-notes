@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eraser, Trash2 } from "lucide-react";
+import { Copy, Eraser, Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,9 +10,10 @@ interface Props {
   onClose: () => void;
   onClear: (measure: number) => void;
   onDelete: (measure: number) => void;
+  onDuplicate: (measure: number, withLyrics: boolean) => void;
 }
 
-export function ScoreMeasureMenu({ measure, onClose, onClear, onDelete }: Props) {
+export function ScoreMeasureMenu({ measure, onClose, onClear, onDelete, onDuplicate }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const measureNumber = (measure ?? 0) + 1;
 
@@ -24,6 +25,12 @@ export function ScoreMeasureMenu({ measure, onClose, onClear, onDelete }: Props)
             <DialogTitle>{scoreT("score.measureMenu").replace("{number}", String(measureNumber))}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-2">
+            <Button type="button" variant="outline" className="justify-start" onClick={() => { if (measure !== null) onDuplicate(measure, false); onClose(); }}>
+              <Copy className="h-4 w-4" /> {scoreT("score.duplicateMeasure")}
+            </Button>
+            <Button type="button" variant="ghost" size="sm" className="justify-start text-muted-foreground" onClick={() => { if (measure !== null) onDuplicate(measure, true); onClose(); }}>
+              <Copy className="h-4 w-4" /> {scoreT("score.duplicateMeasureLyrics")}
+            </Button>
             <Button type="button" variant="outline" className="justify-start" onClick={() => { if (measure !== null) onClear(measure); onClose(); }}>
               <Eraser className="h-4 w-4" /> {scoreT("score.clearMeasure")}
             </Button>
