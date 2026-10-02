@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { ColorPicker } from "@/components/ColorPicker";
 import { TagsInput } from "@/components/TagsInput";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { ShareButton } from "@/features/share/ShareButton";
+import { ScoreShareButton } from "./ScoreShareButton";
 import { t } from "@/i18n";
 import { formatDateISO } from "@/lib/dateFormat";
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -180,7 +180,7 @@ export default function ScorePage() {
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" onClick={() => setMetadata({ isPinned: !note.isPinned })} aria-label={note.isPinned ? "Unpin note" : "Pin note"} className={note.isPinned ? "text-primary" : ""}><Pin className={`h-5 w-5 ${note.isPinned ? "fill-current" : ""}`} /></Button>
             <ColorPicker value={note.color} onChange={(color) => setMetadata({ color })}><Button variant="ghost" size="icon" aria-label="Change note color"><Palette className="h-5 w-5" /></Button></ColorPicker>
-            <ShareButton note={note} />
+            <ScoreShareButton note={note} beforeShare={flushNow} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="More actions"><MoreVertical className="h-5 w-5" /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end">
