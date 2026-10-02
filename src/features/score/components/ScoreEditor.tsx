@@ -50,7 +50,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
   const keyPositions = keySignaturePositions(score.keySignature, score.clef);
 
   const layout = useMemo(() => {
-    const headerFor = (first: boolean) => 38 + key.count * 9 + (first ? 26 : 6);
+    const headerFor = (first: boolean) => 46 + key.count * 9 + (first ? 26 : 6);
     const total = score.measures.length + 1; // trailing empty measure for input
     const result: MeasureLayout[] = [];
     let m = 0;
@@ -158,7 +158,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
                   {score.clef === "treble" ? "𝄞" : "𝄢"}
                 </text>
                 {keyPositions.map((p, i) => (
-                  <text key={i} x={40 + i * 9} y={yFor(p, sys) + 5} fontSize={17} fill="currentColor" textAnchor="middle">
+                  <text key={i} x={48 + i * 9} y={yFor(p, sys) + 5} fontSize={17} fill="currentColor" textAnchor="middle">
                     {key.type === "sharp" ? "♯" : "♭"}
                   </text>
                 ))}
