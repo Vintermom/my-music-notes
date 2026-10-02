@@ -18,6 +18,7 @@ interface Props {
   onPlace: (measure: number, index: number, pitch: number) => void;
   onSelect: (id: string | null) => void;
   onChordTarget: (target: ChordTarget) => void;
+  onMeasureMenu: (measure: number) => void;
 }
 
 // Geometry (px). Line spacing 10, so one diatonic step = 5.
@@ -32,7 +33,7 @@ const CLEF_FONT = { fontFamily: '"Noto Music", "Segoe UI Symbol", "Apple Symbols
 
 interface MeasureLayout { index: number; sys: number; x: number; w: number; virtual: boolean; header: number }
 
-export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSelect, onChordTarget }: Props) {
+export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(360);
 
@@ -57,15 +58,33 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
     let sys = 0;
     while (m < total) {
       const header = headerFor(sys === 0);
-      const perSys = Math.max(1, Math.floor((width - header - 4) / MIN_MEASURE_W));
-      const w = (width - header - 4) / perSys;
-      for (let k = 0; k < perSys && m < total; k++, m++) {
-        result.push({ index: m, sys, x: header + k * w, w, virtual: m === score.measures.length, header });
+      const available = Math.max(MIN_MEASURE_W, width - header - 4);
+      let x = header;
+      let used = 0;
+      while (m < total) {
+        const measure = score.measures[m];
+        const events = measure?.events || [];
+        const chordChars = score.chords
+          .filter((chord) => chord.measure === m)
+          .reduce((sum, chord) => sum + chord.symbol.length, 0);
+        const lyricChars = events.reduce((sum, event) => sum + (event.lyric?.length || 0), 0);
+        const accidentalCount = events.filter((event) => event.accidental).length;
+        const contentWidth = PAD * 2 + events.length * 27 + accidentalCount * 7 + Math.min(100, chordChars * 3 + lyricChars * 1.5);
+        const desired = Math.max(MIN_MEASURE_W, contentWidth);
+        const remaining = available - used;
+        if (used > 0 && desired > remaining) break;
+        const measureWidth = used === 0 && desired > available ? desired : Math.min(desired, remaining);
+        result.push({ index: m, sys, x, w: measureWidth, virtual: m === score.measures.length, header });
+        x += measureWidth;
+        used += measureWidth;
+        m++;
+        if (used >= available || m >= total) break;
       }
       sys++;
     }
-    return { measures: result, systems: sys };
-  }, [score.measures.length, width, key.count]);
+    const renderWidth = Math.max(width, ...result.map((measure) => measure.x + measure.w + 4));
+    return { measures: result, systems: sys, renderWidth };
+  }, [score.measures, score.chords, width, key.count]);
 
   const eventX = (ml: MeasureLayout, startUnits: number) => ml.x + PAD + (startUnits / cap) * (ml.w - 2 * PAD);
   const yFor = (dia: number, sys: number) => sys * SYS_H + BOTTOM - (dia - bottomDia) * 5;
@@ -128,7 +147,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
     <section dir="ltr" aria-label={scoreT("score.workspace")} className="rounded-lg border border-border">
       <div ref={wrapRef} className="w-full overflow-x-auto">
         <svg
-          width={width}
+          width={layout.renderWidth}
           height={height}
           onClick={handleClick}
           className="block touch-manipulation select-none text-foreground"
@@ -175,7 +194,15 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
                       stroke="currentColor" className="text-muted-foreground"
                       strokeDasharray={ml.virtual ? "3 3" : undefined}
                     />
-                    <text x={ml.x + 3} y={oy + TOP - 6} fontSize={9} className="fill-muted-foreground">{ml.index + 1}</text>
+                    <text
+                      x={ml.x + 3} y={oy + TOP - 6} fontSize={9}
+                      className={ml.virtual ? "fill-muted-foreground" : "fill-muted-foreground cursor-pointer"}
+                      onClick={ml.virtual ? undefined : (event) => { event.stopPropagation(); onMeasureMenu(ml.index); }}
+                      role={ml.virtual ? undefined : "button"}
+                      aria-label={ml.virtual ? undefined : scoreT("score.measureMenu").replace("{number}", String(ml.index + 1))}
+                    >
+                      {ml.index + 1}
+                    </text>
                   </g>
                 ))}
               </g>
