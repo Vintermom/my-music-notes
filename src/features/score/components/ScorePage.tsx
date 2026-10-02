@@ -167,11 +167,18 @@ export default function ScorePage() {
 
   const workspace = (
     <>
-      <div className="flex justify-end">{!scoreFullscreen && <Button type="button" variant="ghost" size="icon" onClick={() => setScoreFullscreen(true)} aria-label={scoreT("score.fullscreenStaff")}><Maximize2 className="h-4 w-4" /></Button>}</div>
       <ScoreToolbar score={score} onChange={handleScoreChange} />
       <ScorePlaybackBar playing={playback.playing} tempo={score.tempo} volume={score.volume} onPlay={() => { linked.pause(); if (!playback.play()) toast(scoreT("score.nothingToPlay")); }} onStop={playback.stop} onVolume={(volume) => setScore({ volume })} />
       {toolbar}
-      <ScoreEditor score={score} mode={mode} selectedId={selectedId} hasSelection={!!selected || !!selectedChord} playingId={playback.currentId} onPlace={handlePlace} onSelect={(eventId) => { setSelectedChord(null); setSelectedId(eventId); }} onChordTarget={handleChordTarget} onMeasureMenu={setMeasureMenu} />
+      <ScoreEditor
+        score={score} mode={mode} selectedId={selectedId} hasSelection={!!selected || !!selectedChord} playingId={playback.currentId}
+        onPlace={handlePlace} onSelect={(eventId) => { setSelectedChord(null); setSelectedId(eventId); }} onChordTarget={handleChordTarget} onMeasureMenu={setMeasureMenu}
+        staffActions={<>
+          <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={() => setHelpOpen((open) => !open)} aria-label={scoreT("score.help")} aria-pressed={helpOpen}><HelpCircle className="h-4 w-4" /></Button>
+          {!scoreFullscreen && <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={() => setScoreFullscreen(true)} aria-label={scoreT("score.fullscreenStaff")}><Maximize2 className="h-4 w-4" /></Button>}
+        </>}
+        staffHelp={helpOpen ? <div className="border-t border-border p-2"><ScoreHelp /></div> : null}
+      />
     </>
   );
 
@@ -218,9 +225,7 @@ export default function ScorePage() {
       <main className="container max-w-4xl mx-auto px-4 py-4 space-y-3 pb-24">
         <Input value={note.title} onChange={(event) => setTitle(event.target.value)} placeholder={t("editor.title")} aria-label={t("editor.title")} className="text-lg font-semibold h-9 px-2 input-desktop border-transparent bg-transparent" />
         <Input value={note.composer} onChange={(event) => setMetadata({ composer: event.target.value })} placeholder={t("editor.composer")} aria-label={t("editor.composer")} className="text-sm h-8 px-2 text-muted-foreground input-desktop border-transparent bg-transparent" />
-        {helpOpen && <ScoreHelp />}
-        <div className="flex justify-end"><Button variant="ghost" size="icon" onClick={() => setHelpOpen((open) => !open)} aria-label={scoreT("score.help")}><HelpCircle className="h-5 w-5" /></Button></div>
-        {workspace}
+        {!scoreFullscreen && workspace}
         <ScoreLinkedRecording linkedId={score.linkedRecordId} record={linked.record} available={linked.available} playing={linked.playing} onLink={(linkedRecordId) => setScore({ linkedRecordId })} onUnlink={() => { linked.pause(); setScore({ linkedRecordId: undefined }); }} onPlay={linked.play} onPause={linked.pause} />
         {!lyricsFullscreen && lyrics}
         <div className="space-y-1">
