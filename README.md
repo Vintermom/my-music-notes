@@ -39,6 +39,16 @@ A beautiful songwriting note app for capturing your musical ideas, lyrics, and c
 - Added the basic Score page foundation.
 - V1.5.0 is still in development and has not been released.
 
+## 2026-10-02 – V1.5.0 Score Core
+
+- Added editable staff notation.
+- Added notes and rests.
+- Added basic accidentals.
+- Added chord symbols.
+- Added editable lyrics support.
+- Added MIDI-style piano playback with tempo and volume (synthesized in the browser with the Web Audio API; no third-party library or audio samples).
+- Score remains under development and unreleased.
+
 ## V1.4.0 — Voice Update (internal notes)
 
 Included in V1.4.0:

@@ -1,16 +1,39 @@
-// Score data model (V1.5.0 Phase 1 foundation).
-// Kept versioned so future phases (notation, chords, lyrics under notes,
-// playback, linked Record, Score PDF) can extend it without migrations.
+// Score data model (V1.5.0).
+// Versioned and sanitized on load so Phase 1 notes (empty measures) keep opening.
+// Future phases (linked Record, Score PDF, Audio-to-Score) extend this file only.
 
-export const SCORE_DATA_VERSION = 1;
+export const SCORE_DATA_VERSION = 2;
 
 export type ScoreClef = "treble" | "bass";
 export type ScoreTimeSignature = "2/4" | "3/4" | "4/4" | "6/8";
 
-/** Placeholder for future notation content (notes/rests/chords/lyrics). */
+/** w = whole, h = half, q = quarter, e = eighth, s = sixteenth */
+export type ScoreDuration = "w" | "h" | "q" | "e" | "s";
+export type ScoreAccidental = "natural" | "sharp" | "flat";
+export type ScoreEventKind = "note" | "rest";
+
+/** One note or rest. `pitch` is a diatonic step number (C0 = 0, C4 = 28). */
+export interface ScoreEvent {
+  id: string;
+  kind: ScoreEventKind;
+  duration: ScoreDuration;
+  pitch?: number;
+  accidental?: ScoreAccidental;
+  /** Lyric syllable shown under this note (lyrics mapping). */
+  lyric?: string;
+}
+
 export interface ScoreMeasure {
   id: string;
-  events: unknown[];
+  events: ScoreEvent[];
+}
+
+/** Chord symbols are stored separately from notation. `offset` is in 16th units within the measure. */
+export interface ScoreChord {
+  id: string;
+  measure: number;
+  offset: number;
+  symbol: string;
 }
 
 export interface ScoreData {
@@ -19,5 +42,10 @@ export interface ScoreData {
   timeSignature: ScoreTimeSignature;
   keySignature: string;
   tempo: number;
+  /** Playback volume 0–1 */
+  volume: number;
   measures: ScoreMeasure[];
+  chords: ScoreChord[];
+  /** Free, editable lyrics text (sections like [Verse] are ordinary text). */
+  lyrics: string;
 }
