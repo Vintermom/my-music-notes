@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Maximize2, Upload } from "lucide-react";
+import { Maximize2, Plus, Upload } from "lucide-react";
 import { LyricsEditor } from "@/components/LyricsEditor";
 import { scoreT } from "../i18n";
 
@@ -9,15 +9,17 @@ interface Props {
   onAlign: () => void;
   onReplaceAll: () => void;
   onImport: () => void;
+  onInsert: () => void;
   onFullscreen?: () => void;
   fullscreen?: boolean;
 }
 
 /** Plain editable lyrics. Sections such as [Verse] stay ordinary text. */
-export function ScoreLyrics({ value, onChange, onAlign, onReplaceAll, onImport, onFullscreen, fullscreen = false }: Props) {
+export function ScoreLyrics({ value, onChange, onAlign, onReplaceAll, onImport, onInsert, onFullscreen, fullscreen = false }: Props) {
   const actions = (
     <>
       <Button type="button" variant="outline" size="sm" onClick={onImport}><Upload className="h-4 w-4 mr-1.5" />{scoreT("score.importLyrics")}</Button>
+      <Button type="button" variant="outline" size="sm" onClick={onInsert}><Plus className="h-4 w-4 mr-1.5" />{scoreT("score.addSection")}</Button>
       <Button type="button" variant="outline" size="sm" onClick={onAlign}>{scoreT("score.alignLyrics")}</Button>
       <Button type="button" variant="ghost" size="sm" onClick={onReplaceAll}>{scoreT("score.replaceAllLyrics")}</Button>
     </>

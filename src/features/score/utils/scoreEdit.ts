@@ -1,5 +1,5 @@
 import type { ScoreChord, ScoreData, ScoreEvent, ScoreMeasure } from "../types/score.types";
-import { DURATION_UNITS, measureCapacity, pitchRange, usedUnits } from "./notation";
+import { DURATION_UNITS, measureCapacity, usedUnits } from "./notation";
 
 // Pure edit helpers. Each returns new arrays, or null when the change does not fit.
 
@@ -29,10 +29,7 @@ export function patchEvent(score: ScoreData, id: string, patch: Partial<ScoreEve
   const found = findEvent(score, id);
   if (!found) return null;
   const next = { ...found.ev, ...patch };
-  if (next.kind === "note" && typeof next.pitch === "number") {
-    const [lo, hi] = pitchRange(score.clef);
-    next.pitch = Math.min(hi, Math.max(lo, next.pitch));
-  }
+  if (next.kind === "note" && typeof next.pitch === "number") next.pitch = Math.min(70, Math.max(0, next.pitch));
   if (!next.accidental) delete next.accidental;
   const measure = score.measures[found.m];
   const delta = DURATION_UNITS[next.duration] - DURATION_UNITS[found.ev.duration];
