@@ -52,9 +52,7 @@ export async function printScore(note: Note): Promise<void> {
   try {
     const fonts = doc.fonts;
     if (fonts) {
-      await Promise.all(
-        ["ScoreSans", "ScoreThai", "ScoreKR", "ScoreJP"].map((f) => fonts.load(`12px "${f}"`).catch(() => null))
-      );
+      void doc.body.offsetHeight; // trigger layout so only the fonts actually used start loading
       await fonts.ready;
     }
   } catch { /* print anyway */ }
