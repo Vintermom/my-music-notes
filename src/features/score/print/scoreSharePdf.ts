@@ -99,6 +99,7 @@ export async function buildScorePdfBlob(note: Note): Promise<Blob> {
     const glyph = await glyphLayer(system, layout, score.clef);
     if (glyph) overlays.push({ image: glyph, width: CONTENT_W, relativePosition: { x: 0, y: 0 } } as Content);
     const shapes = renderToStaticMarkup(createElement(ScoreSystemSvg, { system, layout, clef: score.clef, layer: "shapes" }))
+      .replace('width="100%"', `width="${LAYOUT_WIDTH}" height="${system.height}"`)
       .replace(/currentColor/g, "#000000");
     // Positioned overlays first (they take no space), then the in-flow staff. Never split a system.
     content.push({ stack: [...overlays, { svg: shapes, width: CONTENT_W }], unbreakable: true, margin: [0, 0, 0, 9] } as Content);
