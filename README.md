@@ -65,7 +65,7 @@ A beautiful songwriting note app for capturing your musical ideas, lyrics, and c
 
 ## 2026-10-02 – V1.5.0 Score Final UX Polish
 
-- Unified Score add/edit controls, added note metadata, lyrics import and fullscreen editing, Score fullscreen, safe clearing, and the standard MyMuNotes header/actions while keeping V1.5.0 unreleased.
+- Unified the Score toolbar and clear actions, reused the existing Lyrics editor with import and safer placement, clarified clef display behavior, and improved Score Print/PDF/Share layout; V1.5.0 remains unreleased.
 
 ## V1.4.0 — Voice Update (internal notes)
 

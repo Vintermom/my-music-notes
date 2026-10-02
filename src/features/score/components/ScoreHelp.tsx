@@ -1,6 +1,6 @@
 import { scoreT } from "../i18n";
 
-const HINTS = ["score", "note", "rest", "chord", "lyrics", "play", "linked", "print"] as const;
+const HINTS = ["score", "note", "rest", "chord", "lyrics", "clef", "play", "linked", "print"] as const;
 
 /** Lightweight, collapsible hint list (same muted hint style as elsewhere in the app). */
 export function ScoreHelp() {

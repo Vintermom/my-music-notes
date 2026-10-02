@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Copy, FileDown, FileJson, HelpCircle, Maximize2, MoreVertical, Palette, Pin, Printer, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -35,8 +35,9 @@ import { ScoreLyrics } from "./ScoreLyrics";
 import { ScoreLyricsImportDialog } from "./ScoreLyricsImportDialog";
 import { ScoreLinkedRecording } from "./ScoreLinkedRecording";
 import { ScoreHelp } from "./ScoreHelp";
-import { ScoreHistoryControls } from "./ScoreHistoryControls";
 import { ScoreMeasureMenu } from "./ScoreMeasureMenu";
+import { InsertSheet } from "@/components/InsertSheet";
+import { createDefaultScoreData } from "../utils/scoreData";
 
 const colorClasses = {
   default: "note-bg-default", cream: "note-bg-cream", pink: "note-bg-pink", blue: "note-bg-blue",
@@ -59,14 +60,29 @@ export default function ScorePage() {
   const [measureMenu, setMeasureMenu] = useState<number | null>(null);
   const [confirmReplaceLyrics, setConfirmReplaceLyrics] = useState(false);
   const [confirmClearScore, setConfirmClearScore] = useState(false);
+  const [confirmClearAll, setConfirmClearAll] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [lyricsImportOpen, setLyricsImportOpen] = useState(false);
+  const [insertSheetOpen, setInsertSheetOpen] = useState(false);
   const [lyricsFullscreen, setLyricsFullscreen] = useState(false);
   const [scoreFullscreen, setScoreFullscreen] = useState(false);
+  const lyricsRef = useRef<HTMLTextAreaElement>(null);
   const history = useScoreHistory(id, note?.score, setScore);
+  const { undo, redo } = history;
   usePageMeta(`${note?.title || scoreT("score.untitled")} — MyMuNotes`, scoreT("score.workspaceEmpty"));
 
   useEffect(() => { setSelectedId(null); setSelectedChord(null); setChordTarget(null); }, [id]);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target;
+      const typing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+      if (typing || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
+      event.preventDefault();
+      if (event.shiftKey) redo(); else undo();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [redo, undo]);
 
   const goBack = () => { playback.stop(); linked.pause(); flush(); navigate("/app"); };
 
@@ -144,15 +160,14 @@ export default function ScorePage() {
       onCloseSelected={() => { setSelectedId(null); setSelectedChord(null); }}
       onEditChord={() => { if (selectedChord) setChordTarget(selectedChord); }}
       onDeleteChord={() => { if (!selectedChord?.id) return; history.commit({ chords: removeChord(score, selectedChord.id) }); setSelectedChord(null); }}
+      canUndo={history.canUndo} canRedo={history.canRedo} onUndo={history.undo} onRedo={history.redo}
+      onClearScore={() => setConfirmClearScore(true)}
     />
   );
 
   const workspace = (
     <>
-      <div className="flex items-center justify-between gap-2">
-        <ScoreHistoryControls canUndo={history.canUndo} canRedo={history.canRedo} onUndo={history.undo} onRedo={history.redo} />
-        {!scoreFullscreen && <Button type="button" variant="ghost" size="icon" onClick={() => setScoreFullscreen(true)} aria-label={scoreT("score.fullscreenStaff")}><Maximize2 className="h-4 w-4" /></Button>}
-      </div>
+      <div className="flex justify-end">{!scoreFullscreen && <Button type="button" variant="ghost" size="icon" onClick={() => setScoreFullscreen(true)} aria-label={scoreT("score.fullscreenStaff")}><Maximize2 className="h-4 w-4" /></Button>}</div>
       <ScoreToolbar score={score} onChange={handleScoreChange} />
       <ScorePlaybackBar playing={playback.playing} tempo={score.tempo} volume={score.volume} onPlay={() => { linked.pause(); if (!playback.play()) toast(scoreT("score.nothingToPlay")); }} onStop={playback.stop} onVolume={(volume) => setScore({ volume })} />
       {toolbar}
@@ -164,6 +179,8 @@ export default function ScorePage() {
     <ScoreLyrics
       value={score.lyrics} onChange={(value) => history.commit({ lyrics: value })}
       onImport={() => setLyricsImportOpen(true)} onFullscreen={() => setLyricsFullscreen(true)} fullscreen={lyricsFullscreen}
+      onInsert={() => setInsertSheetOpen(true)}
+      textareaRef={lyricsRef}
       onAlign={() => history.commit({ measures: alignLyrics(score) })}
       onReplaceAll={() => {
         const assigned = score.measures.some((measure) => measure.events.some((event) => event.kind === "note" && event.lyric));
@@ -188,9 +205,9 @@ export default function ScorePage() {
                 <DropdownMenuItem onClick={handlePrint}><FileDown className="h-4 w-4 mr-2" />{t("menu.exportPdf")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => { const saved = flushNow(); if (saved) downloadNoteJson(saved); toast.success(t("toast.jsonExported")); }}><FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setConfirmClearScore(true)}><Trash2 className="h-4 w-4 mr-2" />{scoreT("score.clearScore")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDuplicate}><Copy className="h-4 w-4 mr-2" />{t("menu.duplicate")}</DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setConfirmClearAll(true)} className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4 mr-2" />{scoreT("score.clearAll")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setConfirmDelete(true)} className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4 mr-2" />{t("menu.delete")}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -205,7 +222,7 @@ export default function ScorePage() {
         <div className="flex justify-end"><Button variant="ghost" size="icon" onClick={() => setHelpOpen((open) => !open)} aria-label={scoreT("score.help")}><HelpCircle className="h-5 w-5" /></Button></div>
         {workspace}
         <ScoreLinkedRecording linkedId={score.linkedRecordId} record={linked.record} available={linked.available} playing={linked.playing} onLink={(linkedRecordId) => setScore({ linkedRecordId })} onUnlink={() => { linked.pause(); setScore({ linkedRecordId: undefined }); }} onPlay={linked.play} onPause={linked.pause} />
-        {lyrics}
+        {!lyricsFullscreen && lyrics}
         <div className="space-y-1">
           <label className="text-xs font-medium text-muted-foreground">{t("editor.style")}</label>
           <Textarea value={note.style} maxLength={2000} onChange={(event) => setMetadata({ style: event.target.value })} placeholder={t("editor.style")} className="min-h-[70px] resize-none text-sm textarea-desktop" />
@@ -233,8 +250,17 @@ export default function ScorePage() {
       <ScoreChordDialog target={chordTarget} onClose={() => setChordTarget(null)} onSave={(symbol) => { if (chordTarget) history.commit({ chords: upsertChord(score, chordTarget, symbol) }); setChordTarget(null); setSelectedChord(null); }} onDelete={() => { if (chordTarget?.id) history.commit({ chords: removeChord(score, chordTarget.id) }); setChordTarget(null); setSelectedChord(null); }} />
       <ScoreMeasureMenu measure={measureMenu} onClose={() => setMeasureMenu(null)} onClear={(measure) => history.commit(clearMeasure(score, measure))} onDelete={(measure) => { history.commit(deleteMeasure(score, measure)); setSelectedId(null); }} />
       <ScoreLyricsImportDialog open={lyricsImportOpen} onOpenChange={setLyricsImportOpen} onImport={(imported) => history.commit({ lyrics: imported })} />
+      <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={(text) => {
+        const cursor = lyricsRef.current?.selectionStart ?? score.lyrics.length;
+        const before = score.lyrics.slice(0, cursor);
+        const after = score.lyrics.slice(cursor);
+        const prefix = before && !before.endsWith("\n") ? "\n" : "";
+        const suffix = after && !after.startsWith("\n") ? "\n" : "";
+        history.commit({ lyrics: `${before}${prefix}${text}${suffix}${after}` });
+      }} />
       <ConfirmDialog open={confirmReplaceLyrics} onOpenChange={setConfirmReplaceLyrics} title={scoreT("score.replaceAllLyricsTitle")} description={scoreT("score.replaceAllLyricsConfirm")} confirmLabel={scoreT("score.replaceAllLyrics")} onConfirm={() => { history.commit({ measures: replaceAllLyrics(score) }); setConfirmReplaceLyrics(false); }} />
       <ConfirmDialog open={confirmClearScore} onOpenChange={setConfirmClearScore} title={scoreT("score.clearScoreTitle")} description={scoreT("score.clearScoreConfirm")} confirmLabel={scoreT("score.clearScore")} variant="destructive" onConfirm={() => { history.commit(clearScore()); setSelectedId(null); setSelectedChord(null); setConfirmClearScore(false); }} />
+      <ConfirmDialog open={confirmClearAll} onOpenChange={setConfirmClearAll} title={scoreT("score.clearAllTitle")} description={scoreT("score.clearAllConfirm")} confirmLabel={scoreT("score.clearAll")} variant="destructive" onConfirm={() => { setScore(createDefaultScoreData()); setTitle(""); setMetadata({ composer: "", style: "", tags: [] }); setSelectedId(null); setSelectedChord(null); setConfirmClearAll(false); }} />
       <ConfirmDialog open={confirmDelete} onOpenChange={setConfirmDelete} title={scoreT("score.deleteTitle")} description={scoreT("score.deleteConfirm")} confirmLabel={t("menu.delete")} variant="destructive" onConfirm={handleDelete} />
     </div>
   );

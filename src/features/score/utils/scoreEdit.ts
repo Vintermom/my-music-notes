@@ -1,5 +1,5 @@
 import type { ScoreChord, ScoreData, ScoreEvent, ScoreMeasure } from "../types/score.types";
-import { DURATION_UNITS, measureCapacity, pitchRange, usedUnits } from "./notation";
+import { DURATION_UNITS, measureCapacity, usedUnits } from "./notation";
 
 // Pure edit helpers. Each returns new arrays, or null when the change does not fit.
 
@@ -29,10 +29,7 @@ export function patchEvent(score: ScoreData, id: string, patch: Partial<ScoreEve
   const found = findEvent(score, id);
   if (!found) return null;
   const next = { ...found.ev, ...patch };
-  if (next.kind === "note" && typeof next.pitch === "number") {
-    const [lo, hi] = pitchRange(score.clef);
-    next.pitch = Math.min(hi, Math.max(lo, next.pitch));
-  }
+  if (next.kind === "note" && typeof next.pitch === "number") next.pitch = Math.min(70, Math.max(0, next.pitch));
   if (!next.accidental) delete next.accidental;
   const measure = score.measures[found.m];
   const delta = DURATION_UNITS[next.duration] - DURATION_UNITS[found.ev.duration];
@@ -117,7 +114,7 @@ export function alignLyrics(score: ScoreData): ScoreMeasure[] {
     events: m.events.map((e) => {
       if (e.kind !== "note" || e.lyric) return e;
       const lyric = remaining[i++];
-      return lyric ? { ...e, lyric: lyric.slice(0, 40) } : e;
+      return lyric ? { ...e, lyric: lyric.slice(0, 200) } : e;
     }),
   }));
 }
@@ -137,7 +134,7 @@ export function replaceAllLyrics(score: ScoreData): ScoreMeasure[] {
       if (event.kind !== "note") return event;
       const lyric = tokens[i++];
       const next = { ...event };
-      if (lyric) next.lyric = lyric.slice(0, 40); else delete next.lyric;
+    if (lyric) next.lyric = lyric.slice(0, 200); else delete next.lyric;
       return next;
     }),
   }));
@@ -147,7 +144,7 @@ export function replaceAllLyrics(score: ScoreData): ScoreMeasure[] {
 export function syncNoteLyric(score: ScoreData, id: string, lyric: string): Pick<ScoreData, "measures" | "lyrics"> | null {
   const found = findEvent(score, id);
   if (!found || found.ev.kind !== "note") return null;
-  const clean = lyric.slice(0, 40);
+  const clean = lyric.slice(0, 200);
   const previous = found.ev.lyric || "";
   const measures = patchEvent(score, id, { lyric: clean || undefined });
   if (!measures) return null;

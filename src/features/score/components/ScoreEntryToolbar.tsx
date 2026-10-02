@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Play, Trash2, X } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Play, Redo2, Trash2, Undo2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -24,6 +24,11 @@ interface Props {
   onCloseSelected: () => void;
   onEditChord: () => void;
   onDeleteChord: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  onUndo: () => void;
+  onRedo: () => void;
+  onClearScore: () => void;
 }
 
 const chip = "h-10 min-w-10 px-2 rounded-md text-sm flex items-center justify-center transition-colors";
@@ -34,13 +39,21 @@ const off = "bg-muted text-foreground hover:bg-muted/70";
 export function ScoreEntryToolbar({
   mode, duration, accidental, selected, selectedChord, onMode, onDuration, onAccidental,
   onPatchSelected, onMoveSelected, onPreviewSelected, onDeleteSelected, onCloseSelected, onEditChord, onDeleteChord,
+  canUndo, canRedo, onUndo, onRedo, onClearScore,
 }: Props) {
+  const sharedActions = (
+    <div className="flex items-center gap-1">
+      <Button type="button" variant="ghost" size="icon" className="h-9 w-9" disabled={!canUndo} onClick={onUndo} aria-label={scoreT("score.undo")} title={scoreT("score.undo")}><Undo2 className="h-4 w-4" /></Button>
+      <Button type="button" variant="ghost" size="icon" className="h-9 w-9" disabled={!canRedo} onClick={onRedo} aria-label={scoreT("score.redo")} title={scoreT("score.redo")}><Redo2 className="h-4 w-4" /></Button>
+      <Button type="button" variant="ghost" size="icon" className="h-9 w-9 text-destructive" onClick={onClearScore} aria-label={scoreT("score.clearScore")} title={scoreT("score.clearScore")}><Trash2 className="h-4 w-4" /></Button>
+    </div>
+  );
   if (selectedChord?.id) {
     return (
       <section aria-label={scoreT("score.toolbar")} className="rounded-lg border border-primary/40 p-2 space-y-2">
         <div className="flex items-center justify-between gap-2 px-1">
           <span className="text-sm font-medium text-primary">{scoreT("score.editingChord").replace("{chord}", selectedChord.symbol)}</span>
-          <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={onCloseSelected} aria-label={scoreT("score.done")}><X className="h-4 w-4" /></Button>
+          <div className="flex items-center gap-1">{sharedActions}<Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={onCloseSelected} aria-label={scoreT("score.done")}><X className="h-4 w-4" /></Button></div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button type="button" variant="outline" onClick={onEditChord}>{scoreT("score.editChord")}</Button>
@@ -58,9 +71,9 @@ export function ScoreEntryToolbar({
       <section aria-label={scoreT("score.toolbar")} className="rounded-lg border border-primary/40 p-2 space-y-2">
         <div className="flex items-center justify-between gap-2 px-1">
           <span className="text-sm font-medium text-primary">{label}</span>
-          <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={onCloseSelected} aria-label={scoreT("score.done")}>
+          <div className="flex items-center gap-1">{sharedActions}<Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={onCloseSelected} aria-label={scoreT("score.done")}>
             <X className="h-4 w-4" />
-          </Button>
+          </Button></div>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           {isNote && (
@@ -97,7 +110,7 @@ export function ScoreEntryToolbar({
           </Button>
         </div>
         {isNote && (
-          <Input value={selected.lyric || ""} onChange={(event) => onPatchSelected({ lyric: event.target.value.slice(0, 40) || undefined })} placeholder={scoreT("score.lyric")} aria-label={scoreT("score.lyric")} className="h-10" />
+          <Input value={selected.lyric || ""} maxLength={200} onChange={(event) => onPatchSelected({ lyric: event.target.value || undefined })} placeholder={scoreT("score.lyric")} aria-label={scoreT("score.lyric")} className="h-10" />
         )}
       </section>
     );
@@ -107,6 +120,8 @@ export function ScoreEntryToolbar({
   return (
     <section aria-label={scoreT("score.toolbar")} className="rounded-lg border border-border p-2 space-y-2">
       <div className="flex flex-wrap items-center gap-1.5">
+        {sharedActions}
+        <span className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
         {modes.map((m) => (
           <button key={m} type="button" aria-pressed={mode === m} onClick={() => onMode(m)} className={cn(chip, "px-3", mode === m ? on : off)}>{scoreT(`score.mode.${m}`)}</button>
         ))}
