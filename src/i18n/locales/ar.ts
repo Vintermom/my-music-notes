@@ -19,6 +19,7 @@ export const ar: Record<TranslationKey, string> = {
   "home.otherNotes": "ملاحظات",
   "home.noNotes": "لا توجد ملاحظات بعد",
   "home.noNotesDesc": "اضغط على زر + لإنشاء أول ملاحظة أغنية",
+  "home.noScoreNotesDesc": "ستتوفر ملاحظات النوتة في تحديث قادم",
   "home.noPinnedNotes": "لا توجد ملاحظات مثبتة",
   "home.noSearchResults": "لم يتم العثور على ملاحظات",
   "home.searchPlaceholder": "البحث في الملاحظات...",

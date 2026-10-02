@@ -56,6 +56,7 @@ export const en = {
   "home.otherNotes": "Notes",
   "home.noNotes": "No notes yet",
   "home.noNotesDesc": "Tap the + button to create your first song note",
+  "home.noScoreNotesDesc": "Score notes will be available in an upcoming update",
   "home.noPinnedNotes": "No pinned notes",
   "home.noSearchResults": "No notes found",
   "home.searchPlaceholder": "Search notes...",

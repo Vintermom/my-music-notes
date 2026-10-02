@@ -19,6 +19,7 @@ export const ja: Record<TranslationKey, string> = {
   "home.otherNotes": "ノート",
   "home.noNotes": "まだノートがありません",
   "home.noNotesDesc": "+ ボタンをタップして最初の曲ノートを作成",
+  "home.noScoreNotesDesc": "楽譜ノートは今後のアップデートで利用可能になります",
   "home.noPinnedNotes": "ピン留めされたノートなし",
   "home.noSearchResults": "ノートが見つかりません",
   "home.searchPlaceholder": "ノートを検索...",

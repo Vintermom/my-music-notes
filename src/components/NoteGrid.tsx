@@ -11,6 +11,7 @@ interface NoteGridProps {
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
   mobileGridCols?: 1 | 2;
+  emptyDescription?: string;
 }
 
 export function NoteGrid({
@@ -21,6 +22,7 @@ export function NoteGrid({
   onDuplicate,
   onDelete,
   mobileGridCols,
+  emptyDescription,
 }: NoteGridProps) {
   const hasNotes = pinnedNotes.length > 0 || otherNotes.length > 0;
 
@@ -39,7 +41,7 @@ export function NoteGrid({
           {t("home.noNotes")}
         </h3>
         <p className="text-muted-foreground max-w-sm">
-          {t("home.noNotesDesc")}
+          {emptyDescription || t("home.noNotesDesc")}
         </p>
       </div>
     );

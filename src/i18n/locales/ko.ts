@@ -19,6 +19,7 @@ export const ko: Record<TranslationKey, string> = {
   "home.otherNotes": "노트",
   "home.noNotes": "아직 노트가 없습니다",
   "home.noNotesDesc": "+ 버튼을 탭하여 첫 번째 노래 노트를 만드세요",
+  "home.noScoreNotesDesc": "악보 노트는 향후 업데이트에서 제공됩니다",
   "home.noPinnedNotes": "고정된 노트 없음",
   "home.noSearchResults": "노트를 찾을 수 없음",
   "home.searchPlaceholder": "노트 검색...",

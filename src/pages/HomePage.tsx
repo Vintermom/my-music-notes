@@ -220,6 +220,7 @@ export default function HomePage() {
             onDuplicate={handleDuplicate}
             onDelete={handleDeleteClick}
             mobileGridCols={isMobile ? mobileGridCols : undefined}
+            emptyDescription={noteTypeFilter === "score" ? t("home.noScoreNotesDesc") : undefined}
           />
         )}
       </main>

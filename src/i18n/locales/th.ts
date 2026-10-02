@@ -19,6 +19,7 @@ export const th: Record<TranslationKey, string> = {
   "home.otherNotes": "โน้ต",
   "home.noNotes": "ยังไม่มีโน้ต",
   "home.noNotesDesc": "แตะปุ่ม + เพื่อสร้างโน้ตเพลงแรกของคุณ",
+  "home.noScoreNotesDesc": "โน้ต Score จะพร้อมใช้งานในการอัปเดตถัดไป",
   "home.noPinnedNotes": "ไม่มีโน้ตที่ปักหมุด",
   "home.noSearchResults": "ไม่พบโน้ต",
   "home.searchPlaceholder": "ค้นหาโน้ต...",
