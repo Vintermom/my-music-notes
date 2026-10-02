@@ -12,11 +12,17 @@ import {
 import { DURATIONS } from "./notation";
 
 export const SCORE_CLEFS: ScoreClef[] = ["treble", "bass"];
-export const SCORE_TIME_SIGNATURES: ScoreTimeSignature[] = ["2/4", "3/4", "4/4", "6/8"];
+export const SCORE_TIME_SIGNATURES: ScoreTimeSignature[] = ["2/2", "2/4", "3/4", "4/4", "5/4", "6/8", "7/8", "9/8", "12/8"];
 export const SCORE_KEYS = ["C", "G", "D", "A", "E", "F", "Bb", "Eb", "Am", "Em", "Dm"];
 export const SCORE_TEMPO_MIN = 30;
 export const SCORE_TEMPO_MAX = 300;
 const ACCIDENTALS: ScoreAccidental[] = ["natural", "sharp", "flat"];
+
+export function isValidTimeSignature(value: unknown): value is ScoreTimeSignature {
+  if (typeof value !== "string" || !/^\d{1,2}\/\d{1,2}$/.test(value)) return false;
+  const [numerator, denominator] = value.split("/").map(Number);
+  return numerator >= 1 && numerator <= 32 && [1, 2, 4, 8, 16].includes(denominator);
+}
 
 export function createDefaultScoreData(): ScoreData {
   return {
@@ -84,9 +90,7 @@ export function sanitizeScoreData(value: unknown): ScoreData {
   return {
     version: Math.max(typeof v.version === "number" ? v.version : 0, SCORE_DATA_VERSION),
     clef: SCORE_CLEFS.includes(v.clef as ScoreClef) ? (v.clef as ScoreClef) : base.clef,
-    timeSignature: SCORE_TIME_SIGNATURES.includes(v.timeSignature as ScoreTimeSignature)
-      ? (v.timeSignature as ScoreTimeSignature)
-      : base.timeSignature,
+    timeSignature: isValidTimeSignature(v.timeSignature) ? v.timeSignature : base.timeSignature,
     keySignature: typeof v.keySignature === "string" && SCORE_KEYS.includes(v.keySignature)
       ? v.keySignature
       : base.keySignature,

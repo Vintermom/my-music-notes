@@ -58,6 +58,11 @@ A beautiful songwriting note app for capturing your musical ideas, lyrics, and c
 - V1.5.0 remains unreleased.
 - Fonts: Score print reuses the already bundled Noto Sans, Noto Sans Thai, Noto Sans KR and Noto Sans JP (SIL Open Font License 1.1) for multilingual text; no new dependency was added.
 
+## 2026-10-02 – V1.5.0 Score Editing Polish
+
+- Added quick chord choices with custom chord entry, expanded and custom time signatures, Score-only undo/redo, safer measure controls, direct note lyric editing, incremental/re-place lyric actions, and adaptive notation spacing.
+- Existing Score playback, linked recordings, Print/PDF, Help, save/reopen, and the rest of MyMuNotes remain unchanged; V1.5.0 is still in development and unreleased.
+
 ## V1.4.0 — Voice Update (internal notes)
 
 Included in V1.4.0:
