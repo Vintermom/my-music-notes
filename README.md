@@ -30,6 +30,15 @@ A beautiful songwriting note app for capturing your musical ideas, lyrics, and c
 - 🌐 Multi-language support (EN, SV, TH)
 - 📱 PWA installable on mobile
 
+## 2026-10-02 – V1.5.0 Score development started
+
+- Added Score as a new note type.
+- Added Score to Create Note.
+- Connected Score to the existing Home filter.
+- Added the initial isolated Score feature/module structure.
+- Added the basic Score page foundation.
+- V1.5.0 is still in development and has not been released.
+
 ## V1.4.0 — Voice Update (internal notes)
 
 Included in V1.4.0:

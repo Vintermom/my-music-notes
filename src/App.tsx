@@ -17,6 +17,7 @@ import DemoPage from "./pages/DemoPage";
 import SettingsPage from "./pages/SettingsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import NotFound from "./pages/NotFound";
+import { ScorePage } from "@/features/score";
 
 // Check if running as installed PWA (standalone mode)
 function isStandaloneMode(): boolean {
@@ -86,6 +87,7 @@ function AppRoutes() {
       <Route path="/app" element={<HomePage />} />
       <Route path="/demo" element={<DemoOrRedirect />} />
       <Route path="/edit/:id" element={<EditorPage />} />
+      <Route path="/score/:id" element={<ScorePage />} />
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="*" element={<NotFound />} />

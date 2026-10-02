@@ -25,6 +25,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { NoteTypeFilter } from "@/components/NoteTypeFilter";
+import { newScoreNoteData, scoreRoute, scoreT } from "@/features/score";
 import { getHomeNoteType, type HomeNoteTypeFilter } from "@/lib/homeNoteType";
 
 export default function HomePage() {
@@ -77,6 +78,12 @@ export default function HomePage() {
     navigate(`/edit/${note.id}?record=1`);
   };
 
+  const handleCreateScoreNote = () => {
+    const note = createNote(newScoreNoteData());
+    setCreateSheetOpen(false);
+    navigate(scoreRoute(note.id));
+  };
+
   const handleRecordSelect = () => {
     if (safeGet("hideAudioStorageNotice", false)) {
       handleCreateRecordNote();
@@ -95,6 +102,8 @@ export default function HomePage() {
   };
 
   const handleNoteClick = (id: string) => {
+    const clicked = [...pinnedNotes, ...otherNotes].find((n) => n.id === id);
+    if (clicked && getHomeNoteType(clicked) === "score") { navigate(scoreRoute(id)); return; }
     navigate(`/edit/${id}`);
   };
 
@@ -241,6 +250,9 @@ export default function HomePage() {
             </Button>
             <Button onClick={handleRecordSelect} variant="outline" className="justify-start">
               Record
+            </Button>
+            <Button onClick={handleCreateScoreNote} variant="outline" className="justify-start">
+              {scoreT("score.create")}
             </Button>
           </div>
         </SheetContent>
