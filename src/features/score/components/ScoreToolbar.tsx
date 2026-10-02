@@ -14,10 +14,18 @@ const fieldClass = "h-9 rounded-md bg-muted px-2 text-sm text-foreground border-
 export function ScoreToolbar({ score, onChange }: Props) {
   const isPreset = SCORE_TIME_SIGNATURES.includes(score.timeSignature);
   const [custom, setCustom] = useState(!isPreset);
-  const [numerator, denominator] = score.timeSignature.split("/");
-  useEffect(() => setCustom(!SCORE_TIME_SIGNATURES.includes(score.timeSignature)), [score.timeSignature]);
+  const [scoreNumerator, scoreDenominator] = score.timeSignature.split("/");
+  const [numerator, setNumerator] = useState(scoreNumerator);
+  const [denominator, setDenominator] = useState(scoreDenominator);
+  useEffect(() => {
+    setCustom(!SCORE_TIME_SIGNATURES.includes(score.timeSignature));
+    setNumerator(scoreNumerator);
+    setDenominator(scoreDenominator);
+  }, [score.timeSignature, scoreNumerator, scoreDenominator]);
 
   const setCustomPart = (nextNumerator: string, nextDenominator: string) => {
+    setNumerator(nextNumerator);
+    setDenominator(nextDenominator);
     const next = `${nextNumerator}/${nextDenominator}`;
     if (isValidTimeSignature(next)) onChange({ timeSignature: next });
   };
@@ -49,7 +57,7 @@ export function ScoreToolbar({ score, onChange }: Props) {
           <div className="flex items-end gap-1" aria-label={scoreT("score.time.custom")}>
             <label className="flex flex-col gap-1 text-xs text-muted-foreground">
               {scoreT("score.time.numerator")}
-              <input type="number" inputMode="numeric" min={1} max={32} value={numerator} onChange={(e) => setCustomPart(e.target.value, denominator)} className={`${fieldClass} w-16`} />
+              <input type="number" inputMode="numeric" min={1} max={32} value={numerator} onChange={(e) => setCustomPart(e.target.value, denominator)} onBlur={() => { if (!isValidTimeSignature(`${numerator}/${denominator}`)) setNumerator(scoreNumerator); }} className={`${fieldClass} w-16`} />
             </label>
             <span className="h-9 py-2 text-foreground">/</span>
             <label className="flex flex-col gap-1 text-xs text-muted-foreground">

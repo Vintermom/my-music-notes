@@ -27,6 +27,7 @@ import { useScoreHistory } from "../hooks/useScoreHistory";
 import { ScoreHistoryControls } from "./ScoreHistoryControls";
 import { ScoreMeasureMenu } from "./ScoreMeasureMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { measureCapacity, usedUnits } from "../utils/notation";
 
 export default function ScorePage() {
   const { id } = useParams();
@@ -135,7 +136,16 @@ export default function ScorePage() {
         <div className="flex justify-end">
           <ScoreHistoryControls canUndo={history.canUndo} canRedo={history.canRedo} onUndo={history.undo} onRedo={history.redo} />
         </div>
-        <ScoreToolbar score={score} onChange={history.commit} />
+        <ScoreToolbar
+          score={score}
+          onChange={(patch) => {
+            if (patch.timeSignature && score.measures.some((measure) => usedUnits(measure) > measureCapacity(patch.timeSignature || score.timeSignature))) {
+              toast.error(scoreT("score.timeTooSmall"));
+              return;
+            }
+            history.commit(patch);
+          }}
+        />
         <ScorePlaybackBar
           playing={playback.playing}
           tempo={score.tempo}
