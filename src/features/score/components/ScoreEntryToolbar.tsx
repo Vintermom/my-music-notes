@@ -110,7 +110,7 @@ export function ScoreEntryToolbar({
           </Button>
         </div>
         {isNote && (
-          <Input value={selected.lyric || ""} onChange={(event) => onPatchSelected({ lyric: event.target.value.slice(0, 40) || undefined })} placeholder={scoreT("score.lyric")} aria-label={scoreT("score.lyric")} className="h-10" />
+          <Input value={selected.lyric || ""} maxLength={200} onChange={(event) => onPatchSelected({ lyric: event.target.value || undefined })} placeholder={scoreT("score.lyric")} aria-label={scoreT("score.lyric")} className="h-10" />
         )}
       </section>
     );

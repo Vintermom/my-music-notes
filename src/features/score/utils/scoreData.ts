@@ -50,7 +50,7 @@ function sanitizeEvent(value: unknown): ScoreEvent | null {
       ? Math.min(70, Math.max(0, Math.round(e.pitch)))
       : 34;
     if (ACCIDENTALS.includes(e.accidental as ScoreAccidental)) ev.accidental = e.accidental as ScoreAccidental;
-    if (typeof e.lyric === "string" && e.lyric) ev.lyric = e.lyric.slice(0, 40);
+    if (typeof e.lyric === "string" && e.lyric) ev.lyric = e.lyric.slice(0, 200);
   }
   return ev;
 }

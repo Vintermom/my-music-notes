@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Maximize2, Plus, Upload } from "lucide-react";
 import { LyricsEditor } from "@/components/LyricsEditor";
+import { t } from "@/i18n";
 import { scoreT } from "../i18n";
 
 interface Props {
@@ -19,7 +20,7 @@ export function ScoreLyrics({ value, onChange, onAlign, onReplaceAll, onImport, 
   const actions = (
     <>
       <Button type="button" variant="outline" size="sm" onClick={onImport}><Upload className="h-4 w-4 mr-1.5" />{scoreT("score.importLyrics")}</Button>
-      <Button type="button" variant="outline" size="sm" onClick={onInsert}><Plus className="h-4 w-4 mr-1.5" />{scoreT("score.addSection")}</Button>
+      <Button type="button" variant="outline" size="sm" onClick={onInsert}><Plus className="h-4 w-4 mr-1.5" />{t("editor.insertSheet")}</Button>
       <Button type="button" variant="outline" size="sm" onClick={onAlign}>{scoreT("score.alignLyrics")}</Button>
       <Button type="button" variant="ghost" size="sm" onClick={onReplaceAll}>{scoreT("score.replaceAllLyrics")}</Button>
     </>

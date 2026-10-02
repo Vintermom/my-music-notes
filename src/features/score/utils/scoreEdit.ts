@@ -114,7 +114,7 @@ export function alignLyrics(score: ScoreData): ScoreMeasure[] {
     events: m.events.map((e) => {
       if (e.kind !== "note" || e.lyric) return e;
       const lyric = remaining[i++];
-      return lyric ? { ...e, lyric: lyric.slice(0, 40) } : e;
+      return lyric ? { ...e, lyric: lyric.slice(0, 200) } : e;
     }),
   }));
 }
@@ -134,7 +134,7 @@ export function replaceAllLyrics(score: ScoreData): ScoreMeasure[] {
       if (event.kind !== "note") return event;
       const lyric = tokens[i++];
       const next = { ...event };
-      if (lyric) next.lyric = lyric.slice(0, 40); else delete next.lyric;
+    if (lyric) next.lyric = lyric.slice(0, 200); else delete next.lyric;
       return next;
     }),
   }));
@@ -144,7 +144,7 @@ export function replaceAllLyrics(score: ScoreData): ScoreMeasure[] {
 export function syncNoteLyric(score: ScoreData, id: string, lyric: string): Pick<ScoreData, "measures" | "lyrics"> | null {
   const found = findEvent(score, id);
   if (!found || found.ev.kind !== "note") return null;
-  const clean = lyric.slice(0, 40);
+  const clean = lyric.slice(0, 200);
   const previous = found.ev.lyric || "";
   const measures = patchEvent(score, id, { lyric: clean || undefined });
   if (!measures) return null;
