@@ -1,24 +1,67 @@
-import type { ScoreData, ScoreEvent } from "../types/score.types";
-import {
-  DURATION_UNITS, bottomLineDia, keyInfo, keySignaturePositions, measureCapacity, middleLineDia,
-} from "../utils/notation";
+import type { ScoreClef, ScoreData } from "../types/score.types";
 import { ACCIDENTAL_GLYPH, NoteShape, RestShape } from "../components/NotationGlyphs";
-
-// Static, print-only rendering. One SVG per staff system so pages never cut a system.
-const W = 680;
-const SYS_H = 150;
-const CHORD_Y = 24;
-const TOP = 48;
-const BOTTOM = TOP + 40;
-const LYRIC_Y = BOTTOM + 44;
-const PER_SYS = 4;
-const PAD = 16;
+import { LAYOUT_FONT, LAYOUT_WIDTH, layoutScore, type LaidSystem, type ScoreLayout } from "./scoreLayout";
 
 export interface ScorePrintLabels {
   composer: string;
   key: string;
   time: string;
   tempo: string;
+}
+
+/** "all" = print; "shapes" = vector notation without text; "glyphs" = clef + accidentals only. */
+export type SystemLayer = "all" | "shapes" | "glyphs";
+
+interface SystemProps { system: LaidSystem; layout: ScoreLayout; clef: ScoreClef; layer?: SystemLayer }
+
+export function ScoreSystemSvg({ system: s, layout, clef, layer = "all" }: SystemProps) {
+  const shapes = layer !== "glyphs";
+  const glyphs = layer !== "shapes";
+  const text = layer === "all";
+  const keyGlyph = layout.keyType === "sharp" ? "♯" : "♭";
+  return (
+    <svg className="score-system" viewBox={`0 0 ${LAYOUT_WIDTH} ${s.height}`} width="100%" color="#000" xmlns="http://www.w3.org/2000/svg">
+      {shapes && [0, 1, 2, 3, 4].map((i) => (
+        <line key={i} x1={4} x2={s.right} y1={s.staffTop + i * 10} y2={s.staffTop + i * 10} stroke="#000" strokeWidth={0.8} />
+      ))}
+      {shapes && <line x1={4} x2={4} y1={s.staffTop} y2={s.staffBottom} stroke="#000" strokeWidth={1} />}
+      {glyphs && (
+        <text className="clef" x={8} y={clef === "treble" ? s.staffBottom + 9 : s.staffBottom - 7} fontSize={clef === "treble" ? 52 : 36}>
+          {clef === "treble" ? "𝄞" : "𝄢"}
+        </text>
+      )}
+      {glyphs && layout.keyType !== "none" && s.keyGlyphs.map((k, i) => (
+        <text key={i} x={k.x} y={k.y + 5} fontSize={17} textAnchor="middle">{keyGlyph}</text>
+      ))}
+      {text && s.showTime && (
+        <g fontSize={20} fontWeight={700} textAnchor="middle">
+          <text x={s.header - 16} y={s.staffTop + 18}>{layout.timeTop}</text>
+          <text x={s.header - 16} y={s.staffTop + 38}>{layout.timeBottom}</text>
+        </g>
+      )}
+      {s.measures.map((m) => (
+        <g key={m.index}>
+          {shapes && <line x1={m.x + m.width} x2={m.x + m.width} y1={s.staffTop} y2={s.staffBottom} stroke="#000" strokeWidth={m.last ? 2.5 : 1} />}
+          {text && <text x={m.x + 3} y={s.numberY} fontSize={9}>{m.index + 1}</text>}
+          {text && m.chords.map((c) => (
+            <text key={c.id} x={c.x} y={s.chordY} fontSize={LAYOUT_FONT.chord} fontWeight={700}>{c.symbol}</text>
+          ))}
+          {m.events.map((le) => {
+            const ev = le.event;
+            if (ev.kind === "rest") return shapes ? <g key={ev.id}><RestShape x={le.x} top={s.staffTop} duration={ev.duration} /></g> : null;
+            return (
+              <g key={ev.id}>
+                {shapes && le.ledgers.map((d) => <line key={d} x1={le.x - 10} x2={le.x + 10} y1={s.yFor(d)} y2={s.yFor(d)} stroke="#000" />)}
+                {glyphs && ev.accidental && <text x={le.x - 15} y={le.y + 5} fontSize={15} textAnchor="middle">{ACCIDENTAL_GLYPH[ev.accidental]}</text>}
+                {shapes && <NoteShape x={le.x} y={le.y} duration={ev.duration} stemUp={le.stemUp} />}
+                {text && ev.lyric && <text className="lyric" x={le.x} y={s.lyricY} fontSize={LAYOUT_FONT.lyric} textAnchor="middle">{ev.lyric}</text>}
+              </g>
+            );
+          })}
+        </g>
+      ))}
+    </svg>
+  );
 }
 
 interface Props {
@@ -28,18 +71,9 @@ interface Props {
   labels: ScorePrintLabels;
 }
 
+/** Static Score document. One SVG per staff system so pages never cut a system. */
 export function ScorePrintView({ title, composer, score, labels }: Props) {
-  const cap = measureCapacity(score.timeSignature);
-  const bottomDia = bottomLineDia(score.clef);
-  const key = keyInfo(score.keySignature);
-  const keyPos = keySignaturePositions(score.keySignature, score.clef);
-  const measures = score.measures.length ? score.measures : [{ id: "empty", events: [] as ScoreEvent[] }];
-  const systems: number[][] = [];
-  for (let i = 0; i < measures.length; i += PER_SYS) {
-    systems.push(Array.from({ length: Math.min(PER_SYS, measures.length - i) }, (_, k) => i + k));
-  }
-  const [tsTop, tsBottom] = score.timeSignature.split("/");
-
+  const layout = layoutScore(score);
   return (
     <div className="score-doc">
       <header className="score-head">
@@ -49,64 +83,9 @@ export function ScorePrintView({ title, composer, score, labels }: Props) {
           {labels.key}: {score.keySignature} · {labels.time}: {score.timeSignature} · {labels.tempo}: ♩ = {score.tempo}
         </p>
       </header>
-      {systems.map((idxs, sys) => {
-        const header = 46 + key.count * 9 + (sys === 0 ? 26 : 6);
-        const mw = (W - header - 4) / PER_SYS;
-        const right = header + idxs.length * mw;
-        const yFor = (dia: number) => BOTTOM - (dia - bottomDia) * 5;
-        return (
-          <svg key={sys} className="score-system" viewBox={`0 0 ${W} ${SYS_H}`} width="100%" xmlns="http://www.w3.org/2000/svg">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <line key={i} x1={4} x2={right} y1={TOP + i * 10} y2={TOP + i * 10} stroke="#000" strokeWidth={0.8} />
-            ))}
-            <line x1={4} x2={4} y1={TOP} y2={BOTTOM} stroke="#000" />
-            <text className="clef" x={8} y={score.clef === "treble" ? BOTTOM + 9 : BOTTOM - 7} fontSize={score.clef === "treble" ? 52 : 36}>
-              {score.clef === "treble" ? "𝄞" : "𝄢"}
-            </text>
-            {keyPos.map((p, i) => (
-              <text key={i} x={48 + i * 9} y={yFor(p) + 5} fontSize={17} textAnchor="middle">{key.type === "sharp" ? "♯" : "♭"}</text>
-            ))}
-            {sys === 0 && (
-              <g fontSize={20} fontWeight={700} textAnchor="middle">
-                <text x={header - 16} y={TOP + 18}>{tsTop}</text>
-                <text x={header - 16} y={TOP + 38}>{tsBottom}</text>
-              </g>
-            )}
-            {idxs.map((mi, k) => {
-              const mx = header + k * mw;
-              const ex = (u: number) => mx + PAD + (u / cap) * (mw - 2 * PAD);
-              let start = 0;
-              return (
-                <g key={mi}>
-                  <line x1={mx + mw} x2={mx + mw} y1={TOP} y2={BOTTOM} stroke="#000" strokeWidth={mi === measures.length - 1 ? 2.5 : 1} />
-                  <text x={mx + 3} y={TOP - 6} fontSize={9}>{mi + 1}</text>
-                  {score.chords.filter((c) => c.measure === mi).map((c) => (
-                    <text key={c.id} x={ex(c.offset) - 4} y={CHORD_Y} fontSize={14} fontWeight={700}>{c.symbol}</text>
-                  ))}
-                  {measures[mi].events.map((ev) => {
-                    const x = ex(start);
-                    start += DURATION_UNITS[ev.duration];
-                    if (ev.kind === "rest") return <g key={ev.id}><RestShape x={x} top={TOP} duration={ev.duration} /></g>;
-                    const dia = ev.pitch ?? middleLineDia(score.clef);
-                    const y = yFor(dia);
-                    const ledgers: number[] = [];
-                    for (let d = bottomDia - 2; d >= dia; d -= 2) ledgers.push(d);
-                    for (let d = bottomDia + 10; d <= dia; d += 2) ledgers.push(d);
-                    return (
-                      <g key={ev.id}>
-                        {ledgers.map((d) => <line key={d} x1={x - 10} x2={x + 10} y1={yFor(d)} y2={yFor(d)} stroke="#000" />)}
-                        {ev.accidental && <text x={x - 15} y={y + 5} fontSize={15} textAnchor="middle">{ACCIDENTAL_GLYPH[ev.accidental]}</text>}
-                        <NoteShape x={x} y={y} duration={ev.duration} stemUp={dia < middleLineDia(score.clef)} />
-                        {ev.lyric && <text className="lyric" x={x} y={LYRIC_Y} fontSize={12} textAnchor="middle">{ev.lyric}</text>}
-                      </g>
-                    );
-                  })}
-                </g>
-              );
-            })}
-          </svg>
-        );
-      })}
+      {layout.systems.map((system, i) => (
+        <ScoreSystemSvg key={i} system={system} layout={layout} clef={score.clef} />
+      ))}
     </div>
   );
 }
