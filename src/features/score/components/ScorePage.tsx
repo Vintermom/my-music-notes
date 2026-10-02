@@ -108,6 +108,12 @@ export default function ScorePage() {
             <Printer className="h-5 w-5" />
           </Button>
         </div>
+        {/* TEMPORARY draft verification label — remove before release */}
+        <div className="container max-w-4xl mx-auto px-4 pb-2">
+          <span className="inline-block rounded bg-muted px-2 py-0.5 text-xs font-mono text-muted-foreground">
+            V1.5.0 SCORE BUILD CHECK
+          </span>
+        </div>
       </header>
 
       <main className={`container max-w-4xl mx-auto px-4 py-4 space-y-3 ${selected ? "pb-56" : "pb-24"}`}>
