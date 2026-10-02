@@ -80,7 +80,7 @@ export function ScorePrintView({ title, composer, score, labels }: Props) {
         <h1>{title}</h1>
         {composer && <p className="score-composer">{labels.composer}: {composer}</p>}
         <p className="score-meta">
-          {labels.key}: {score.keySignature} · {labels.time}: {score.timeSignature} · {labels.tempo}: ♩ = {score.tempo}
+          {labels.key}: {score.keySignature} · {labels.time}: {score.timeSignature} · {labels.tempo}: {score.tempo} BPM
         </p>
       </header>
       {layout.systems.map((system, i) => (

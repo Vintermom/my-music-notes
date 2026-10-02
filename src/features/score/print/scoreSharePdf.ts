@@ -2,6 +2,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Content } from "pdfmake/interfaces";
 import type { Note } from "@/domain/types";
+import type { ScoreClef } from "../types/score.types";
 import { APP_VERSION } from "@/lib/appVersion";
 import type { PreparedFile } from "@/features/share/shareTypes";
 import { safeBaseName, withExtension } from "@/features/share/utils/fileName";
@@ -31,7 +32,7 @@ function runs(text: string, han: ShareFontFamily) {
   return r.length ? r.map((x) => ({ text: x.text, font: x.font })) : " ";
 }
 
-async function glyphLayer(system: LaidSystem, layout: ScoreLayout, clef: Note["score"] extends infer _ ? "treble" | "bass" : never): Promise<string | null> {
+async function glyphLayer(system: LaidSystem, layout: ScoreLayout, clef: ScoreClef): Promise<string | null> {
   try {
     const svg = renderToStaticMarkup(createElement(ScoreSystemSvg, { system, layout, clef, layer: "glyphs" }))
       .replace('width="100%"', `width="${LAYOUT_WIDTH * GLYPH_SCALE}" height="${system.height * GLYPH_SCALE}"`)
@@ -80,7 +81,7 @@ export async function buildScorePdfBlob(note: Note): Promise<Blob> {
   ];
   if (composer) content.push({ text: runs(`${scoreT("score.print.composer")}: ${composer}`, han), fontSize: 11, alignment: "center", margin: [0, 0, 0, 4] });
   content.push({
-    text: runs(`${scoreT("score.key")}: ${score.keySignature} · ${scoreT("score.time")}: ${score.timeSignature} · ${scoreT("score.print.tempo")}: ♩ = ${score.tempo}`, han),
+    text: runs(`${scoreT("score.key")}: ${score.keySignature} · ${scoreT("score.time")}: ${score.timeSignature} · ${scoreT("score.print.tempo")}: ${score.tempo} BPM`, han),
     fontSize: 9.5, color: "#333333", alignment: "center", margin: [0, 0, 0, 16],
   });
 
@@ -104,7 +105,7 @@ export async function buildScorePdfBlob(note: Note): Promise<Blob> {
   }
 
   const footer = `Created with MyMuNotes · ${APP_VERSION}`;
-  const families = collectFontFamilies([...allText, footer, "0123456789 ·♩"]);
+  const families = collectFontFamilies([...allText, footer, "0123456789 · BPM"]);
   const pdfMakeMod = await import("pdfmake/build/pdfmake");
   const pdfMake = (pdfMakeMod as unknown as { default?: typeof pdfMakeMod }).default ?? pdfMakeMod;
 

@@ -26,6 +26,6 @@ svg { color: #000; }
 .score-head h1 { font-size: 20pt; margin: 0 0 2mm; font-weight: 700; }
 .score-composer { font-size: 11pt; margin: 0 0 1.5mm; }
 .score-meta { font-size: 9.5pt; margin: 0; color: #333; }
-.score-system { display: block; width: 100%; height: auto; margin: 0 0 3mm; break-inside: avoid; page-break-inside: avoid; overflow: visible; }
+.score-system { display: block; width: 100%; height: auto; margin: 0 0 3.5mm; break-inside: avoid; page-break-inside: avoid; overflow: visible; }
 `;
 }
