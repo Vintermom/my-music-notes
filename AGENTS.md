@@ -4,3 +4,4 @@
 - Score playback must go through the shared `scorePlayer` instance in `src/features/score/services/` so only one playback runs at a time; chords stay in their own list, separate from the notes.
 - Score printing lives in `src/features/score/print/` and uses its own HTML/SVG layout, opened through the browser print dialog; it never reuses the app's existing Print/Export/Share code.
 - Keep Score undo/redo snapshots session-local in the Score feature; persistence continues through the existing note repository so saved data remains compatible.
+- Keep Score add and selected-item editing in one contextual toolbar; fullscreen views must reuse the same live Score and Lyrics state.
