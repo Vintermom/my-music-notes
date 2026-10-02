@@ -69,6 +69,24 @@ export function removeChord(score: ScoreData, id: string): ScoreChord[] {
   return score.chords.filter((c) => c.id !== id);
 }
 
+export function clearMeasure(score: ScoreData, index: number): Pick<ScoreData, "measures" | "chords"> {
+  return {
+    measures: score.measures.map((measure, measureIndex) => (
+      measureIndex === index ? { ...measure, events: [] } : measure
+    )),
+    chords: score.chords.filter((chord) => chord.measure !== index),
+  };
+}
+
+export function deleteMeasure(score: ScoreData, index: number): Pick<ScoreData, "measures" | "chords"> {
+  return {
+    measures: score.measures.filter((_, measureIndex) => measureIndex !== index),
+    chords: score.chords
+      .filter((chord) => chord.measure !== index)
+      .map((chord) => chord.measure > index ? { ...chord, measure: chord.measure - 1 } : chord),
+  };
+}
+
 /** Split lyrics text into syllables; [Section] lines are kept as text but skipped here. */
 export function lyricTokens(text: string): string[] {
   return text
@@ -80,18 +98,59 @@ export function lyricTokens(text: string): string[] {
     .filter(Boolean);
 }
 
-/** Assign lyric syllables to notes in order (rests are skipped). */
+/** Fill only unassigned notes with lyrics not already represented by assigned notes. */
 export function alignLyrics(score: ScoreData): ScoreMeasure[] {
   const tokens = lyricTokens(score.lyrics);
-  let i = 0;
+  const assignedCount = score.measures.reduce(
+    (count, measure) => count + measure.events.filter((event) => event.kind === "note" && event.lyric).length,
+    0,
+  );
+  let i = assignedCount;
   return score.measures.map((m) => ({
     ...m,
     events: m.events.map((e) => {
-      if (e.kind !== "note") return e;
+      if (e.kind !== "note" || e.lyric) return e;
       const lyric = tokens[i++];
-      const next = { ...e };
+      return lyric ? { ...e, lyric: lyric.slice(0, 40) } : e;
+    }),
+  }));
+}
+
+/** Explicit destructive reflow used only after the user confirms replacement. */
+export function replaceAllLyrics(score: ScoreData): ScoreMeasure[] {
+  const tokens = lyricTokens(score.lyrics);
+  let i = 0;
+  return score.measures.map((measure) => ({
+    ...measure,
+    events: measure.events.map((event) => {
+      if (event.kind !== "note") return event;
+      const lyric = tokens[i++];
+      const next = { ...event };
       if (lyric) next.lyric = lyric.slice(0, 40); else delete next.lyric;
       return next;
     }),
   }));
+}
+
+/** Keep a direct correction reflected in master lyrics only when its prior token is unambiguous. */
+export function syncNoteLyric(score: ScoreData, id: string, lyric: string): Pick<ScoreData, "measures" | "lyrics"> | null {
+  const found = findEvent(score, id);
+  if (!found || found.ev.kind !== "note") return null;
+  const clean = lyric.slice(0, 40);
+  const previous = found.ev.lyric || "";
+  const measures = patchEvent(score, id, { lyric: clean || undefined });
+  if (!measures) return null;
+  if (!previous || previous === clean) return { measures, lyrics: score.lyrics };
+
+  let replaced = false;
+  const lyrics = score.lyrics.split("\n").map((line) => {
+    if (replaced || /^\s*\[.*\]\s*$/.test(line)) return line;
+    const words = line.split(/(\s+)/);
+    const index = words.findIndex((word) => word === previous);
+    if (index < 0) return line;
+    words[index] = clean;
+    replaced = true;
+    return words.join("");
+  }).join("\n");
+  return { measures, lyrics };
 }

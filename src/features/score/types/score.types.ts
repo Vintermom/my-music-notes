@@ -5,7 +5,8 @@
 export const SCORE_DATA_VERSION = 2;
 
 export type ScoreClef = "treble" | "bass";
-export type ScoreTimeSignature = "2/4" | "3/4" | "4/4" | "6/8";
+/** Validated numerator/denominator text; presets and custom meters share the same stored shape. */
+export type ScoreTimeSignature = `${number}/${number}`;
 
 /** w = whole, h = half, q = quarter, e = eighth, s = sixteenth */
 export type ScoreDuration = "w" | "h" | "q" | "e" | "s";

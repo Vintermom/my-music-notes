@@ -10,7 +10,8 @@ import { useScoreNote } from "../hooks/useScoreNote";
 import { useScorePlayback } from "../hooks/useScorePlayback";
 import type { ScoreAccidental, ScoreDuration, ScoreEvent } from "../types/score.types";
 import {
-  alignLyrics, deleteEvent, findEvent, moveEvent, newScoreId, patchEvent, placeEvent, removeChord, upsertChord,
+  alignLyrics, clearMeasure, deleteEvent, deleteMeasure, findEvent, moveEvent, newScoreId, patchEvent, placeEvent,
+  removeChord, replaceAllLyrics, syncNoteLyric, upsertChord,
 } from "../utils/scoreEdit";
 import { ScoreToolbar } from "./ScoreToolbar";
 import { ScoreEditor, type ChordTarget, type EntryMode } from "./ScoreEditor";
@@ -22,6 +23,11 @@ import { ScoreLyrics } from "./ScoreLyrics";
 import { ScoreLinkedRecording } from "./ScoreLinkedRecording";
 import { ScoreHelp } from "./ScoreHelp";
 import { useLinkedRecording } from "../hooks/useLinkedRecording";
+import { useScoreHistory } from "../hooks/useScoreHistory";
+import { ScoreHistoryControls } from "./ScoreHistoryControls";
+import { ScoreMeasureMenu } from "./ScoreMeasureMenu";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { measureCapacity, usedUnits } from "../utils/notation";
 
 export default function ScorePage() {
   const { id } = useParams();
@@ -36,6 +42,9 @@ export default function ScorePage() {
   const [accidental, setAccidental] = useState<ScoreAccidental | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [chordTarget, setChordTarget] = useState<ChordTarget | null>(null);
+  const [measureMenu, setMeasureMenu] = useState<number | null>(null);
+  const [confirmReplaceLyrics, setConfirmReplaceLyrics] = useState(false);
+  const history = useScoreHistory(id, note?.score, setScore);
   usePageMeta(`${note?.title || scoreT("score.untitled")} — MyMuNotes`, scoreT("score.workspaceEmpty"));
 
   useEffect(() => { setSelectedId(null); setChordTarget(null); }, [id]);
@@ -61,14 +70,20 @@ export default function ScorePage() {
       : { id: newScoreId("ev"), kind: "note", duration, pitch, ...(accidental ? { accidental } : {}) };
     const measures = placeEvent(score, measure, index, ev);
     if (!measures) { toast.error(scoreT("score.measureFull")); return; }
-    setScore({ measures });
+    history.commit({ measures });
   };
 
   const handlePatch = (patch: Partial<ScoreEvent>) => {
     if (!selectedId) return;
     const measures = patchEvent(score, selectedId, patch);
     if (!measures) { toast.error(scoreT("score.measureFull")); return; }
-    setScore({ measures });
+    history.commit({ measures });
+  };
+
+  const handleLyricPatch = (lyric: string) => {
+    if (!selectedId) return;
+    const patch = syncNoteLyric(score, selectedId, lyric);
+    if (patch) history.commit(patch);
   };
 
   const handlePrint = async () => {
@@ -118,7 +133,19 @@ export default function ScorePage() {
 
       <main className={`container max-w-4xl mx-auto px-4 py-4 space-y-3 ${selected ? "pb-56" : "pb-24"}`}>
         {helpOpen && <ScoreHelp />}
-        <ScoreToolbar score={score} onChange={setScore} />
+        <div className="flex justify-end">
+          <ScoreHistoryControls canUndo={history.canUndo} canRedo={history.canRedo} onUndo={history.undo} onRedo={history.redo} />
+        </div>
+        <ScoreToolbar
+          score={score}
+          onChange={(patch) => {
+            if (patch.timeSignature && score.measures.some((measure) => usedUnits(measure) > measureCapacity(patch.timeSignature || score.timeSignature))) {
+              toast.error(scoreT("score.timeTooSmall"));
+              return;
+            }
+            history.commit(patch);
+          }}
+        />
         <ScorePlaybackBar
           playing={playback.playing}
           tempo={score.tempo}
@@ -153,20 +180,29 @@ export default function ScorePage() {
           onPlace={handlePlace}
           onSelect={setSelectedId}
           onChordTarget={setChordTarget}
+          onMeasureMenu={setMeasureMenu}
         />
         <ScoreLyrics
           value={score.lyrics}
-          onChange={(lyrics) => setScore({ lyrics })}
-          onAlign={() => setScore({ measures: alignLyrics(score) })}
+          onChange={(lyrics) => history.commit({ lyrics })}
+          onAlign={() => history.commit({ measures: alignLyrics(score) })}
+          onReplaceAll={() => {
+            const hasAssignedLyrics = score.measures.some((measure) => measure.events.some((event) => event.kind === "note" && event.lyric));
+            if (hasAssignedLyrics) setConfirmReplaceLyrics(true);
+            else history.commit({ measures: replaceAllLyrics(score) });
+          }}
         />
       </main>
 
       {selected && (
         <ScoreSelectionPanel
           event={selected}
-          onPatch={handlePatch}
-          onMove={(dir) => setScore({ measures: moveEvent(score, selected.id, dir) })}
-          onDelete={() => { setScore({ measures: deleteEvent(score, selected.id) }); setSelectedId(null); }}
+          onPatch={(patch) => {
+            if (Object.prototype.hasOwnProperty.call(patch, "lyric")) handleLyricPatch(String(patch.lyric || ""));
+            else handlePatch(patch);
+          }}
+          onMove={(dir) => history.commit({ measures: moveEvent(score, selected.id, dir) })}
+          onDelete={() => { history.commit({ measures: deleteEvent(score, selected.id) }); setSelectedId(null); }}
           onClose={() => setSelectedId(null)}
         />
       )}
@@ -174,8 +210,22 @@ export default function ScorePage() {
       <ScoreChordDialog
         target={chordTarget}
         onClose={() => setChordTarget(null)}
-        onSave={(symbol) => { if (chordTarget) setScore({ chords: upsertChord(score, chordTarget, symbol) }); setChordTarget(null); }}
-        onDelete={() => { if (chordTarget?.id) setScore({ chords: removeChord(score, chordTarget.id) }); setChordTarget(null); }}
+        onSave={(symbol) => { if (chordTarget) history.commit({ chords: upsertChord(score, chordTarget, symbol) }); setChordTarget(null); }}
+        onDelete={() => { if (chordTarget?.id) history.commit({ chords: removeChord(score, chordTarget.id) }); setChordTarget(null); }}
+      />
+      <ScoreMeasureMenu
+        measure={measureMenu}
+        onClose={() => setMeasureMenu(null)}
+        onClear={(measure) => history.commit(clearMeasure(score, measure))}
+        onDelete={(measure) => { history.commit(deleteMeasure(score, measure)); setSelectedId(null); }}
+      />
+      <ConfirmDialog
+        open={confirmReplaceLyrics}
+        onOpenChange={setConfirmReplaceLyrics}
+        title={scoreT("score.replaceAllLyricsTitle")}
+        description={scoreT("score.replaceAllLyricsConfirm")}
+        confirmLabel={scoreT("score.replaceAllLyrics")}
+        onConfirm={() => { history.commit({ measures: replaceAllLyrics(score) }); setConfirmReplaceLyrics(false); }}
       />
     </div>
   );
