@@ -12,7 +12,7 @@ const fieldClass = "h-9 rounded-md bg-muted px-2 text-sm text-foreground border-
 /** Phase 1 toolbar area: basic score settings only. Notation tools come later. */
 export function ScoreToolbar({ score, onChange }: Props) {
   return (
-    <section aria-label={scoreT("score.toolbar")} className="rounded-lg border border-border p-3">
+    <section aria-label={scoreT("score.settings")} className="rounded-lg border border-border p-3">
       <div className="flex flex-wrap gap-3 items-end">
         <label className="flex flex-col gap-1 text-xs text-muted-foreground">
           {scoreT("score.clef")}
@@ -40,6 +40,7 @@ export function ScoreToolbar({ score, onChange }: Props) {
             min={SCORE_TEMPO_MIN}
             max={SCORE_TEMPO_MAX}
             className={`${fieldClass} w-24`}
+            key={score.tempo}
             defaultValue={score.tempo}
             onBlur={(e) => {
               const n = Number(e.target.value);
@@ -49,7 +50,6 @@ export function ScoreToolbar({ score, onChange }: Props) {
           />
         </label>
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">{scoreT("score.toolbarSoon")}</p>
     </section>
   );
 }
