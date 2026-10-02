@@ -101,19 +101,30 @@ export function lyricTokens(text: string): string[] {
 /** Fill only unassigned notes with lyrics not already represented by assigned notes. */
 export function alignLyrics(score: ScoreData): ScoreMeasure[] {
   const tokens = lyricTokens(score.lyrics);
-  const assignedCount = score.measures.reduce(
-    (count, measure) => count + measure.events.filter((event) => event.kind === "note" && event.lyric).length,
-    0,
-  );
-  let i = assignedCount;
+  const assigned = new Map<string, number>();
+  score.measures.forEach((measure) => measure.events.forEach((event) => {
+    if (event.kind === "note" && event.lyric) assigned.set(event.lyric, (assigned.get(event.lyric) || 0) + 1);
+  }));
+  const remaining = tokens.filter((token) => {
+    const count = assigned.get(token) || 0;
+    if (!count) return true;
+    assigned.set(token, count - 1);
+    return false;
+  });
+  let i = 0;
   return score.measures.map((m) => ({
     ...m,
     events: m.events.map((e) => {
       if (e.kind !== "note" || e.lyric) return e;
-      const lyric = tokens[i++];
+      const lyric = remaining[i++];
       return lyric ? { ...e, lyric: lyric.slice(0, 40) } : e;
     }),
   }));
+}
+
+/** Remove notation and mapped lyrics while preserving the master Lyrics text and metadata. */
+export function clearScore(): Pick<ScoreData, "measures" | "chords"> {
+  return { measures: [], chords: [] };
 }
 
 /** Explicit destructive reflow used only after the user confirms replacement. */

@@ -14,6 +14,7 @@ interface Props {
   score: ScoreData;
   mode: EntryMode;
   selectedId: string | null;
+  hasSelection?: boolean;
   playingId: string | null;
   onPlace: (measure: number, index: number, pitch: number) => void;
   onSelect: (id: string | null) => void;
@@ -33,7 +34,7 @@ const CLEF_FONT = { fontFamily: '"Noto Music", "Segoe UI Symbol", "Apple Symbols
 
 interface MeasureLayout { index: number; sys: number; x: number; w: number; virtual: boolean; header: number }
 
-export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu }: Props) {
+export function ScoreEditor({ score, mode, selectedId, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(360);
 
@@ -67,9 +68,12 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
         const chordChars = score.chords
           .filter((chord) => chord.measure === m)
           .reduce((sum, chord) => sum + chord.symbol.length, 0);
-        const lyricChars = events.reduce((sum, event) => sum + (event.lyric?.length || 0), 0);
-        const accidentalCount = events.filter((event) => event.accidental).length;
-        const contentWidth = PAD * 2 + events.length * 27 + accidentalCount * 7 + Math.min(100, chordChars * 3 + lyricChars * 1.5);
+        const unitWidth = events.reduce((largest, event) => {
+          const glyphWidth = Math.max(28, (event.lyric?.length || 0) * 7 + 12, event.accidental ? 36 : 28);
+          return Math.max(largest, glyphWidth / DURATION_UNITS[event.duration]);
+        }, 0);
+        const chordWidth = Math.min(120, chordChars * 7);
+        const contentWidth = PAD * 2 + cap * unitWidth + chordWidth;
         const desired = Math.max(MIN_MEASURE_W, contentWidth);
         const remaining = available - used;
         if (used > 0 && desired > remaining) break;
@@ -84,7 +88,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
     }
     const renderWidth = Math.max(width, ...result.map((measure) => measure.x + measure.w + 4));
     return { measures: result, systems: sys, renderWidth };
-  }, [score.measures, score.chords, width, key.count]);
+  }, [score.measures, score.chords, width, key.count, cap]);
 
   const eventX = (ml: MeasureLayout, startUnits: number) => ml.x + PAD + (startUnits / cap) * (ml.w - 2 * PAD);
   const yFor = (dia: number, sys: number) => sys * SYS_H + BOTTOM - (dia - bottomDia) * 5;
@@ -131,7 +135,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
       .filter((o) => o.d < 13)
       .sort((a, b) => a.d - b.d)[0];
     if (near) { onSelect(near.p.ev.id); return; }
-    if (selectedId) { onSelect(null); return; }
+    if (hasSelection || selectedId) { onSelect(null); return; }
     if (localY > LYRIC_Y - 14) return;
 
     const [lo, hi] = pitchRange(score.clef);
@@ -249,7 +253,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
             for (let d = bottomDia - 2; d >= dia; d -= 2) ledgers.push(d);
             for (let d = bottomDia + 10; d <= dia; d += 2) ledgers.push(d);
             return (
-              <g key={ev.id} className={active ? "text-primary" : "text-foreground"}>
+              <g key={ev.id} data-score-event={ev.id} className={active ? "text-primary" : "text-foreground"}>
                 {ev.id === selectedId && <circle cx={x} cy={y} r={11} className="fill-primary/15" />}
                 {ledgers.map((d) => (
                   <line key={d} x1={x - 10} x2={x + 10} y1={yFor(d, ml.sys)} y2={yFor(d, ml.sys)} stroke="currentColor" strokeWidth={1} />
@@ -259,7 +263,7 @@ export function ScoreEditor({ score, mode, selectedId, playingId, onPlace, onSel
                 )}
                 <NoteShape x={x} y={y} duration={ev.duration} stemUp={dia < middleLineDia(score.clef)} />
                 {ev.lyric && (
-                  <text x={x} y={sysY + LYRIC_Y} fontSize={12} textAnchor="middle" className="fill-foreground">{ev.lyric}</text>
+                   <text data-score-lyric x={x} y={sysY + LYRIC_Y} fontSize={12} textAnchor="middle" className="fill-foreground">{ev.lyric}</text>
                 )}
               </g>
             );

@@ -107,6 +107,26 @@ class ScorePlayer {
     if (this.master) this.master.gain.value = Math.min(1, Math.max(0, volume));
   }
 
+  /** Short isolated preview for the currently selected note. */
+  previewNote(score: ScoreData, eventId: string): boolean {
+    const event = score.measures.flatMap((measure) => measure.events).find((item) => item.id === eventId && item.kind === "note");
+    if (!event) return false;
+    this.stop();
+    const Ctx: AudioCtor | undefined = window.AudioContext || (window as unknown as { webkitAudioContext?: AudioCtor }).webkitAudioContext;
+    if (!Ctx) return false;
+    if (!this.ctx) this.ctx = new Ctx();
+    void this.ctx.resume();
+    const ctx = this.ctx;
+    const master = ctx.createGain();
+    master.gain.value = score.volume;
+    master.connect(ctx.destination);
+    this.master = master;
+    const start = ctx.currentTime + 0.02;
+    this.voice(midiToFreq(midiFor(event, score.keySignature)), start, 0.45);
+    window.setTimeout(() => this.stop(), 900);
+    return true;
+  }
+
   stop() {
     cancelAnimationFrame(this.raf);
     this.sources.forEach((s) => {
