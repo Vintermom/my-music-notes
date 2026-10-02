@@ -34,9 +34,12 @@ function runs(text: string, han: ShareFontFamily) {
 
 async function glyphLayer(system: LaidSystem, layout: ScoreLayout, clef: ScoreClef): Promise<string | null> {
   try {
+    const musicFont = new FontFace("ScoreMusic", `url(${new URL("fonts/share/NotoMusic-Regular.otf", document.baseURI).href})`);
+    await musicFont.load();
+    document.fonts.add(musicFont);
     const svg = renderToStaticMarkup(createElement(ScoreSystemSvg, { system, layout, clef, layer: "glyphs" }))
       .replace('width="100%"', `width="${LAYOUT_WIDTH * GLYPH_SCALE}" height="${system.height * GLYPH_SCALE}"`)
-      .replace("<svg ", '<svg style="font-family:\'Noto Music\',\'Segoe UI Symbol\',\'Apple Symbols\',\'Bravura\',serif" ');
+      .replace("<svg ", '<svg style="font-family:\'ScoreMusic\',\'Noto Music\',\'Segoe UI Symbol\',\'Apple Symbols\',\'Bravura\',serif" ');
     const img = new Image();
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
     await img.decode();

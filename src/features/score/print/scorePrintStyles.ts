@@ -12,6 +12,7 @@ ${font("ScoreThai", "NotoSansThai-Regular.ttf")}
 ${font("ScoreThai", "NotoSansThai-Bold.ttf", 700)}
 ${font("ScoreKR", "NotoSansKR-Regular.ttf")}
 ${font("ScoreJP", "NotoSansJP-Regular.ttf")}
+${font("ScoreMusic", "NotoMusic-Regular.otf")}
 @page { size: A4 portrait; margin: 16mm 15mm 18mm 15mm;
   @bottom-center { content: counter(page) " / " counter(pages); font: 9pt "ScoreSans", sans-serif; color: #444; }
   @bottom-right { content: "${safeFooter}"; font: 8pt "ScoreSans", sans-serif; color: #666; }
@@ -20,7 +21,7 @@ ${font("ScoreJP", "NotoSansJP-Regular.ttf")}
 html, body { margin: 0; background: #fff; color: #000; }
 body { font-family: "ScoreSans", "ScoreThai", "ScoreKR", "ScoreJP", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif; }
 svg text { font-family: "ScoreSans", "ScoreThai", "ScoreKR", "ScoreJP", "Noto Sans Arabic", "Segoe UI", sans-serif; fill: #000; }
-svg text.clef { font-family: "Noto Music", "Segoe UI Symbol", "Apple Symbols", "Bravura", serif; }
+svg text.clef { font-family: "ScoreMusic", "Noto Music", "Segoe UI Symbol", "Apple Symbols", "Bravura", serif; }
 svg { color: #000; }
 .score-head { text-align: center; margin-bottom: 6mm; break-after: avoid; }
 .score-head h1 { font-size: 20pt; margin: 0 0 2mm; font-weight: 700; }

@@ -68,6 +68,7 @@ export default function ScorePage() {
   const [scoreFullscreen, setScoreFullscreen] = useState(false);
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
   const history = useScoreHistory(id, note?.score, setScore);
+  const { undo, redo } = history;
   usePageMeta(`${note?.title || scoreT("score.untitled")} — MyMuNotes`, scoreT("score.workspaceEmpty"));
 
   useEffect(() => { setSelectedId(null); setSelectedChord(null); setChordTarget(null); }, [id]);
@@ -77,11 +78,11 @@ export default function ScorePage() {
       const typing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
       if (typing || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
       event.preventDefault();
-      if (event.shiftKey) history.redo(); else history.undo();
+      if (event.shiftKey) redo(); else undo();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [history.redo, history.undo]);
+  }, [redo, undo]);
 
   const goBack = () => { playback.stop(); linked.pause(); flush(); navigate("/app"); };
 
