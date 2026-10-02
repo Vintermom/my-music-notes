@@ -84,6 +84,24 @@ export function deleteMeasure(score: ScoreData, index: number): Pick<ScoreData, 
   };
 }
 
+/** Insert a copy of a measure right after it; later measures and their chords shift forward. */
+export function duplicateMeasure(score: ScoreData, index: number, withLyrics: boolean): Pick<ScoreData, "measures" | "chords"> {
+  const source = score.measures[index];
+  if (!source) return { measures: score.measures, chords: score.chords };
+  const copy: ScoreMeasure = {
+    id: newScoreId("m"),
+    events: source.events.map((event) => {
+      const next = { ...event, id: newScoreId("e") };
+      if (!withLyrics) delete next.lyric;
+      return next;
+    }),
+  };
+  const measures = [...score.measures.slice(0, index + 1), copy, ...score.measures.slice(index + 1)];
+  const shifted = score.chords.map((chord) => chord.measure > index ? { ...chord, measure: chord.measure + 1 } : chord);
+  const copies = score.chords.filter((chord) => chord.measure === index).map((chord) => ({ ...chord, id: newScoreId("c"), measure: index + 1 }));
+  return { measures, chords: [...shifted, ...copies] };
+}
+
 /** Split lyrics text into syllables; [Section] lines are kept as text but skipped here. */
 export function lyricTokens(text: string): string[] {
   return text

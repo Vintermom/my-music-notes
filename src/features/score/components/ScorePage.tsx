@@ -22,7 +22,7 @@ import { useScoreHistory } from "../hooks/useScoreHistory";
 import { scorePlayer } from "../services/scorePlayer";
 import type { ScoreAccidental, ScoreDuration, ScoreEvent } from "../types/score.types";
 import {
-  alignLyrics, clearMeasure, clearScore, deleteEvent, deleteMeasure, findEvent, moveEvent, newScoreId, patchEvent, placeEvent,
+  alignLyrics, clearMeasure, duplicateMeasure, clearScore, deleteEvent, deleteMeasure, findEvent, moveEvent, newScoreId, patchEvent, placeEvent,
   removeChord, replaceAllLyrics, syncNoteLyric, upsertChord,
 } from "../utils/scoreEdit";
 import { measureCapacity, usedUnits } from "../utils/notation";
@@ -239,6 +239,10 @@ export default function ScorePage() {
         </div>
       </main>
 
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-10 no-print">
+        <Button onClick={() => { flushNow(); toast.success(t("toast.noteSaved")); }} className="px-8">{t("editor.save")}</Button>
+      </div>
+
       {scoreFullscreen && (
         <div className={`fixed inset-0 z-40 overflow-y-auto ${colorClasses[note.color]}`} style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}>
           <div className="sticky top-0 z-10 flex h-12 items-center justify-between border-b border-border/50 bg-inherit px-4"><span className="text-sm font-medium">{note.title || scoreT("score.untitled")}</span><Button variant="ghost" size="sm" onClick={() => setScoreFullscreen(false)}><X className="h-4 w-4 mr-1.5" />{scoreT("score.exitFullscreen")}</Button></div>
@@ -253,7 +257,7 @@ export default function ScorePage() {
       )}
 
       <ScoreChordDialog target={chordTarget} onClose={() => setChordTarget(null)} onSave={(symbol) => { if (chordTarget) history.commit({ chords: upsertChord(score, chordTarget, symbol) }); setChordTarget(null); setSelectedChord(null); }} onDelete={() => { if (chordTarget?.id) history.commit({ chords: removeChord(score, chordTarget.id) }); setChordTarget(null); setSelectedChord(null); }} />
-      <ScoreMeasureMenu measure={measureMenu} onClose={() => setMeasureMenu(null)} onClear={(measure) => history.commit(clearMeasure(score, measure))} onDelete={(measure) => { history.commit(deleteMeasure(score, measure)); setSelectedId(null); }} />
+      <ScoreMeasureMenu measure={measureMenu} onClose={() => setMeasureMenu(null)} onClear={(measure) => history.commit(clearMeasure(score, measure))} onDuplicate={(measure, withLyrics) => history.commit(duplicateMeasure(score, measure, withLyrics))} onDelete={(measure) => { history.commit(deleteMeasure(score, measure)); setSelectedId(null); }} />
       <ScoreLyricsImportDialog open={lyricsImportOpen} onOpenChange={setLyricsImportOpen} onImport={(imported) => history.commit({ lyrics: imported })} />
       <InsertSheet open={insertSheetOpen} onOpenChange={setInsertSheetOpen} onInsert={(text) => {
         const cursor = lyricsRef.current?.selectionStart ?? score.lyrics.length;
