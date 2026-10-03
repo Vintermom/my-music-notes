@@ -1,7 +1,8 @@
 import type { ScoreData, ScoreEvent } from "../types/score.types";
 import {
-  DURATION_UNITS, bottomLineDia, keyInfo, keySignaturePositions, measureCapacity, middleLineDia,
+  eventUnits, bottomLineDia, keyInfo, keySignaturePositions, measureCapacity, middleLineDia,
 } from "../utils/notation";
+import { tieCompatible } from "../utils/scoreEdit";
 
 /**
  * Score output layout (Print, Save as PDF and Share PDF all use this).
@@ -31,6 +32,7 @@ export interface LaidSystem {
   showTime: boolean;
   keyGlyphs: { x: number; y: number }[];
   measures: LaidMeasure[];
+  ties: { x1: number; x2: number; y: number; below: boolean }[];
   yFor: (dia: number) => number;
 }
 export interface ScoreLayout { systems: LaidSystem[]; keyType: "sharp" | "flat" | "none"; timeTop: string; timeBottom: string }
@@ -58,6 +60,7 @@ export function textWidth(text: string, size: number, bold = false): number {
 function slotWidth(ev: ScoreEvent): number {
   let w = BASE_SLOT[ev.duration];
   if (ev.kind === "note" && ev.accidental) w += 12;
+  if (ev.dotted) w += 8;
   if (ev.kind === "note" && ev.lyric) w = Math.max(w, textWidth(ev.lyric, LYRIC_SIZE) + 10 + (ev.accidental ? 12 : 0));
   return w;
 }
@@ -68,7 +71,7 @@ function planMeasure(score: ScoreData, mi: number, events: ScoreEvent[]): Measur
   const slots = events.map(slotWidth);
   const starts: number[] = [];
   let u = 0;
-  for (const ev of events) { starts.push(u); u += DURATION_UNITS[ev.duration]; }
+  for (const ev of events) { starts.push(u); u += eventUnits(ev); }
   // Chords must not collide: each chord needs room until the next chord.
   const chords = score.chords.filter((c) => c.measure === mi).sort((a, b) => a.offset - b.offset);
   let chordMin = 0;
@@ -187,9 +190,22 @@ export function layoutScore(score: ScoreData): ScoreLayout {
       height, staffTop, staffBottom: staffTop + 40, chordY, lyricY, numberY: staffTop - 6, right: mx, header,
       showTime: gi === 0,
       keyGlyphs: keyPos.map((d, i) => ({ x: 48 + i * 10, y: yFor(d) })),
-      measures: laid, yFor,
+      measures: laid, yFor, ties: [],
     };
     return sys;
+  });
+
+  // Ties (reading order, across measures and systems).
+  const flat = systems.flatMap((sys) => sys.measures.flatMap((m) => m.events.map((le) => ({ le, sys }))));
+  flat.forEach(({ le, sys }, i) => {
+    const next = flat[i + 1];
+    if (!le.event.tie || !next || !tieCompatible(score, le.event, next.le.event)) return;
+    const below = le.stemUp;
+    if (next.sys === sys) sys.ties.push({ x1: le.x + 7, x2: next.le.x - 7, y: le.y, below });
+    else {
+      sys.ties.push({ x1: le.x + 7, x2: sys.right - 2, y: le.y, below });
+      next.sys.ties.push({ x1: next.sys.header - 4, x2: next.le.x - 7, y: next.le.y, below });
+    }
   });
 
   const [timeTop, timeBottom] = score.timeSignature.split("/");
