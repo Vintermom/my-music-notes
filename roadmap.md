@@ -1,3 +1,6 @@
 - [x] Make mobile Score staff systems use content-aware vertical spacing without shrinking notation.
 - [x] Verify mixed chord/lyrics/simple systems and inline lyric editing at phone size.
 - [x] Confirm build/security status and publish the tested Main maintenance update.
+- [ ] Replace the top Score editing panel with one anchored note/chord popup while keeping the add toolbar unchanged.
+- [ ] Test popup positioning, dismissal, scroll preservation, inline lyrics, and bottom-of-score editing on desktop, tablet, and mobile.
+- [ ] Confirm build/security status and publish the V1.5.0 maintenance update without changing update messaging.
