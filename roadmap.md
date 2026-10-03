@@ -1,3 +1,3 @@
 - [x] Make mobile Score staff systems use content-aware vertical spacing without shrinking notation.
-- [ ] Verify mixed chord/lyrics/simple systems and inline lyric editing at phone size.
+- [x] Verify mixed chord/lyrics/simple systems and inline lyric editing at phone size.
 - [ ] Confirm build/security status and publish the tested Main maintenance update.
