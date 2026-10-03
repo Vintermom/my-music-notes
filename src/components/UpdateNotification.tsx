@@ -11,18 +11,21 @@ const TEXT = {
   en: {
     title: "New update available",
     message: "A new version of MyMuNotes is ready. Please update, then close and reopen the app to use the latest version.",
+    whatsNew: "V1.5.0 – Score: Score is now more complete for songwriting 🎼 Add and edit notation, chords and lyrics, hear your melody with piano playback, duplicate measures, use dotted notes and ties, and print or save your complete Score with full lyrics.",
     update: "Update now",
     later: "Later",
   },
   th: {
     title: "มีอัปเดตใหม่",
     message: "MyMuNotes เวอร์ชันใหม่พร้อมใช้งานแล้ว กรุณากดอัปเดต จากนั้นปิดแอพแล้วเปิดใหม่เพื่อใช้เวอร์ชันล่าสุด",
+    whatsNew: "V1.5.0 – Score: Score สมบูรณ์ยิ่งขึ้นสำหรับการแต่งเพลง 🎼 เพิ่มและแก้ไขโน้ต คอร์ด และเนื้อเพลง ฟังทำนองด้วยเสียงเปียโน ทำซ้ำห้องเพลง ใช้โน้ตประสมและโน้ตผูก พร้อมพิมพ์หรือบันทึก Score พร้อมเนื้อเพลงฉบับเต็ม",
     update: "อัปเดตตอนนี้",
     later: "ภายหลัง",
   },
   sv: {
     title: "Ny uppdatering finns",
     message: "En ny version av MyMuNotes är klar. Uppdatera och stäng sedan appen och öppna den igen för att använda den senaste versionen.",
+    whatsNew: "V1.5.0 – Score: Score är nu mer komplett för låtskrivande 🎼 Lägg till och redigera noter, ackord och texter, hör din melodi med pianouppspelning, duplicera takter, använd prickade noter och bindlar, och skriv ut eller spara din kompletta Score med full text.",
     update: "Uppdatera nu",
     later: "Senare",
   },
@@ -133,6 +136,7 @@ export function UpdateNotification() {
           <DialogTitle>{copy.title}</DialogTitle>
           <DialogDescription>{copy.message}</DialogDescription>
         </DialogHeader>
+        <p className="text-sm text-muted-foreground">{copy.whatsNew}</p>
         <DialogFooter className="gap-2 sm:gap-2">
           <Button variant="outline" onClick={handleLater}>{copy.later}</Button>
           <Button onClick={handleUpdate}>{copy.update}</Button>
