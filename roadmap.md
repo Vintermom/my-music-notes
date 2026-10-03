@@ -1,3 +1,3 @@
-- [x] Keep the Score toolbar unchanged and move Hint/Fullscreen into the staff container.
-- [x] Route Text/Record Print and Export PDF directly to the existing document output without the preview popup.
-- [x] Verify Score fullscreen reuses the same state and all protected output/share behavior remains unchanged.
+- [x] Make mobile Score staff systems use content-aware vertical spacing without shrinking notation.
+- [ ] Verify mixed chord/lyrics/simple systems and inline lyric editing at phone size.
+- [ ] Confirm build/security status and publish the tested Main maintenance update.
