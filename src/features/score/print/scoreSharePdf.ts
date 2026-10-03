@@ -12,6 +12,7 @@ import {
 import { scoreT } from "../i18n";
 import { sanitizeScoreData } from "../utils/scoreData";
 import { ScoreSystemSvg } from "./ScorePrintView";
+import { scorePrintLabels, scorePrintMeta } from "./scorePrintMeta";
 import { LAYOUT_FONT, LAYOUT_WIDTH, layoutScore, textWidth, type LaidSystem, type ScoreLayout } from "./scoreLayout";
 
 /**
@@ -75,7 +76,14 @@ export async function buildScorePdfBlob(note: Note): Promise<Blob> {
   const layout = layoutScore(score);
   const title = note.title || scoreT("score.untitled");
   const composer = note.composer || "";
-  const allText = [title, composer, score.lyrics, ...score.chords.map((c) => c.symbol),
+  const labels = scorePrintLabels();
+  const meta = scorePrintMeta(note);
+  const infoLines = [
+    meta.style ? `${labels.style}: ${meta.style}` : "",
+    meta.tags.length ? `${labels.tags}: ${meta.tags.join(", ")}` : "",
+    `${labels.created}: ${meta.created} · ${labels.updated}: ${meta.updated}`,
+  ].filter(Boolean);
+  const allText = [title, composer, score.lyrics, ...infoLines, labels.lyrics, ...score.chords.map((c) => c.symbol),
     ...score.measures.flatMap((m) => m.events.map((e) => e.lyric || ""))];
   const han = pickHanFamily(allText);
 
@@ -85,8 +93,9 @@ export async function buildScorePdfBlob(note: Note): Promise<Blob> {
   if (composer) content.push({ text: runs(`${scoreT("score.print.composer")}: ${composer}`, han), fontSize: 11, alignment: "center", margin: [0, 0, 0, 4] });
   content.push({
     text: runs(`${scoreT("score.key")}: ${score.keySignature} · ${scoreT("score.time")}: ${score.timeSignature} · ${scoreT("score.print.tempo")}: ${score.tempo} BPM`, han),
-    fontSize: 9.5, color: "#333333", alignment: "center", margin: [0, 0, 0, 16],
+    fontSize: 9.5, color: "#333333", alignment: "center", margin: [0, 0, 0, 4],
   });
+  infoLines.forEach((line, i) => content.push({ text: runs(line, han), fontSize: 9, color: "#333333", alignment: "center", margin: [0, 0, 0, i === infoLines.length - 1 ? 16 : 2] }));
 
   for (const system of layout.systems) {
     const overlays: Content[] = [];
@@ -106,6 +115,14 @@ export async function buildScorePdfBlob(note: Note): Promise<Blob> {
       .replace(/currentColor/g, "#000000");
     // Positioned overlays first (they take no space), then the in-flow staff. Never split a system.
     content.push({ stack: [...overlays, { svg: shapes, width: CONTENT_W }], unbreakable: true, margin: [0, 0, 0, 9] } as Content);
+  }
+
+  if (score.lyrics.trim()) {
+    content.push({ canvas: [{ type: "line", x1: 0, y1: 0, x2: CONTENT_W, y2: 0, lineWidth: 0.6, lineColor: "#000000" }], margin: [0, 14, 0, 10] } as Content);
+    content.push({ text: runs(labels.lyrics, han), fontSize: 13, bold: true, margin: [0, 0, 0, 8], headlineLevel: 1 } as Content);
+    for (const line of score.lyrics.split("\n")) {
+      content.push({ text: line ? runs(line, han) : " ", fontSize: 11, lineHeight: 1.3, preserveLeadingSpaces: true } as Content);
+    }
   }
 
   const footer = `Created with MyMuNotes · ${APP_VERSION}`;
