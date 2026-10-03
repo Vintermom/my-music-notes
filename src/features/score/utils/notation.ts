@@ -4,6 +4,11 @@ export const DURATIONS: ScoreDuration[] = ["w", "h", "q", "e", "s"];
 /** Length of each value in 16th-note units. */
 export const DURATION_UNITS: Record<ScoreDuration, number> = { w: 16, h: 8, q: 4, e: 2, s: 1 };
 
+/** Real length of an event in 16th units, including the dot. */
+export function eventUnits(ev: Pick<ScoreEvent, "duration" | "dotted">): number {
+  return DURATION_UNITS[ev.duration] * (ev.dotted ? 1.5 : 1);
+}
+
 export function measureCapacity(timeSignature: string): number {
   const [n, d] = timeSignature.split("/").map(Number);
   return Math.round((n * 16) / d);
@@ -16,7 +21,7 @@ export function beatUnits(timeSignature: string): number {
 }
 
 export function usedUnits(measure: ScoreMeasure | undefined): number {
-  return (measure?.events || []).reduce((sum, e) => sum + DURATION_UNITS[e.duration], 0);
+  return (measure?.events || []).reduce((sum, e) => sum + eventUnits(e), 0);
 }
 
 const STEP_SEMITONES = [0, 2, 4, 5, 7, 9, 11];

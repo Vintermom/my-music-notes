@@ -22,6 +22,10 @@ export interface ScoreEvent {
   accidental?: ScoreAccidental;
   /** Lyric syllable shown under this note (lyrics mapping). */
   lyric?: string;
+  /** Dotted value: duration × 1.5. */
+  dotted?: boolean;
+  /** Note is tied to the next note of the same pitch. */
+  tie?: boolean;
 }
 
 export interface ScoreMeasure {

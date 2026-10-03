@@ -1,5 +1,6 @@
+import type { ScoreEvent } from "../types/score.types";
 import type { ScoreData } from "../types/score.types";
-import { DURATION_UNITS, measureCapacity, midiFor, midiToFreq } from "../utils/notation";
+import { eventUnits, measureCapacity, midiFor, midiToFreq } from "../utils/notation";
 
 // MIDI-style piano synthesized with the Web Audio API (no samples, no third-party audio).
 // One shared instance guarantees only a single playback runs at a time.
@@ -40,17 +41,28 @@ class ScorePlayer {
     this.master = master;
 
     const timeline: { id: string; start: number; end: number }[] = [];
+    const items: { ev: ScoreEvent; start: number; d: number }[] = [];
     let t = 0;
     score.measures.forEach((m, mi) => {
       const measureStart = t;
       m.events.forEach((ev) => {
-        const d = DURATION_UNITS[ev.duration] * secPerUnit;
-        if (ev.kind === "note") this.voice(midiToFreq(midiFor(ev, score.keySignature)), startAt + t, d);
+        const d = eventUnits(ev) * secPerUnit;
+        items.push({ ev, start: t, d });
         timeline.push({ id: ev.id, start: t, end: t + d });
         t += d;
       });
       if (mi < score.measures.length - 1) t = Math.max(t, measureStart + cap * secPerUnit);
     });
+    // Tied notes sound once for their combined length (no retrigger).
+    const tiedInto = (a: ScoreEvent, b?: ScoreEvent) => !!b && a.kind === "note" && !!a.tie && b.kind === "note"
+      && midiFor(a, score.keySignature) === midiFor(b, score.keySignature);
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      if (it.ev.kind !== "note" || (i > 0 && tiedInto(items[i - 1].ev, it.ev))) continue;
+      let end = it.start + it.d;
+      for (let j = i; j + 1 < items.length && tiedInto(items[j].ev, items[j + 1].ev); j++) end = items[j + 1].start + items[j + 1].d;
+      this.voice(midiToFreq(midiFor(it.ev, score.keySignature)), startAt + it.start, end - it.start);
+    }
     if (!timeline.length) { this.stop(); return false; }
 
     this.timeline = timeline;
