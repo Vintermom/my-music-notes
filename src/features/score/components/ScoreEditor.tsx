@@ -35,11 +35,15 @@ const CHORD_Y = 26;
 const TOP = 52;
 const BOTTOM = TOP + 40;
 const LYRIC_Y = BOTTOM + 46;
+const MOBILE_TOP_COMPACT = 42;
+const MOBILE_LYRIC_GAP = 30;
+const MOBILE_BOTTOM_GAP = 20;
 const MIN_MEASURE_W = 170;
 const PAD = 18;
 const CLEF_FONT = { fontFamily: '"Noto Music", "Segoe UI Symbol", "Apple Symbols", "Bravura", serif' };
 
 interface MeasureLayout { index: number; sys: number; x: number; w: number; virtual: boolean; header: number }
+interface SystemGeometry { offset: number; top: number; bottom: number; chordY: number; lyricY: number; height: number }
 
 export function ScoreEditor({ score, mode, selectedId, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu, staffActions, staffHelp, onLyricChange, onLyricNext }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -112,8 +116,28 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
     return { measures: result, systems: sys, renderWidth };
   }, [score.measures, score.chords, width, key.count, cap]);
 
+  const systemGeometry = useMemo(() => {
+    let offset = 0;
+    return Array.from({ length: layout.systems }, (_, sys): SystemGeometry => {
+      if (width >= 768) return { offset: sys * SYS_H, top: TOP, bottom: BOTTOM, chordY: CHORD_Y, lyricY: LYRIC_Y, height: SYS_H };
+      const measureIndexes = new Set(layout.measures.filter((measure) => measure.sys === sys).map((measure) => measure.index));
+      const hasChords = score.chords.some((chord) => measureIndexes.has(chord.measure));
+      const hasLyrics = score.measures.some((measure, index) => measureIndexes.has(index) && measure.events.some((event) => event.kind === "note" && (event.lyric || event.id === selectedId)));
+      const top = hasChords ? TOP : MOBILE_TOP_COMPACT;
+      const bottom = top + 40;
+      const lyricY = bottom + MOBILE_LYRIC_GAP;
+      const height = hasLyrics ? lyricY + MOBILE_BOTTOM_GAP : bottom + MOBILE_BOTTOM_GAP;
+      const geometry = { offset, top, bottom, chordY: hasChords ? CHORD_Y : top - 26, lyricY, height };
+      offset += height;
+      return geometry;
+    });
+  }, [layout.measures, layout.systems, score.chords, score.measures, selectedId, width]);
+
   const eventX = (ml: MeasureLayout, startUnits: number) => ml.x + PAD + (startUnits / cap) * (ml.w - 2 * PAD);
-  const yFor = (dia: number, sys: number) => sys * SYS_H + BOTTOM - (dia - bottomDia) * 5;
+  const yFor = (dia: number, sys: number) => {
+    const geometry = systemGeometry[sys];
+    return (geometry?.offset ?? sys * SYS_H) + (geometry?.bottom ?? BOTTOM) - (dia - bottomDia) * 5;
+  };
 
   const positioned = useMemo(() => {
     const list: { ev: ScoreEvent; x: number; ml: MeasureLayout; index: number }[] = [];
@@ -131,15 +155,17 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const sys = Math.floor(y / SYS_H);
-    const localY = y - sys * SYS_H;
+    const sys = systemGeometry.findIndex((geometry) => y >= geometry.offset && y < geometry.offset + geometry.height);
+    if (sys < 0) return;
+    const geometry = systemGeometry[sys];
+    const localY = y - geometry.offset;
     const inSys = layout.measures.filter((m) => m.sys === sys);
     if (!inSys.length) return;
     const ml = inSys.find((m) => x >= m.x && x < m.x + m.w) || inSys[0];
     const cx = Math.max(x, ml.x);
 
     // Chord row (or Chord mode): edit an existing chord or add a new one.
-    if (mode === "chord" || localY < TOP - 12) {
+    if (mode === "chord" || localY < geometry.top - 12) {
       if (ml.virtual && mode !== "chord") return;
       const hit = score.chords.find((c) => c.measure === ml.index && Math.abs(eventX(ml, c.offset) - cx) < 22);
       if (hit) { onChordTarget({ ...hit }); return; }
@@ -158,20 +184,21 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
       .sort((a, b) => a.d - b.d)[0];
     if (near) {
       onSelect(near.p.ev.id);
-      setFocusLyricId(near.p.ev.kind === "note" && localY > LYRIC_Y - 20 ? near.p.ev.id : null);
+      setFocusLyricId(near.p.ev.kind === "note" && localY > geometry.lyricY - 20 ? near.p.ev.id : null);
       return;
     }
     setFocusLyricId(null);
     if (hasSelection || selectedId) { onSelect(null); return; }
-    if (localY > LYRIC_Y - 14) return;
+    if (localY > geometry.lyricY - 14) return;
 
     const [lo, hi] = pitchRange(score.clef);
-    const pitch = Math.min(hi, Math.max(lo, Math.round((BOTTOM - localY) / 5) + bottomDia));
+    const pitch = Math.min(hi, Math.max(lo, Math.round((geometry.bottom - localY) / 5) + bottomDia));
     const index = positioned.filter((p) => p.ml.index === ml.index && p.x < cx).length;
     onPlace(ml.index, index, pitch);
   };
 
-  const height = layout.systems * SYS_H;
+  const lastGeometry = systemGeometry[systemGeometry.length - 1];
+  const height = lastGeometry ? lastGeometry.offset + lastGeometry.height : 0;
   const playing = positioned.find((p) => p.ev.id === playingId);
   const selectedPos = positioned.find((p) => p.ev.id === selectedId && p.ev.kind === "note");
   const ties: ReactNode[] = [];
@@ -204,21 +231,22 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
           aria-label={scoreT("score.workspace")}
         >
           {Array.from({ length: layout.systems }).map((_, sys) => {
-            const oy = sys * SYS_H;
+            const geometry = systemGeometry[sys];
+            const oy = geometry.offset;
             const sysMeasures = layout.measures.filter((m) => m.sys === sys);
             const end = sysMeasures[sysMeasures.length - 1];
             const right = end.virtual ? end.x + end.w : end.x + end.w;
             return (
-              <g key={sys}>
+              <g key={sys} data-score-system={sys} data-score-system-height={geometry.height}>
                 <g className="text-muted-foreground">
                   {[0, 1, 2, 3, 4].map((i) => (
-                    <line key={i} x1={4} x2={right} y1={oy + TOP + i * 10} y2={oy + TOP + i * 10} stroke="currentColor" strokeWidth={1} />
+                    <line key={i} x1={4} x2={right} y1={oy + geometry.top + i * 10} y2={oy + geometry.top + i * 10} stroke="currentColor" strokeWidth={1} />
                   ))}
-                  <line x1={4} x2={4} y1={oy + TOP} y2={oy + BOTTOM} stroke="currentColor" />
+                  <line x1={4} x2={4} y1={oy + geometry.top} y2={oy + geometry.bottom} stroke="currentColor" />
                 </g>
                 <text
                   x={8}
-                  y={score.clef === "treble" ? oy + BOTTOM + 9 : oy + BOTTOM - 7}
+                  y={score.clef === "treble" ? oy + geometry.bottom + 9 : oy + geometry.bottom - 7}
                   fontSize={score.clef === "treble" ? 52 : 36}
                   fill="currentColor"
                   style={CLEF_FONT}
@@ -232,19 +260,19 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
                 ))}
                 {sys === 0 && (
                   <g fontSize={20} fontWeight={700} fill="currentColor" textAnchor="middle">
-                    <text x={sysMeasures[0].header - 16} y={oy + TOP + 18}>{score.timeSignature.split("/")[0]}</text>
-                    <text x={sysMeasures[0].header - 16} y={oy + TOP + 38}>{score.timeSignature.split("/")[1]}</text>
+                    <text x={sysMeasures[0].header - 16} y={oy + geometry.top + 18}>{score.timeSignature.split("/")[0]}</text>
+                    <text x={sysMeasures[0].header - 16} y={oy + geometry.top + 38}>{score.timeSignature.split("/")[1]}</text>
                   </g>
                 )}
                 {sysMeasures.map((ml) => (
                   <g key={ml.index}>
                     <line
-                      x1={ml.x + ml.w} x2={ml.x + ml.w} y1={oy + TOP} y2={oy + BOTTOM}
+                      x1={ml.x + ml.w} x2={ml.x + ml.w} y1={oy + geometry.top} y2={oy + geometry.bottom}
                       stroke="currentColor" className="text-muted-foreground"
                       strokeDasharray={ml.virtual ? "3 3" : undefined}
                     />
                     {ml.virtual ? (
-                      <text x={ml.x + 3} y={oy + TOP - 6} fontSize={9} className="fill-muted-foreground">{ml.index + 1}</text>
+                      <text x={ml.x + 3} y={oy + geometry.top - 6} fontSize={9} className="fill-muted-foreground">{ml.index + 1}</text>
                     ) : (
                       <g
                         className="cursor-pointer text-muted-foreground"
@@ -253,8 +281,8 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
                         aria-label={scoreT("score.measureMenu").replace("{number}", String(ml.index + 1))}
                         onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onMeasureMenu(ml.index); } }}
                       >
-                        <rect x={ml.x} y={oy + TOP - 27} width={30} height={24} rx={4} fill="currentColor" opacity={0.08} />
-                        <text x={ml.x + 7} y={oy + TOP - 10} fontSize={10} fill="currentColor">{ml.index + 1} ⋯</text>
+                        <rect x={ml.x} y={oy + geometry.top - 27} width={30} height={24} rx={4} fill="currentColor" opacity={0.08} />
+                        <text x={ml.x + 7} y={oy + geometry.top - 10} fontSize={10} fill="currentColor">{ml.index + 1} ⋯</text>
                       </g>
                     )}
                   </g>
@@ -268,7 +296,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
             const ml = layout.measures.find((m) => m.index === c.measure);
             if (!ml) return null;
             return (
-              <text key={c.id} x={eventX(ml, c.offset) - 4} y={ml.sys * SYS_H + CHORD_Y} fontSize={14} fontWeight={700} className="fill-primary">
+              <text key={c.id} x={eventX(ml, c.offset) - 4} y={systemGeometry[ml.sys].offset + systemGeometry[ml.sys].chordY} fontSize={14} fontWeight={700} className="fill-primary">
                 {c.symbol}
               </text>
             );
@@ -276,20 +304,21 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
 
           {playing && (
             <rect
-              x={playing.x - 11} y={playing.ml.sys * SYS_H + TOP - 22} width={22} height={86} rx={4}
+              x={playing.x - 11} y={systemGeometry[playing.ml.sys].offset + systemGeometry[playing.ml.sys].top - 22} width={22} height={86} rx={4}
               className="fill-primary/15"
             />
           )}
 
           {positioned.map(({ ev, x, ml }) => {
             const active = ev.id === selectedId || ev.id === playingId;
-            const sysY = ml.sys * SYS_H;
+            const geometry = systemGeometry[ml.sys];
+            const sysY = geometry.offset;
             if (ev.kind === "rest") {
               return (
                 <g key={ev.id} className={active ? "text-primary" : "text-foreground"}>
-                  {ev.id === selectedId && <rect x={x - 12} y={sysY + TOP - 4} width={24} height={50} rx={4} className="fill-primary/10" />}
-                  <RestShape x={x} top={sysY + TOP} duration={ev.duration} />
-                  {ev.dotted && <DotShape x={x - 2} y={sysY + TOP + 15} onLine={false} />}
+                  {ev.id === selectedId && <rect x={x - 12} y={sysY + geometry.top - 4} width={24} height={50} rx={4} className="fill-primary/10" />}
+                  <RestShape x={x} top={sysY + geometry.top} duration={ev.duration} />
+                  {ev.dotted && <DotShape x={x - 2} y={sysY + geometry.top + 15} onLine={false} />}
                 </g>
               );
             }
@@ -309,7 +338,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
                 )}
                 <NoteShape x={x} y={y} duration={ev.duration} stemUp={dia < middleLineDia(score.clef)} dotted={ev.dotted} onLine={(dia - bottomDia) % 2 === 0} />
                 {ev.lyric && ev.id !== selectedPos?.ev.id && (
-                   <text data-score-lyric x={x} y={sysY + LYRIC_Y} fontSize={12} textAnchor="middle" className="fill-foreground">{ev.lyric}</text>
+                    <text data-score-lyric x={x} y={sysY + geometry.lyricY} fontSize={12} textAnchor="middle" className="fill-foreground">{ev.lyric}</text>
                 )}
               </g>
             );
@@ -340,7 +369,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
             style={{
               width: Math.max(64, (selectedPos.ev.lyric?.length || 0) * 8 + 24),
               left: selectedPos.x - Math.max(64, (selectedPos.ev.lyric?.length || 0) * 8 + 24) / 2,
-              top: selectedPos.ml.sys * SYS_H + LYRIC_Y - 16,
+              top: systemGeometry[selectedPos.ml.sys].offset + systemGeometry[selectedPos.ml.sys].lyricY - 16,
             }}
           />
         )}
