@@ -5,6 +5,7 @@ import { APP_VERSION } from "@/lib/appVersion";
 import { getCurrentLang } from "@/i18n";
 import { ScorePrintView } from "./ScorePrintView";
 import { scorePrintStyles } from "./scorePrintStyles";
+import { scorePrintLabels, scorePrintMeta } from "./scorePrintMeta";
 import { scoreT } from "../i18n";
 import { sanitizeScoreData } from "../utils/scoreData";
 
@@ -21,12 +22,8 @@ export async function printScore(note: Note): Promise<void> {
       title: note.title || scoreT("score.untitled"),
       composer: note.composer || "",
       score,
-      labels: {
-        composer: scoreT("score.print.composer"),
-        key: scoreT("score.key"),
-        time: scoreT("score.time"),
-        tempo: scoreT("score.print.tempo"),
-      },
+      labels: scorePrintLabels(),
+      meta: scorePrintMeta(note),
     })
   );
   const fontBase = new URL("fonts/share/", document.baseURI).href;

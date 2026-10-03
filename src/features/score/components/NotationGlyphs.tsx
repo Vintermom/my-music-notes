@@ -2,9 +2,15 @@ import type { ScoreDuration } from "../types/score.types";
 
 // Shared SVG shapes (line spacing = 10 units). Used by the staff and toolbar buttons.
 
-export function NoteShape({ x, y, duration, stemUp }: { x: number; y: number; duration: ScoreDuration; stemUp: boolean }) {
+/** Augmentation dot drawn right of the notehead, nudged into a space when the head sits on a line. */
+export function DotShape({ x, y, onLine }: { x: number; y: number; onLine: boolean }) {
+  return <circle data-score-dot cx={x + 11} cy={onLine ? y - 5 : y} r={2} fill="currentColor" />;
+}
+
+export function NoteShape({ x, y, duration, stemUp, dotted = false, onLine = false }: { x: number; y: number; duration: ScoreDuration; stemUp: boolean; dotted?: boolean; onLine?: boolean }) {
+  const dot = dotted ? <DotShape x={x} y={y} onLine={onLine} /> : null;
   if (duration === "w") {
-    return <ellipse cx={x} cy={y} rx={7} ry={4.6} fill="none" stroke="currentColor" strokeWidth={2} />;
+    return <g><ellipse cx={x} cy={y} rx={7} ry={4.6} fill="none" stroke="currentColor" strokeWidth={2} />{dot}</g>;
   }
   const filled = duration !== "h";
   const sx = stemUp ? x + 5.4 : x - 5.4;
@@ -24,6 +30,7 @@ export function NoteShape({ x, y, duration, stemUp }: { x: number; y: number; du
         const d = stemUp ? `M ${sx} ${fy} c 1 6 9 8 6 16` : `M ${sx} ${fy} c 1 -6 9 -8 6 -16`;
         return <path key={k} d={d} fill="none" stroke="currentColor" strokeWidth={1.8} />;
       })}
+      {dot}
     </g>
   );
 }
@@ -66,6 +73,14 @@ export function DurationIcon({ duration, rest }: { duration: ScoreDuration; rest
       {rest ? <RestShape x={12} top={0} duration={duration} /> : <NoteShape x={9} y={34} duration={duration} stemUp />}
     </svg>
   );
+}
+
+/** Curved tie between two noteheads; curves away from the stems. */
+export function TieShape({ x1, x2, y, below }: { x1: number; x2: number; y: number; below: boolean }) {
+  const dy = below ? 7 : -7;
+  const yy = y + (below ? 5 : -5);
+  const mid = (x1 + x2) / 2;
+  return <path data-score-tie d={`M ${x1} ${yy} Q ${mid} ${yy + dy * 1.6} ${x2} ${yy} Q ${mid} ${yy + dy * 1.1} ${x1} ${yy}`} fill="currentColor" stroke="currentColor" strokeWidth={0.6} />;
 }
 
 export const ACCIDENTAL_GLYPH = { natural: "♮", sharp: "♯", flat: "♭" } as const;

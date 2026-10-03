@@ -27,6 +27,10 @@ svg { color: #000; }
 .score-head h1 { font-size: 20pt; margin: 0 0 2mm; font-weight: 700; }
 .score-composer { font-size: 11pt; margin: 0 0 1.5mm; }
 .score-meta { font-size: 9.5pt; margin: 0; color: #333; }
+.score-info { font-size: 9pt; margin: 1mm 0 0; color: #333; white-space: pre-wrap; }
+.score-lyrics { margin-top: 8mm; padding-top: 4mm; border-top: 0.6pt solid #000; }
+.score-lyrics h2 { font-size: 13pt; font-weight: 700; margin: 0 0 3mm; break-after: avoid; }
+.score-lyrics-text { font-size: 11pt; line-height: 1.5; white-space: pre-wrap; }
 .score-system { display: block; width: 100%; height: auto; margin: 0 0 3.5mm; break-inside: avoid; page-break-inside: avoid; overflow: visible; }
 `;
 }

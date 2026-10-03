@@ -1,5 +1,5 @@
 import type { ScoreChord, ScoreData, ScoreEvent, ScoreMeasure } from "../types/score.types";
-import { DURATION_UNITS, measureCapacity, usedUnits } from "./notation";
+import { eventUnits, measureCapacity, midiFor, usedUnits } from "./notation";
 
 // Pure edit helpers. Each returns new arrays, or null when the change does not fit.
 
@@ -20,7 +20,7 @@ export function placeEvent(score: ScoreData, mIdx: number, index: number, ev: Sc
   const measures = score.measures.map((m) => ({ ...m, events: [...m.events] }));
   while (measures.length <= mIdx) measures.push({ id: newScoreId("m"), events: [] });
   const target = measures[mIdx];
-  if (usedUnits(target) + DURATION_UNITS[ev.duration] > measureCapacity(score.timeSignature)) return null;
+  if (usedUnits(target) + eventUnits(ev) > measureCapacity(score.timeSignature)) return null;
   target.events.splice(Math.max(0, Math.min(index, target.events.length)), 0, ev);
   return measures;
 }
@@ -31,8 +31,10 @@ export function patchEvent(score: ScoreData, id: string, patch: Partial<ScoreEve
   const next = { ...found.ev, ...patch };
   if (next.kind === "note" && typeof next.pitch === "number") next.pitch = Math.min(70, Math.max(0, next.pitch));
   if (!next.accidental) delete next.accidental;
+  if (!next.dotted) delete next.dotted;
+  if (!next.tie || next.kind !== "note") delete next.tie;
   const measure = score.measures[found.m];
-  const delta = DURATION_UNITS[next.duration] - DURATION_UNITS[found.ev.duration];
+  const delta = eventUnits(next) - eventUnits(found.ev);
   if (delta > 0 && usedUnits(measure) + delta > measureCapacity(score.timeSignature)) return null;
   return score.measures.map((m, mi) =>
     mi === found.m ? { ...m, events: m.events.map((e, ei) => (ei === found.i ? next : e)) } : m
@@ -96,6 +98,9 @@ export function duplicateMeasure(score: ScoreData, index: number, withLyrics: bo
       return next;
     }),
   };
+  // Ties stay only inside the copy; the last event never ties out of the copy.
+  const last = copy.events[copy.events.length - 1];
+  if (last) delete last.tie;
   const measures = [...score.measures.slice(0, index + 1), copy, ...score.measures.slice(index + 1)];
   const shifted = score.chords.map((chord) => chord.measure > index ? { ...chord, measure: chord.measure + 1 } : chord);
   const copies = score.chords.filter((chord) => chord.measure === index).map((chord) => ({ ...chord, id: newScoreId("c"), measure: index + 1 }));
@@ -179,4 +184,34 @@ export function syncNoteLyric(score: ScoreData, id: string, lyric: string): Pick
     return words.join("");
   }).join("\n");
   return { measures, lyrics };
+}
+
+/** Event that follows `id` in reading order (across measures). */
+export function nextEvent(score: ScoreData, id: string): ScoreEvent | null {
+  const all = score.measures.flatMap((m) => m.events);
+  const i = all.findIndex((e) => e.id === id);
+  return i >= 0 ? all[i + 1] || null : null;
+}
+
+/** Next note (skipping rests) in reading order. */
+export function nextNoteId(score: ScoreData, id: string): string | null {
+  const all = score.measures.flatMap((m) => m.events);
+  const i = all.findIndex((e) => e.id === id);
+  if (i < 0) return null;
+  return all.slice(i + 1).find((e) => e.kind === "note")?.id || null;
+}
+
+/** True when `a` can tie into `b`: both notes with the same sounding pitch. */
+export function tieCompatible(score: ScoreData, a: ScoreEvent, b: ScoreEvent | null): boolean {
+  return !!b && a.kind === "note" && b.kind === "note" && a.pitch === b.pitch
+    && midiFor(a, score.keySignature) === midiFor(b, score.keySignature);
+}
+
+/** Toggle a tie from `id` to the next note. Returns "incompatible" when the next note has another pitch. */
+export function toggleTie(score: ScoreData, id: string): ScoreMeasure[] | "incompatible" | null {
+  const found = findEvent(score, id);
+  if (!found || found.ev.kind !== "note") return null;
+  if (found.ev.tie) return patchEvent(score, id, { tie: undefined });
+  if (!tieCompatible(score, found.ev, nextEvent(score, id))) return "incompatible";
+  return patchEvent(score, id, { tie: true });
 }

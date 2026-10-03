@@ -51,7 +51,9 @@ function sanitizeEvent(value: unknown): ScoreEvent | null {
       : 34;
     if (ACCIDENTALS.includes(e.accidental as ScoreAccidental)) ev.accidental = e.accidental as ScoreAccidental;
     if (typeof e.lyric === "string" && e.lyric) ev.lyric = e.lyric.slice(0, 200);
+    if (e.tie === true) ev.tie = true;
   }
+  if (e.dotted === true) ev.dotted = true;
   return ev;
 }
 

@@ -3,6 +3,19 @@ import { getCurrentLang } from "@/i18n";
 type Strings = Record<string, string>;
 
 const en: Strings = {
+  "score.print.tags": "Tags",
+  "score.dotted": "Dotted (× 1.5)",
+  "score.tie": "Tie",
+  "score.removeTie": "Remove tie",
+  "score.tieHint": "Join this note to the next note of the same pitch",
+  "score.tieNeedsSamePitch": "Tie requires the next note to have the same pitch.",
+  "score.lyricShort": "Lyric",
+  "score.inlineLyricHint": "Type the lyric in the box under the note. Enter moves to the next note.",
+  "score.createLyricsNote": "Create Lyrics Note",
+  "score.createLyricsNoteAgain": "A Lyrics note was already created from this Score. Create another copy?",
+  "score.createAnother": "Create copy",
+  "score.lyricsNoteCreated": "Lyrics note created",
+  "score.open": "Open",
   "score.help": "Score help",
   "score.printPdf": "Print / PDF",
   "score.linked": "Linked recording",
@@ -131,6 +144,19 @@ const en: Strings = {
 };
 
 const th: Strings = {
+  "score.print.tags": "แท็ก",
+  "score.dotted": "โน้ตประจุด (× 1.5)",
+  "score.tie": "เชื่อมเสียง",
+  "score.removeTie": "ยกเลิกเชื่อมเสียง",
+  "score.tieHint": "เชื่อมโน้ตนี้กับโน้ตถัดไปที่มีเสียงเดียวกัน",
+  "score.tieNeedsSamePitch": "การเชื่อมเสียงต้องใช้โน้ตถัดไปที่มีเสียงเดียวกัน",
+  "score.lyricShort": "เนื้อร้อง",
+  "score.inlineLyricHint": "พิมพ์เนื้อร้องในช่องใต้โน้ต กด Enter เพื่อไปโน้ตถัดไป",
+  "score.createLyricsNote": "สร้างโน้ตเนื้อเพลง",
+  "score.createLyricsNoteAgain": "เคยสร้างโน้ตเนื้อเพลงจาก Score นี้แล้ว ต้องการสร้างสำเนาอีกหรือไม่?",
+  "score.createAnother": "สร้างสำเนา",
+  "score.lyricsNoteCreated": "สร้างโน้ตเนื้อเพลงแล้ว",
+  "score.open": "เปิด",
   "score.help": "วิธีใช้โน้ตเพลง",
   "score.printPdf": "พิมพ์ / PDF",
   "score.linked": "เสียงบันทึกที่เชื่อมไว้",
@@ -259,6 +285,19 @@ const th: Strings = {
 };
 
 const sv: Strings = {
+  "score.print.tags": "Taggar",
+  "score.dotted": "Punkterad (× 1,5)",
+  "score.tie": "Bindebåge",
+  "score.removeTie": "Ta bort bindebåge",
+  "score.tieHint": "Bind ihop noten med nästa not på samma tonhöjd",
+  "score.tieNeedsSamePitch": "Bindebåge kräver att nästa not har samma tonhöjd.",
+  "score.lyricShort": "Text",
+  "score.inlineLyricHint": "Skriv texten i rutan under noten. Enter går till nästa not.",
+  "score.createLyricsNote": "Skapa textanteckning",
+  "score.createLyricsNoteAgain": "En textanteckning har redan skapats från detta Score. Skapa en kopia till?",
+  "score.createAnother": "Skapa kopia",
+  "score.lyricsNoteCreated": "Textanteckning skapad",
+  "score.open": "Öppna",
   "score.help": "Hjälp för noter",
   "score.printPdf": "Skriv ut / PDF",
   "score.linked": "Länkad inspelning",

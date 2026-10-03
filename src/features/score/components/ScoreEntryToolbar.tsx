@@ -1,6 +1,5 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Play, Redo2, Trash2, Undo2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { ScoreAccidental, ScoreDuration, ScoreEvent } from "../types/score.types";
 import { DURATIONS, pitchName } from "../utils/notation";
@@ -29,6 +28,9 @@ interface Props {
   onUndo: () => void;
   onRedo: () => void;
   onClearScore: () => void;
+  dotted: boolean;
+  onDotted: (dotted: boolean) => void;
+  onToggleTie: () => void;
 }
 
 const chip = "h-10 min-w-10 px-2 rounded-md text-sm flex items-center justify-center transition-colors";
@@ -39,8 +41,11 @@ const off = "bg-muted text-foreground hover:bg-muted/70";
 export function ScoreEntryToolbar({
   mode, duration, accidental, selected, selectedChord, onMode, onDuration, onAccidental,
   onPatchSelected, onMoveSelected, onPreviewSelected, onDeleteSelected, onCloseSelected, onEditChord, onDeleteChord,
-  canUndo, canRedo, onUndo, onRedo, onClearScore,
+  canUndo, canRedo, onUndo, onRedo, onClearScore, dotted, onDotted, onToggleTie,
 }: Props) {
+  const dotChip = (active: boolean, onClick: () => void) => (
+    <button type="button" aria-pressed={active} onClick={onClick} aria-label={scoreT("score.dotted")} title={scoreT("score.dotted")} className={cn(chip, "text-xl font-bold", active ? on : off)}>•</button>
+  );
   const sharedActions = (
     <div className="flex items-center gap-1">
       <Button type="button" variant="ghost" size="icon" className="h-9 w-9" disabled={!canUndo} onClick={onUndo} aria-label={scoreT("score.undo")} title={scoreT("score.undo")}><Undo2 className="h-4 w-4" /></Button>
@@ -90,6 +95,7 @@ export function ScoreEntryToolbar({
               <DurationIcon duration={d} rest={!isNote} />
             </button>
           ))}
+          {dotChip(!!selected.dotted, () => onPatchSelected({ dotted: !selected.dotted }))}
           {isNote && (
             <>
               <span className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
@@ -101,6 +107,11 @@ export function ScoreEntryToolbar({
             </>
           )}
           {isNote && (
+            <Button type="button" variant={selected.tie ? "default" : "outline"} className="h-10" aria-pressed={!!selected.tie} onClick={onToggleTie} title={scoreT("score.tieHint")}>
+              {selected.tie ? scoreT("score.removeTie") : scoreT("score.tie")}
+            </Button>
+          )}
+          {isNote && (
             <Button type="button" variant="outline" className="h-10" onClick={onPreviewSelected} aria-label={scoreT("score.previewSelected")}>
               <Play className="h-4 w-4 mr-1.5" />{scoreT("score.preview")}
             </Button>
@@ -109,9 +120,7 @@ export function ScoreEntryToolbar({
             <Trash2 className="h-4 w-4 mr-1.5" />{scoreT("score.delete")}
           </Button>
         </div>
-        {isNote && (
-          <Input value={selected.lyric || ""} maxLength={200} onChange={(event) => onPatchSelected({ lyric: event.target.value || undefined })} placeholder={scoreT("score.lyric")} aria-label={scoreT("score.lyric")} className="h-10" />
-        )}
+        {isNote && <p className="text-xs text-muted-foreground px-1">{scoreT("score.inlineLyricHint")}</p>}
       </section>
     );
   }
@@ -133,6 +142,7 @@ export function ScoreEntryToolbar({
                 <DurationIcon duration={d} rest={mode === "rest"} />
               </button>
             ))}
+            {dotChip(dotted, () => onDotted(!dotted))}
           </>
         )}
         {mode === "note" && (

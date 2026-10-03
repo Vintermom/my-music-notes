@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ScoreData, ScoreEvent } from "../types/score.types";
 import {
-  DURATION_UNITS, beatUnits, bottomLineDia, keyInfo, keySignaturePositions,
+  eventUnits, beatUnits, bottomLineDia, keyInfo, keySignaturePositions,
   measureCapacity, middleLineDia, pitchRange,
 } from "../utils/notation";
-import { ACCIDENTAL_GLYPH, NoteShape, RestShape } from "./NotationGlyphs";
+import { ACCIDENTAL_GLYPH, DotShape, NoteShape, RestShape, TieShape } from "./NotationGlyphs";
+import { tieCompatible } from "../utils/scoreEdit";
 import { scoreT } from "../i18n";
 
 export type EntryMode = "note" | "rest" | "chord";
@@ -22,6 +23,10 @@ interface Props {
   onMeasureMenu: (measure: number) => void;
   staffActions?: ReactNode;
   staffHelp?: ReactNode;
+  /** Inline per-note lyric editing under the selected note. */
+  onLyricChange?: (id: string, lyric: string) => void;
+  /** Returns the next note id to edit after Enter, or null. */
+  onLyricNext?: (id: string) => string | null;
 }
 
 // Geometry (px). Line spacing 10, so one diatonic step = 5.
@@ -36,9 +41,24 @@ const CLEF_FONT = { fontFamily: '"Noto Music", "Segoe UI Symbol", "Apple Symbols
 
 interface MeasureLayout { index: number; sys: number; x: number; w: number; virtual: boolean; header: number }
 
-export function ScoreEditor({ score, mode, selectedId, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu, staffActions, staffHelp }: Props) {
+export function ScoreEditor({ score, mode, selectedId, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu, staffActions, staffHelp, onLyricChange, onLyricNext }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const lyricRef = useRef<HTMLInputElement>(null);
   const [width, setWidth] = useState(360);
+  const [focusLyricId, setFocusLyricId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!focusLyricId || focusLyricId !== selectedId) return;
+    const el = lyricRef.current;
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    el.select();
+    // Keep the note and its field visible above the on-screen keyboard.
+    const keep = () => el.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
+    keep();
+    const timer = window.setTimeout(keep, 350);
+    return () => window.clearTimeout(timer);
+  }, [focusLyricId, selectedId]);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -71,8 +91,8 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
           .filter((chord) => chord.measure === m)
           .reduce((sum, chord) => sum + chord.symbol.length, 0);
         const unitWidth = events.reduce((largest, event) => {
-          const glyphWidth = Math.max(28, (event.lyric?.length || 0) * 7 + 12, event.accidental ? 36 : 28);
-          return Math.max(largest, glyphWidth / DURATION_UNITS[event.duration]);
+          const glyphWidth = Math.max(28, (event.lyric?.length || 0) * 7 + 12, event.accidental ? 36 : 28) + (event.dotted ? 8 : 0);
+          return Math.max(largest, glyphWidth / eventUnits(event));
         }, 0);
         const chordWidth = Math.min(120, chordChars * 7);
         const contentWidth = PAD * 2 + cap * unitWidth + chordWidth;
@@ -101,7 +121,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
       let start = 0;
       (score.measures[ml.index]?.events || []).forEach((ev, index) => {
         list.push({ ev, x: eventX(ml, start), ml, index });
-        start += DURATION_UNITS[ev.duration];
+        start += eventUnits(ev);
       });
     });
     return list;
@@ -136,7 +156,12 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
       .map((p) => ({ p, d: Math.abs(p.x - cx) }))
       .filter((o) => o.d < 13)
       .sort((a, b) => a.d - b.d)[0];
-    if (near) { onSelect(near.p.ev.id); return; }
+    if (near) {
+      onSelect(near.p.ev.id);
+      setFocusLyricId(near.p.ev.kind === "note" && localY > LYRIC_Y - 20 ? near.p.ev.id : null);
+      return;
+    }
+    setFocusLyricId(null);
     if (hasSelection || selectedId) { onSelect(null); return; }
     if (localY > LYRIC_Y - 14) return;
 
@@ -148,11 +173,28 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
 
   const height = layout.systems * SYS_H;
   const playing = positioned.find((p) => p.ev.id === playingId);
+  const selectedPos = positioned.find((p) => p.ev.id === selectedId && p.ev.kind === "note");
+  const ties: ReactNode[] = [];
+  positioned.forEach((p, i) => {
+    const next = positioned[i + 1];
+    if (!p.ev.tie || !next || !tieCompatible(score, p.ev, next.ev)) return;
+    const dia = p.ev.pitch ?? middleLineDia(score.clef);
+    const below = dia < middleLineDia(score.clef);
+    const y = yFor(dia, p.ml.sys);
+    if (next.ml.sys === p.ml.sys) {
+      ties.push(<TieShape key={p.ev.id} x1={p.x + 7} x2={next.x - 7} y={y} below={below} />);
+    } else {
+      const end = layout.measures.filter((m) => m.sys === p.ml.sys).pop();
+      ties.push(<TieShape key={p.ev.id} x1={p.x + 7} x2={(end ? end.x + end.w : p.x + 30) - 2} y={y} below={below} />);
+      ties.push(<TieShape key={`${p.ev.id}-b`} x1={next.ml.header - 4} x2={next.x - 7} y={yFor(dia, next.ml.sys)} below={below} />);
+    }
+  });
 
   return (
     <section dir="ltr" aria-label={scoreT("score.workspace")} className="relative rounded-lg border border-border">
       {staffActions && <div className="absolute right-2 top-2 z-[1] flex items-center gap-1 rounded-md bg-background/90 shadow-sm backdrop-blur-sm">{staffActions}</div>}
       <div ref={wrapRef} className="w-full overflow-x-auto">
+        <div className="relative" style={{ width: layout.renderWidth }}>
         <svg
           width={layout.renderWidth}
           height={height}
@@ -247,6 +289,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
                 <g key={ev.id} className={active ? "text-primary" : "text-foreground"}>
                   {ev.id === selectedId && <rect x={x - 12} y={sysY + TOP - 4} width={24} height={50} rx={4} className="fill-primary/10" />}
                   <RestShape x={x} top={sysY + TOP} duration={ev.duration} />
+                  {ev.dotted && <DotShape x={x - 2} y={sysY + TOP + 15} onLine={false} />}
                 </g>
               );
             }
@@ -264,14 +307,44 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
                 {ev.accidental && (
                   <text x={x - 15} y={y + 5} fontSize={15} fill="currentColor" textAnchor="middle">{ACCIDENTAL_GLYPH[ev.accidental]}</text>
                 )}
-                <NoteShape x={x} y={y} duration={ev.duration} stemUp={dia < middleLineDia(score.clef)} />
-                {ev.lyric && (
+                <NoteShape x={x} y={y} duration={ev.duration} stemUp={dia < middleLineDia(score.clef)} dotted={ev.dotted} onLine={(dia - bottomDia) % 2 === 0} />
+                {ev.lyric && ev.id !== selectedPos?.ev.id && (
                    <text data-score-lyric x={x} y={sysY + LYRIC_Y} fontSize={12} textAnchor="middle" className="fill-foreground">{ev.lyric}</text>
                 )}
               </g>
             );
           })}
+          {ties}
         </svg>
+        {selectedPos && onLyricChange && (
+          <input
+            ref={lyricRef}
+            data-score-inline-lyric
+            value={selectedPos.ev.lyric || ""}
+            maxLength={200}
+            enterKeyHint="next"
+            placeholder={scoreT("score.lyricShort")}
+            aria-label={scoreT("score.lyric")}
+            onChange={(event) => onLyricChange(selectedPos.ev.id, event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || (event.key === "Tab" && !event.shiftKey)) {
+                event.preventDefault();
+                const next = onLyricNext?.(selectedPos.ev.id) ?? null;
+                setFocusLyricId(next);
+                if (!next) event.currentTarget.blur();
+              } else if (event.key === "Escape") {
+                event.currentTarget.blur();
+              }
+            }}
+            className="absolute h-6 rounded border border-primary bg-background px-1 text-center text-xs text-foreground shadow-sm outline-none focus:ring-2 focus:ring-primary/40"
+            style={{
+              width: Math.max(64, (selectedPos.ev.lyric?.length || 0) * 8 + 24),
+              left: selectedPos.x - Math.max(64, (selectedPos.ev.lyric?.length || 0) * 8 + 24) / 2,
+              top: selectedPos.ml.sys * SYS_H + LYRIC_Y - 16,
+            }}
+          />
+        )}
+        </div>
       </div>
       {staffHelp}
     </section>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Copy, FileDown, FileJson, HelpCircle, Maximize2, MoreVertical, Palette, Pin, Printer, Trash2, X } from "lucide-react";
+import { ArrowLeft, Copy, FileDown, FileText, FileJson, HelpCircle, Maximize2, MoreVertical, Palette, Pin, Printer, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import { ScoreShareButton } from "./ScoreShareButton";
 import { t } from "@/i18n";
 import { formatDateISO } from "@/lib/dateFormat";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { deleteNote, downloadNoteJson, duplicateNote } from "@/storage/notesRepo";
+import { createNote, deleteNote, downloadNoteJson, duplicateNote, getAllNotes } from "@/storage/notesRepo";
 import { scoreT } from "../i18n";
 import { useScoreNote } from "../hooks/useScoreNote";
 import { useScorePlayback } from "../hooks/useScorePlayback";
@@ -23,7 +23,7 @@ import { scorePlayer } from "../services/scorePlayer";
 import type { ScoreAccidental, ScoreDuration, ScoreEvent } from "../types/score.types";
 import {
   alignLyrics, clearMeasure, duplicateMeasure, clearScore, deleteEvent, deleteMeasure, findEvent, moveEvent, newScoreId, patchEvent, placeEvent,
-  removeChord, replaceAllLyrics, syncNoteLyric, upsertChord,
+  removeChord, replaceAllLyrics, syncNoteLyric, upsertChord, nextNoteId, toggleTie,
 } from "../utils/scoreEdit";
 import { measureCapacity, usedUnits } from "../utils/notation";
 import { ScoreToolbar } from "./ScoreToolbar";
@@ -54,6 +54,9 @@ export default function ScorePage() {
   const [mode, setMode] = useState<EntryMode>("note");
   const [duration, setDuration] = useState<ScoreDuration>("q");
   const [accidental, setAccidental] = useState<ScoreAccidental | null>(null);
+  const [dotted, setDotted] = useState(false);
+  const [confirmLyricsCopy, setConfirmLyricsCopy] = useState(false);
+  const lyricsCopyMade = useRef(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedChord, setSelectedChord] = useState<ChordTarget | null>(null);
   const [chordTarget, setChordTarget] = useState<ChordTarget | null>(null);
@@ -96,18 +99,49 @@ export default function ScorePage() {
 
   const handlePlace = (measure: number, index: number, pitch: number) => {
     const event: ScoreEvent = mode === "rest"
-      ? { id: newScoreId("ev"), kind: "rest", duration }
-      : { id: newScoreId("ev"), kind: "note", duration, pitch, ...(accidental ? { accidental } : {}) };
+      ? { id: newScoreId("ev"), kind: "rest", duration, ...(dotted ? { dotted } : {}) }
+      : { id: newScoreId("ev"), kind: "note", duration, pitch, ...(accidental ? { accidental } : {}), ...(dotted ? { dotted } : {}) };
     const measures = placeEvent(score, measure, index, event);
     if (!measures) { toast.error(scoreT("score.measureFull")); return; }
     history.commit({ measures });
   };
 
+  const handleLyricChange = (eventId: string, value: string) => {
+    const lyricPatch = syncNoteLyric(score, eventId, value);
+    if (lyricPatch) history.commit(lyricPatch);
+  };
+  const handleLyricNext = (eventId: string) => {
+    const next = nextNoteId(score, eventId);
+    setSelectedChord(null);
+    setSelectedId(next);
+    return next;
+  };
+
+  const handleToggleTie = () => {
+    if (!selectedId) return;
+    const result = toggleTie(score, selectedId);
+    if (result === "incompatible") { toast(scoreT("score.tieNeedsSamePitch")); return; }
+    if (result) history.commit({ measures: result });
+  };
+
+  const createLyricsNote = () => {
+    const saved = flushNow() || note;
+    const copy = createNote({
+      title: saved.title, composer: saved.composer, lyrics: saved.score?.lyrics || "",
+      style: saved.style, tags: [...saved.tags],
+    });
+    lyricsCopyMade.current = true;
+    toast.success(scoreT("score.lyricsNoteCreated"), { action: { label: scoreT("score.open"), onClick: () => navigate(`/edit/${copy.id}`) } });
+  };
+  const handleCreateLyricsNote = () => {
+    const exists = lyricsCopyMade.current || getAllNotes().some((n) => n.noteType !== "score" && n.title === note.title && n.lyrics === score.lyrics);
+    if (exists) setConfirmLyricsCopy(true); else createLyricsNote();
+  };
+
   const handlePatch = (patch: Partial<ScoreEvent>) => {
     if (!selectedId) return;
     if (Object.prototype.hasOwnProperty.call(patch, "lyric")) {
-      const lyricPatch = syncNoteLyric(score, selectedId, String(patch.lyric || ""));
-      if (lyricPatch) history.commit(lyricPatch);
+      handleLyricChange(selectedId, String(patch.lyric || ""));
       return;
     }
     const measures = patchEvent(score, selectedId, patch);
@@ -162,6 +196,7 @@ export default function ScorePage() {
       onDeleteChord={() => { if (!selectedChord?.id) return; history.commit({ chords: removeChord(score, selectedChord.id) }); setSelectedChord(null); }}
       canUndo={history.canUndo} canRedo={history.canRedo} onUndo={history.undo} onRedo={history.redo}
       onClearScore={() => setConfirmClearScore(true)}
+      dotted={dotted} onDotted={setDotted} onToggleTie={handleToggleTie}
     />
   );
 
@@ -173,6 +208,7 @@ export default function ScorePage() {
       <ScoreEditor
         score={score} mode={mode} selectedId={selectedId} hasSelection={!!selected || !!selectedChord} playingId={playback.currentId}
         onPlace={handlePlace} onSelect={(eventId) => { setSelectedChord(null); setSelectedId(eventId); }} onChordTarget={handleChordTarget} onMeasureMenu={setMeasureMenu}
+        onLyricChange={handleLyricChange} onLyricNext={handleLyricNext}
         staffActions={<>
           <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={() => setHelpOpen((open) => !open)} aria-label={scoreT("score.help")} aria-pressed={helpOpen}><HelpCircle className="h-4 w-4" /></Button>
           {!scoreFullscreen && <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={() => setScoreFullscreen(true)} aria-label={scoreT("score.fullscreenStaff")}><Maximize2 className="h-4 w-4" /></Button>}
@@ -213,6 +249,7 @@ export default function ScorePage() {
                 <DropdownMenuItem onClick={() => { const saved = flushNow(); if (saved) downloadNoteJson(saved); toast.success(t("toast.jsonExported")); }}><FileJson className="h-4 w-4 mr-2" />{t("menu.exportJson")}</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleDuplicate}><Copy className="h-4 w-4 mr-2" />{t("menu.duplicate")}</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleCreateLyricsNote}><FileText className="h-4 w-4 mr-2" />{scoreT("score.createLyricsNote")}</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setConfirmClearAll(true)} className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4 mr-2" />{scoreT("score.clearAll")}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setConfirmDelete(true)} className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4 mr-2" />{t("menu.delete")}</DropdownMenuItem>
@@ -270,6 +307,7 @@ export default function ScorePage() {
       <ConfirmDialog open={confirmReplaceLyrics} onOpenChange={setConfirmReplaceLyrics} title={scoreT("score.replaceAllLyricsTitle")} description={scoreT("score.replaceAllLyricsConfirm")} confirmLabel={scoreT("score.replaceAllLyrics")} onConfirm={() => { history.commit({ measures: replaceAllLyrics(score) }); setConfirmReplaceLyrics(false); }} />
       <ConfirmDialog open={confirmClearScore} onOpenChange={setConfirmClearScore} title={scoreT("score.clearScoreTitle")} description={scoreT("score.clearScoreConfirm")} confirmLabel={scoreT("score.clearScore")} variant="destructive" onConfirm={() => { history.commit(clearScore()); setSelectedId(null); setSelectedChord(null); setConfirmClearScore(false); }} />
       <ConfirmDialog open={confirmClearAll} onOpenChange={setConfirmClearAll} title={scoreT("score.clearAllTitle")} description={scoreT("score.clearAllConfirm")} confirmLabel={scoreT("score.clearAll")} variant="destructive" onConfirm={() => { setScore(createDefaultScoreData()); setTitle(""); setMetadata({ composer: "", style: "", tags: [] }); setSelectedId(null); setSelectedChord(null); setConfirmClearAll(false); }} />
+      <ConfirmDialog open={confirmLyricsCopy} onOpenChange={setConfirmLyricsCopy} title={scoreT("score.createLyricsNote")} description={scoreT("score.createLyricsNoteAgain")} confirmLabel={scoreT("score.createAnother")} onConfirm={() => { setConfirmLyricsCopy(false); createLyricsNote(); }} />
       <ConfirmDialog open={confirmDelete} onOpenChange={setConfirmDelete} title={scoreT("score.deleteTitle")} description={scoreT("score.deleteConfirm")} confirmLabel={t("menu.delete")} variant="destructive" onConfirm={handleDelete} />
     </div>
   );

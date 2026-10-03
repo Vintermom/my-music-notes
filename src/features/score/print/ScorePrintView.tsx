@@ -1,5 +1,5 @@
 import type { ScoreClef, ScoreData } from "../types/score.types";
-import { ACCIDENTAL_GLYPH, NoteShape, RestShape } from "../components/NotationGlyphs";
+import { ACCIDENTAL_GLYPH, DotShape, NoteShape, RestShape, TieShape } from "../components/NotationGlyphs";
 import { LAYOUT_FONT, LAYOUT_WIDTH, layoutScore, type LaidSystem, type ScoreLayout } from "./scoreLayout";
 
 export interface ScorePrintLabels {
@@ -7,6 +7,18 @@ export interface ScorePrintLabels {
   key: string;
   time: string;
   tempo: string;
+  style: string;
+  tags: string;
+  created: string;
+  updated: string;
+  lyrics: string;
+}
+
+export interface ScorePrintMeta {
+  style: string;
+  tags: string[];
+  created: string;
+  updated: string;
 }
 
 /** "all" = print; "shapes" = vector notation without text; "glyphs" = clef + accidentals only. */
@@ -48,18 +60,19 @@ export function ScoreSystemSvg({ system: s, layout, clef, layer = "all" }: Syste
           ))}
           {m.events.map((le) => {
             const ev = le.event;
-            if (ev.kind === "rest") return shapes ? <g key={ev.id}><RestShape x={le.x} top={s.staffTop} duration={ev.duration} /></g> : null;
+            if (ev.kind === "rest") return shapes ? <g key={ev.id}><RestShape x={le.x} top={s.staffTop} duration={ev.duration} />{ev.dotted && <DotShape x={le.x - 2} y={s.staffTop + 15} onLine={false} />}</g> : null;
             return (
               <g key={ev.id}>
                 {shapes && le.ledgers.map((d) => <line key={d} x1={le.x - 10} x2={le.x + 10} y1={s.yFor(d)} y2={s.yFor(d)} stroke="#000" />)}
                 {glyphs && ev.accidental && <text x={le.x - 15} y={le.y + 5} fontSize={15} textAnchor="middle">{ACCIDENTAL_GLYPH[ev.accidental]}</text>}
-                {shapes && <NoteShape x={le.x} y={le.y} duration={ev.duration} stemUp={le.stemUp} />}
+                {shapes && <NoteShape x={le.x} y={le.y} duration={ev.duration} stemUp={le.stemUp} dotted={ev.dotted} onLine={le.ledgers.includes(le.dia) || (le.y - s.staffTop) % 10 === 0} />}
                 {text && ev.lyric && <text className="lyric" x={le.x} y={s.lyricY} fontSize={LAYOUT_FONT.lyric} textAnchor="middle">{ev.lyric}</text>}
               </g>
             );
           })}
         </g>
       ))}
+      {shapes && s.ties.map((tie, i) => <TieShape key={`t${i}`} x1={tie.x1} x2={tie.x2} y={tie.y} below={tie.below} />)}
     </svg>
   );
 }
@@ -69,10 +82,11 @@ interface Props {
   composer: string;
   score: ScoreData;
   labels: ScorePrintLabels;
+  meta: ScorePrintMeta;
 }
 
 /** Static Score document. One SVG per staff system so pages never cut a system. */
-export function ScorePrintView({ title, composer, score, labels }: Props) {
+export function ScorePrintView({ title, composer, score, labels, meta }: Props) {
   const layout = layoutScore(score);
   return (
     <div className="score-doc">
@@ -82,10 +96,19 @@ export function ScorePrintView({ title, composer, score, labels }: Props) {
         <p className="score-meta">
           {labels.key}: {score.keySignature} · {labels.time}: {score.timeSignature} · {labels.tempo}: {score.tempo} BPM
         </p>
+        {meta.style && <p className="score-info">{labels.style}: {meta.style}</p>}
+        {meta.tags.length > 0 && <p className="score-info">{labels.tags}: {meta.tags.join(", ")}</p>}
+        <p className="score-info">{labels.created}: {meta.created} · {labels.updated}: {meta.updated}</p>
       </header>
       {layout.systems.map((system, i) => (
         <ScoreSystemSvg key={i} system={system} layout={layout} clef={score.clef} />
       ))}
+      {score.lyrics.trim() && (
+        <section className="score-lyrics">
+          <h2>{labels.lyrics}</h2>
+          <div className="score-lyrics-text">{score.lyrics}</div>
+        </section>
+      )}
     </div>
   );
 }
