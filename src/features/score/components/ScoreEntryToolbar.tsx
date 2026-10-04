@@ -1,28 +1,19 @@
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Play, Redo2, Trash2, Undo2, X } from "lucide-react";
+import { Redo2, Trash2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { ScoreAccidental, ScoreDuration, ScoreEvent } from "../types/score.types";
-import { DURATIONS, pitchName } from "../utils/notation";
+import type { ScoreAccidental, ScoreDuration } from "../types/score.types";
+import { DURATIONS } from "../utils/notation";
 import { ACCIDENTAL_GLYPH, DurationIcon } from "./NotationGlyphs";
-import type { ChordTarget, EntryMode } from "./ScoreEditor";
+import type { EntryMode } from "./ScoreEditor";
 import { scoreT } from "../i18n";
 
 interface Props {
   mode: EntryMode;
   duration: ScoreDuration;
   accidental: ScoreAccidental | null;
-  selected: ScoreEvent | null;
-  selectedChord: ChordTarget | null;
   onMode: (m: EntryMode) => void;
   onDuration: (d: ScoreDuration) => void;
   onAccidental: (a: ScoreAccidental | null) => void;
-  onPatchSelected: (patch: Partial<ScoreEvent>) => void;
-  onMoveSelected: (dir: -1 | 1) => void;
-  onPreviewSelected: () => void;
-  onDeleteSelected: () => void;
-  onCloseSelected: () => void;
-  onEditChord: () => void;
-  onDeleteChord: () => void;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
@@ -30,18 +21,16 @@ interface Props {
   onClearScore: () => void;
   dotted: boolean;
   onDotted: (dotted: boolean) => void;
-  onToggleTie: () => void;
 }
 
 const chip = "h-10 min-w-10 px-2 rounded-md text-sm flex items-center justify-center transition-colors";
 const on = "bg-primary text-primary-foreground";
 const off = "bg-muted text-foreground hover:bg-muted/70";
 
-/** One toolbar for adding and editing Score events. */
+/** Score toolbar for adding new events and shared history actions. */
 export function ScoreEntryToolbar({
-  mode, duration, accidental, selected, selectedChord, onMode, onDuration, onAccidental,
-  onPatchSelected, onMoveSelected, onPreviewSelected, onDeleteSelected, onCloseSelected, onEditChord, onDeleteChord,
-  canUndo, canRedo, onUndo, onRedo, onClearScore, dotted, onDotted, onToggleTie,
+  mode, duration, accidental, onMode, onDuration, onAccidental,
+  canUndo, canRedo, onUndo, onRedo, onClearScore, dotted, onDotted,
 }: Props) {
   const dotChip = (active: boolean, onClick: () => void) => (
     <button type="button" aria-pressed={active} onClick={onClick} aria-label={scoreT("score.dotted")} title={scoreT("score.dotted")} className={cn(chip, "text-xl font-bold", active ? on : off)}>•</button>
@@ -53,78 +42,6 @@ export function ScoreEntryToolbar({
       <Button type="button" variant="ghost" size="icon" className="h-9 w-9 text-destructive" onClick={onClearScore} aria-label={scoreT("score.clearScore")} title={scoreT("score.clearScore")}><Trash2 className="h-4 w-4" /></Button>
     </div>
   );
-  if (selectedChord?.id) {
-    return (
-      <section aria-label={scoreT("score.toolbar")} className="rounded-lg border border-primary/40 p-2 space-y-2">
-        <div className="flex items-center justify-between gap-2 px-1">
-          <span className="text-sm font-medium text-primary">{scoreT("score.editingChord").replace("{chord}", selectedChord.symbol)}</span>
-          <div className="flex items-center gap-1">{sharedActions}<Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={onCloseSelected} aria-label={scoreT("score.done")}><X className="h-4 w-4" /></Button></div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button type="button" variant="outline" onClick={onEditChord}>{scoreT("score.editChord")}</Button>
-          <Button type="button" variant="outline" className="text-destructive ml-auto" onClick={onDeleteChord}><Trash2 className="h-4 w-4 mr-1.5" />{scoreT("score.delete")}</Button>
-        </div>
-      </section>
-    );
-  }
-  if (selected) {
-    const isNote = selected.kind === "note";
-    const label = isNote && typeof selected.pitch === "number"
-      ? scoreT("score.editingNote").replace("{note}", pitchName(selected.pitch))
-      : scoreT("score.editingRest");
-    return (
-      <section aria-label={scoreT("score.toolbar")} className="rounded-lg border border-primary/40 p-2 space-y-2">
-        <div className="flex items-center justify-between gap-2 px-1">
-          <span className="text-sm font-medium text-primary">{label}</span>
-          <div className="flex items-center gap-1">{sharedActions}<Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={onCloseSelected} aria-label={scoreT("score.done")}>
-            <X className="h-4 w-4" />
-          </Button></div>
-        </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {isNote && (
-            <>
-              <Button type="button" variant="outline" size="icon" className="h-10 w-10" onClick={() => onPatchSelected({ pitch: (selected.pitch ?? 34) + 1 })} aria-label={scoreT("score.pitchUp")}><ChevronUp className="h-5 w-5" /></Button>
-              <Button type="button" variant="outline" size="icon" className="h-10 w-10" onClick={() => onPatchSelected({ pitch: (selected.pitch ?? 34) - 1 })} aria-label={scoreT("score.pitchDown")}><ChevronDown className="h-5 w-5" /></Button>
-            </>
-          )}
-          <Button type="button" variant="outline" size="icon" className="h-10 w-10" onClick={() => onMoveSelected(-1)} aria-label={scoreT("score.moveLeft")}><ChevronLeft className="h-5 w-5" /></Button>
-          <Button type="button" variant="outline" size="icon" className="h-10 w-10" onClick={() => onMoveSelected(1)} aria-label={scoreT("score.moveRight")}><ChevronRight className="h-5 w-5" /></Button>
-          <span className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
-          {DURATIONS.map((d) => (
-            <button key={d} type="button" aria-pressed={selected.duration === d} onClick={() => onPatchSelected({ duration: d })} aria-label={scoreT(`score.dur.${d}`)} title={scoreT(`score.dur.${d}`)} className={cn(chip, selected.duration === d ? on : off)}>
-              <DurationIcon duration={d} rest={!isNote} />
-            </button>
-          ))}
-          {dotChip(!!selected.dotted, () => onPatchSelected({ dotted: !selected.dotted }))}
-          {isNote && (
-            <>
-              <span className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
-              {(["natural", "sharp", "flat"] as ScoreAccidental[]).map((a) => (
-                <button key={a} type="button" aria-pressed={selected.accidental === a} onClick={() => onPatchSelected({ accidental: selected.accidental === a ? undefined : a })} aria-label={scoreT(`score.acc.${a}`)} className={cn(chip, "text-lg", selected.accidental === a ? on : off)}>
-                  {ACCIDENTAL_GLYPH[a]}
-                </button>
-              ))}
-            </>
-          )}
-          {isNote && (
-            <Button type="button" variant={selected.tie ? "default" : "outline"} className="h-10" aria-pressed={!!selected.tie} onClick={onToggleTie} title={scoreT("score.tieHint")}>
-              {selected.tie ? scoreT("score.removeTie") : scoreT("score.tie")}
-            </Button>
-          )}
-          {isNote && (
-            <Button type="button" variant="outline" className="h-10" onClick={onPreviewSelected} aria-label={scoreT("score.previewSelected")}>
-              <Play className="h-4 w-4 mr-1.5" />{scoreT("score.preview")}
-            </Button>
-          )}
-          <Button type="button" variant="outline" className="h-10 text-destructive ml-auto" onClick={onDeleteSelected} aria-label={scoreT("score.delete")}>
-            <Trash2 className="h-4 w-4 mr-1.5" />{scoreT("score.delete")}
-          </Button>
-        </div>
-        {isNote && <p className="text-xs text-muted-foreground px-1">{scoreT("score.inlineLyricHint")}</p>}
-      </section>
-    );
-  }
-
   const modes: EntryMode[] = ["note", "rest", "chord"];
   return (
     <section aria-label={scoreT("score.toolbar")} className="rounded-lg border border-border p-2 space-y-2">
