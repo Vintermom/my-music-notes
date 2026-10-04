@@ -5,3 +5,4 @@
 - Score printing lives in `src/features/score/print/` and uses its own HTML/SVG layout, opened through the browser print dialog; it never reuses the app's existing Print/Export/Share code.
 - Keep Score undo/redo snapshots session-local in the Score feature; persistence continues through the existing note repository so saved data remains compatible.
 - Keep mobile Score staff spacing content-aware per system while preserving the fixed notation geometry; print and PDF layout remain independent.
+- Keep Score creation controls in the persistent add toolbar and edit existing staff items through the shared viewport-anchored contextual popup.

@@ -29,6 +29,7 @@ import { measureCapacity, usedUnits } from "../utils/notation";
 import { ScoreToolbar } from "./ScoreToolbar";
 import { ScoreEditor, type ChordTarget, type EntryMode } from "./ScoreEditor";
 import { ScoreEntryToolbar } from "./ScoreEntryToolbar";
+import { ScoreContextualEditPopup } from "./ScoreContextualEditPopup";
 import { ScoreChordDialog } from "./ScoreChordDialog";
 import { ScorePlaybackBar } from "./ScorePlaybackBar";
 import { ScoreLyrics } from "./ScoreLyrics";
@@ -185,18 +186,12 @@ export default function ScorePage() {
 
   const toolbar = (
     <ScoreEntryToolbar
-      mode={mode} duration={duration} accidental={accidental} selected={selected} selectedChord={selectedChord}
+      mode={mode} duration={duration} accidental={accidental}
       onMode={(next) => { setMode(next); setSelectedId(null); setSelectedChord(null); }}
-      onDuration={setDuration} onAccidental={setAccidental} onPatchSelected={handlePatch}
-      onMoveSelected={(direction) => selected && history.commit({ measures: moveEvent(score, selected.id, direction) })}
-      onPreviewSelected={() => { if (selected) scorePlayer.previewNote(score, selected.id); }}
-      onDeleteSelected={() => { if (!selected) return; history.commit({ measures: deleteEvent(score, selected.id) }); setSelectedId(null); }}
-      onCloseSelected={() => { setSelectedId(null); setSelectedChord(null); }}
-      onEditChord={() => { if (selectedChord) setChordTarget(selectedChord); }}
-      onDeleteChord={() => { if (!selectedChord?.id) return; history.commit({ chords: removeChord(score, selectedChord.id) }); setSelectedChord(null); }}
+      onDuration={setDuration} onAccidental={setAccidental}
       canUndo={history.canUndo} canRedo={history.canRedo} onUndo={history.undo} onRedo={history.redo}
       onClearScore={() => setConfirmClearScore(true)}
-      dotted={dotted} onDotted={setDotted} onToggleTie={handleToggleTie}
+      dotted={dotted} onDotted={setDotted}
     />
   );
 
@@ -206,9 +201,22 @@ export default function ScorePage() {
       <ScorePlaybackBar playing={playback.playing} tempo={score.tempo} volume={score.volume} onPlay={() => { linked.pause(); if (!playback.play()) toast(scoreT("score.nothingToPlay")); }} onStop={playback.stop} onVolume={(volume) => setScore({ volume })} />
       {toolbar}
       <ScoreEditor
-        score={score} mode={mode} selectedId={selectedId} hasSelection={!!selected || !!selectedChord} playingId={playback.currentId}
+        score={score} mode={mode} selectedId={selectedId} selectedChordId={selectedChord?.id} hasSelection={!!selected || !!selectedChord} playingId={playback.currentId}
         onPlace={handlePlace} onSelect={(eventId) => { setSelectedChord(null); setSelectedId(eventId); }} onChordTarget={handleChordTarget} onMeasureMenu={setMeasureMenu}
         onLyricChange={handleLyricChange} onLyricNext={handleLyricNext}
+        renderContextualEditor={(anchor) => (
+          <ScoreContextualEditPopup
+            anchor={anchor} selected={selected} selectedChord={selectedChord}
+            onPatchSelected={handlePatch}
+            onMoveSelected={(direction) => selected && history.commit({ measures: moveEvent(score, selected.id, direction) })}
+            onPreviewSelected={() => { if (selected) scorePlayer.previewNote(score, selected.id); }}
+            onDeleteSelected={() => { if (!selected) return; history.commit({ measures: deleteEvent(score, selected.id) }); setSelectedId(null); }}
+            onToggleTie={handleToggleTie}
+            onEditChord={() => { if (selectedChord) setChordTarget(selectedChord); }}
+            onDeleteChord={() => { if (!selectedChord?.id) return; history.commit({ chords: removeChord(score, selectedChord.id) }); setSelectedChord(null); }}
+            onClose={() => { setSelectedId(null); setSelectedChord(null); }}
+          />
+        )}
         staffActions={<>
           <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={() => setHelpOpen((open) => !open)} aria-label={scoreT("score.help")} aria-pressed={helpOpen}><HelpCircle className="h-4 w-4" /></Button>
           {!scoreFullscreen && <Button type="button" variant="ghost" size="icon" className="h-9 w-9" onClick={() => setScoreFullscreen(true)} aria-label={scoreT("score.fullscreenStaff")}><Maximize2 className="h-4 w-4" /></Button>}

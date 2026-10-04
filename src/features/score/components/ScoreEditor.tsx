@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ScoreData, ScoreEvent } from "../types/score.types";
 import {
   eventUnits, beatUnits, bottomLineDia, keyInfo, keySignaturePositions,
@@ -10,11 +10,13 @@ import { scoreT } from "../i18n";
 
 export type EntryMode = "note" | "rest" | "chord";
 export interface ChordTarget { id?: string; measure: number; offset: number; symbol: string }
+export interface ScoreEditAnchor { left: number; top: number; right: number; bottom: number; width: number; height: number }
 
 interface Props {
   score: ScoreData;
   mode: EntryMode;
   selectedId: string | null;
+  selectedChordId?: string | null;
   hasSelection?: boolean;
   playingId: string | null;
   onPlace: (measure: number, index: number, pitch: number) => void;
@@ -23,6 +25,7 @@ interface Props {
   onMeasureMenu: (measure: number) => void;
   staffActions?: ReactNode;
   staffHelp?: ReactNode;
+  renderContextualEditor?: (anchor: ScoreEditAnchor | null) => ReactNode;
   /** Inline per-note lyric editing under the selected note. */
   onLyricChange?: (id: string, lyric: string) => void;
   /** Returns the next note id to edit after Enter, or null. */
@@ -45,11 +48,13 @@ const CLEF_FONT = { fontFamily: '"Noto Music", "Segoe UI Symbol", "Apple Symbols
 interface MeasureLayout { index: number; sys: number; x: number; w: number; virtual: boolean; header: number }
 interface SystemGeometry { offset: number; top: number; bottom: number; chordY: number; lyricY: number; height: number }
 
-export function ScoreEditor({ score, mode, selectedId, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu, staffActions, staffHelp, onLyricChange, onLyricNext }: Props) {
+export function ScoreEditor({ score, mode, selectedId, selectedChordId = null, hasSelection = false, playingId, onPlace, onSelect, onChordTarget, onMeasureMenu, staffActions, staffHelp, renderContextualEditor, onLyricChange, onLyricNext }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const lyricRef = useRef<HTMLInputElement>(null);
   const [width, setWidth] = useState(360);
   const [focusLyricId, setFocusLyricId] = useState<string | null>(null);
+  const [editAnchor, setEditAnchor] = useState<ScoreEditAnchor | null>(null);
 
   useEffect(() => {
     if (!focusLyricId || focusLyricId !== selectedId) return;
@@ -164,11 +169,24 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
     const ml = inSys.find((m) => x >= m.x && x < m.x + m.w) || inSys[0];
     const cx = Math.max(x, ml.x);
 
-    // Chord row (or Chord mode): edit an existing chord or add a new one.
+    const chordHit = score.chords.find((c) => c.measure === ml.index && Math.abs(eventX(ml, c.offset) - cx) < 22);
+    if (localY < geometry.top - 12 && chordHit) { onChordTarget({ ...chordHit }); return; }
+
+    // Existing notes and rests always remain editable, regardless of the current add mode.
+    const near = positioned
+      .filter((p) => p.ml.index === ml.index)
+      .map((p) => ({ p, d: Math.abs(p.x - cx) }))
+      .filter((o) => o.d < 13)
+      .sort((a, b) => a.d - b.d)[0];
+    if (near && localY >= geometry.top - 12) {
+      onSelect(near.p.ev.id);
+      setFocusLyricId(near.p.ev.kind === "note" && localY > geometry.lyricY - 20 ? near.p.ev.id : null);
+      return;
+    }
+
+    // Chord mode adds a chord; the chord row edits an existing chord.
     if (mode === "chord" || localY < geometry.top - 12) {
       if (ml.virtual && mode !== "chord") return;
-      const hit = score.chords.find((c) => c.measure === ml.index && Math.abs(eventX(ml, c.offset) - cx) < 22);
-      if (hit) { onChordTarget({ ...hit }); return; }
       const bu = beatUnits(score.timeSignature);
       const frac = (cx - ml.x - PAD) / (ml.w - 2 * PAD);
       const offset = Math.min(cap - bu, Math.max(0, Math.round((frac * cap) / bu) * bu));
@@ -176,17 +194,6 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
       return;
     }
 
-    // Tap on a note/rest selects it.
-    const near = positioned
-      .filter((p) => p.ml.index === ml.index)
-      .map((p) => ({ p, d: Math.abs(p.x - cx) }))
-      .filter((o) => o.d < 13)
-      .sort((a, b) => a.d - b.d)[0];
-    if (near) {
-      onSelect(near.p.ev.id);
-      setFocusLyricId(near.p.ev.kind === "note" && localY > geometry.lyricY - 20 ? near.p.ev.id : null);
-      return;
-    }
     setFocusLyricId(null);
     if (hasSelection || selectedId) { onSelect(null); return; }
     if (localY > geometry.lyricY - 14) return;
@@ -217,12 +224,33 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
     }
   });
 
+  useLayoutEffect(() => {
+    const updateAnchor = () => {
+      const svg = svgRef.current;
+      if (!svg || (!selectedId && !selectedChordId)) { setEditAnchor(null); return; }
+      const selector = selectedId ? "[data-score-event]" : "[data-score-chord]";
+      const value = selectedId || selectedChordId;
+      const element = Array.from(svg.querySelectorAll<SVGGraphicsElement>(selector)).find((candidate) => candidate.getAttribute(selector.slice(1, -1)) === value);
+      if (!element) { setEditAnchor(null); return; }
+      const rect = element.getBoundingClientRect();
+      setEditAnchor({ left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height });
+    };
+    updateAnchor();
+    window.addEventListener("resize", updateAnchor);
+    window.addEventListener("scroll", updateAnchor, true);
+    return () => {
+      window.removeEventListener("resize", updateAnchor);
+      window.removeEventListener("scroll", updateAnchor, true);
+    };
+  }, [selectedId, selectedChordId, layout, systemGeometry]);
+
   return (
     <section dir="ltr" aria-label={scoreT("score.workspace")} className="relative rounded-lg border border-border">
       {staffActions && <div className="absolute right-2 top-2 z-[1] flex items-center gap-1 rounded-md bg-background/90 shadow-sm backdrop-blur-sm">{staffActions}</div>}
       <div ref={wrapRef} className="w-full overflow-x-auto">
         <div className="relative" style={{ width: layout.renderWidth }}>
         <svg
+          ref={svgRef}
           width={layout.renderWidth}
           height={height}
           onClick={handleClick}
@@ -296,7 +324,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
             const ml = layout.measures.find((m) => m.index === c.measure);
             if (!ml) return null;
             return (
-              <text key={c.id} x={eventX(ml, c.offset) - 4} y={systemGeometry[ml.sys].offset + systemGeometry[ml.sys].chordY} fontSize={14} fontWeight={700} className="fill-primary">
+              <text key={c.id} data-score-chord={c.id} x={eventX(ml, c.offset) - 4} y={systemGeometry[ml.sys].offset + systemGeometry[ml.sys].chordY} fontSize={14} fontWeight={700} className="fill-primary">
                 {c.symbol}
               </text>
             );
@@ -376,6 +404,7 @@ export function ScoreEditor({ score, mode, selectedId, hasSelection = false, pla
         </div>
       </div>
       {staffHelp}
+      {renderContextualEditor?.(editAnchor)}
     </section>
   );
 }
