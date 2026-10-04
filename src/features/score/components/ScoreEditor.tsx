@@ -169,11 +169,24 @@ export function ScoreEditor({ score, mode, selectedId, selectedChordId = null, h
     const ml = inSys.find((m) => x >= m.x && x < m.x + m.w) || inSys[0];
     const cx = Math.max(x, ml.x);
 
-    // Chord row (or Chord mode): edit an existing chord or add a new one.
+    const chordHit = score.chords.find((c) => c.measure === ml.index && Math.abs(eventX(ml, c.offset) - cx) < 22);
+    if (localY < geometry.top - 12 && chordHit) { onChordTarget({ ...chordHit }); return; }
+
+    // Existing notes and rests always remain editable, regardless of the current add mode.
+    const near = positioned
+      .filter((p) => p.ml.index === ml.index)
+      .map((p) => ({ p, d: Math.abs(p.x - cx) }))
+      .filter((o) => o.d < 13)
+      .sort((a, b) => a.d - b.d)[0];
+    if (near && localY >= geometry.top - 12) {
+      onSelect(near.p.ev.id);
+      setFocusLyricId(near.p.ev.kind === "note" && localY > geometry.lyricY - 20 ? near.p.ev.id : null);
+      return;
+    }
+
+    // Chord mode adds a chord; the chord row edits an existing chord.
     if (mode === "chord" || localY < geometry.top - 12) {
       if (ml.virtual && mode !== "chord") return;
-      const hit = score.chords.find((c) => c.measure === ml.index && Math.abs(eventX(ml, c.offset) - cx) < 22);
-      if (hit) { onChordTarget({ ...hit }); return; }
       const bu = beatUnits(score.timeSignature);
       const frac = (cx - ml.x - PAD) / (ml.w - 2 * PAD);
       const offset = Math.min(cap - bu, Math.max(0, Math.round((frac * cap) / bu) * bu));
@@ -181,17 +194,6 @@ export function ScoreEditor({ score, mode, selectedId, selectedChordId = null, h
       return;
     }
 
-    // Tap on a note/rest selects it.
-    const near = positioned
-      .filter((p) => p.ml.index === ml.index)
-      .map((p) => ({ p, d: Math.abs(p.x - cx) }))
-      .filter((o) => o.d < 13)
-      .sort((a, b) => a.d - b.d)[0];
-    if (near) {
-      onSelect(near.p.ev.id);
-      setFocusLyricId(near.p.ev.kind === "note" && localY > geometry.lyricY - 20 ? near.p.ev.id : null);
-      return;
-    }
     setFocusLyricId(null);
     if (hasSelection || selectedId) { onSelect(null); return; }
     if (localY > geometry.lyricY - 14) return;
