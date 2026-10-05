@@ -3,4 +3,4 @@
 - [x] Confirm build/security status and publish the tested Main maintenance update.
 - [x] Replace the top Score editing panel with one anchored note/chord popup while keeping the add toolbar unchanged.
 - [x] Test popup positioning, dismissal, scroll preservation, inline lyrics, and bottom-of-score editing on desktop, tablet, and mobile.
-- [ ] Confirm build/security status and publish the V1.5.0 maintenance update without changing update messaging.
+- [x] Confirm build/security status and publish the V1.5.0 maintenance update without changing update messaging.
